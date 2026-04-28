@@ -1,0 +1,21 @@
+{
+  "subject": "electronics",
+  "explanations": [
+    {
+      "topic": "circuits",
+      "misconception_type": "Concept misunderstanding",
+      "type": "hybrid",
+      "content": "Voltage does not flow. Voltage is the potential difference that pushes charge. Current is the flow of charge through the circuit.",
+      "story": "Think of water pipes: pressure pushes water, but pressure itself does not flow through the pipe. Voltage is like pressure; current is like the moving water.",
+      "diagram": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 220'><rect width='600' height='220' rx='18' fill='#0f172a'/><rect x='80' y='78' width='90' height='64' rx='8' fill='#334155' stroke='#2dd4bf' stroke-width='3'/><path d='M170 110h260' stroke='#e2e8f0' stroke-width='8' stroke-linecap='round'/><path d='M410 110l-22-16m22 16l-22 16' stroke='#fbbf24' stroke-width='5' stroke-linecap='round'/><text x='125' y='115' fill='#2dd4bf' font-family='Inter,Arial' font-size='18' text-anchor='middle'>V push</text><text x='315' y='92' fill='#fbbf24' font-family='Inter,Arial' font-size='16' text-anchor='middle'>current flows</text><text x='300' y='170' fill='#94a3b8' font-family='Inter,Arial' font-size='15' text-anchor='middle'>voltage = potential difference</text></svg>"
+    },
+    {
+      "topic": "logic-gates",
+      "misconception_type": "Partial understanding",
+      "type": "visual",
+      "content": "Naming a gate is only half the answer. A complete explanation says what input pattern produces the output.",
+      "story": "A gate is like a classroom rule. Saying the rule's name is not enough; you must say when the door opens.",
+      "diagram": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 220'><rect width='520' height='220' rx='18' fill='#0f172a'/><path d='M130 70h80M130 150h80M210 60h65a55 55 0 010 100h-65zM330 110h70' fill='none' stroke='#2dd4bf' stroke-width='5'/><text x='86' y='76' fill='#e2e8f0' font-family='Inter,Arial' font-size='16'>input A</text><text x='86' y='156' fill='#e2e8f0' font-family='Inter,Arial' font-size='16'>input B</text><text x='430' y='116' fill='#fbbf24' font-family='Inter,Arial' font-size='16'>output</text><text x='260' y='118' fill='#e2e8f0' font-family='Inter,Arial' font-size='20' text-anchor='middle'>AND</text></svg>"
+    }
+  ]
+}

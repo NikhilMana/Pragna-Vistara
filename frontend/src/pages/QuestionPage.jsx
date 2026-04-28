@@ -1,241 +1,267 @@
-import { useState } from 'react'
-import { useParams, useLocation, useNavigate } from 'react-router-dom'
-import ProgressBar from '@/components/ui/ProgressBar'
-import LoadingSpinner from '@/components/ui/LoadingSpinner'
-import { ClockIcon, LightBulbIcon } from '@/components/ui/Icons'
+import { useEffect, useRef, useState } from 'react'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { ClockIcon, LightBulbIcon, MicrophoneIcon, PaperAirplaneIcon, SparklesIcon } from '@/components/ui/Icons'
+import { useLearningSelection } from '@/context/LearningSelectionContext'
+import { getQuestionForTopic } from '@/services/offlineContent'
+import { notifyOfflineSyncStateChanged } from '@/services/offlineSync'
+import { saveResponse } from '@/utils/indexedDB'
 
-/**
- * PLACEHOLDER_QUESTIONS — stub data until API / IndexedDB is wired up.
- * Each question has: id, text, type ('mcq' | 'short'), options[], correctIndex.
- */
-const PLACEHOLDER_QUESTIONS = [
-  {
-    id: 'q1',
-    text: 'A ball is thrown vertically upward with velocity 20 m/s. What is its velocity at the highest point?',
-    type: 'mcq',
-    options: ['20 m/s', '10 m/s', '0 m/s', '−20 m/s'],
-    correctIndex: 2,
-    hint: 'Think about what happens to kinetic energy at the peak.',
-  },
-  {
-    id: 'q2',
-    text: 'Which of the following is a vector quantity?',
-    type: 'mcq',
-    options: ['Speed', 'Mass', 'Displacement', 'Temperature'],
-    correctIndex: 2,
-    hint: 'Vector quantities have both magnitude and direction.',
-  },
-  {
-    id: 'q3',
-    text: "Newton's second law relates force to which two quantities?",
-    type: 'mcq',
-    options: [
-      'Velocity and time',
-      'Mass and acceleration',
-      'Mass and velocity',
-      'Acceleration and time',
-    ],
-    correctIndex: 1,
-    hint: 'F = ma — what does each letter represent?',
-  },
-]
-
-/**
- * QuestionPage — interactive question interface.
- * Route: /topic/:topicId/question
- *
- * State machine: idle → answered → (next question | navigate to result)
- */
 export default function QuestionPage() {
   const { topicId } = useParams()
   const { state: locationState } = useLocation()
   const navigate = useNavigate()
+  const { selection } = useLearningSelection()
+  const recognitionRef = useRef(null)
 
-  const questions = PLACEHOLDER_QUESTIONS            // TODO: load from IndexedDB / API
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [selectedOption, setSelectedOption] = useState(null)  // index or null
-  const [isAnswered, setIsAnswered]       = useState(false)
-  const [showHint, setShowHint]           = useState(false)
-  const [responses, setResponses]         = useState([])      // accumulate for result page
-  const [isSubmitting, setIsSubmitting]   = useState(false)
+  const subjectId = locationState?.subjectId ?? selection.subjectId
+  const subjectLabel = locationState?.subjectLabel ?? selection.subjectLabel
+  const topicLabel = locationState?.topicLabel ?? selection.topicLabel ?? topicId
 
-  const question = questions[currentIndex]
-  const total    = questions.length
+  const [question, setQuestion] = useState(null)
+  const [answerText, setAnswerText] = useState('')
+  const [showHint, setShowHint] = useState(false)
+  const [isListening, setIsListening] = useState(false)
+  const [voiceError, setVoiceError] = useState('')
+  const [submitError, setSubmitError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isLoadingQuestion, setIsLoadingQuestion] = useState(true)
+  const [questionError, setQuestionError] = useState('')
 
-  // ── Handlers ────────────────────────────────────────
-  function handleOptionSelect(idx) {
-    if (isAnswered) return
-    setSelectedOption(idx)
+  const SpeechRecognition =
+    typeof window !== 'undefined'
+      ? window.SpeechRecognition || window.webkitSpeechRecognition
+      : null
+  const canUseVoice = Boolean(SpeechRecognition)
+  const answerReady = answerText.trim().length > 0
+
+  useEffect(() => {
+    return () => {
+      recognitionRef.current?.stop()
+    }
+  }, [])
+
+  useEffect(() => {
+    let active = true
+
+    async function loadQuestion() {
+      setIsLoadingQuestion(true)
+      setQuestionError('')
+
+      try {
+        const nextQuestion = await getQuestionForTopic(topicId)
+
+        if (active) {
+          if (nextQuestion) {
+            setQuestion(nextQuestion)
+          } else {
+            setQuestionError('No offline question is available for this topic yet.')
+          }
+        }
+      } catch {
+        if (active) {
+          setQuestionError('Could not load the offline question pack.')
+        }
+      } finally {
+        if (active) {
+          setIsLoadingQuestion(false)
+        }
+      }
+    }
+
+    loadQuestion()
+
+    return () => {
+      active = false
+    }
+  }, [topicId])
+
+  function handleVoiceInput() {
+    setVoiceError('')
+
+    if (!canUseVoice) {
+      setVoiceError('Voice input is not supported in this browser.')
+      return
+    }
+
+    if (isListening) {
+      recognitionRef.current?.stop()
+      setIsListening(false)
+      return
+    }
+
+    const recognition = new SpeechRecognition()
+    recognition.lang = 'en-IN'
+    recognition.interimResults = false
+    recognition.continuous = false
+
+    recognition.onstart = () => setIsListening(true)
+    recognition.onerror = () => {
+      setVoiceError('Could not capture voice. Try again or type your answer.')
+      setIsListening(false)
+    }
+    recognition.onend = () => setIsListening(false)
+    recognition.onresult = (event) => {
+      const transcript = Array.from(event.results)
+        .map((result) => result[0]?.transcript)
+        .filter(Boolean)
+        .join(' ')
+
+      setAnswerText((current) => [current.trim(), transcript.trim()].filter(Boolean).join(' '))
+    }
+
+    recognitionRef.current = recognition
+    recognition.start()
   }
 
-  function handleSubmit() {
-    if (selectedOption === null || isAnswered) return
-    setIsAnswered(true)
+  async function handleSubmit() {
+    if (!answerReady || isSubmitting || !question) return
 
-    const response = {
-      questionId:    question.id,
-      questionText:  question.text,
-      selectedIndex: selectedOption,
-      correctIndex:  question.correctIndex,
-      isCorrect:     selectedOption === question.correctIndex,
+    setSubmitError('')
+    setIsSubmitting(true)
+
+    const answer = {
+      questionId: question.id,
+      questionText: question.text,
+      answerText: answerText.trim(),
+      inputMode: isListening ? 'voice' : 'text',
+      subjectId,
       topicId,
+      topicLabel,
+      subjectLabel,
+      status: 'pending-analysis',
+      syncStatus: 'pending',
     }
-    setResponses((prev) => [...prev, response])
-    // TODO: persist to IndexedDB via saveResponse()
-  }
 
-  function handleNext() {
-    if (currentIndex + 1 < total) {
-      setCurrentIndex((i) => i + 1)
-      setSelectedOption(null)
-      setIsAnswered(false)
-      setShowHint(false)
-    } else {
-      // Navigate to result page with accumulated data
-      navigate('/result', { state: { responses: [...responses], topicId, topicLabel: locationState?.topicLabel } })
+    try {
+      const responseId = await saveResponse(answer)
+      notifyOfflineSyncStateChanged()
+      navigate('/analysis', {
+        state: {
+          responseId,
+          answer,
+          topicId,
+          topicLabel,
+          subjectLabel,
+        },
+      })
+    } catch {
+      setSubmitError('Could not save your answer locally. Please try again.')
+      setIsSubmitting(false)
     }
   }
-
-  // ── Option styling ───────────────────────────────────
-  function optionClass(idx) {
-    const base = `w-full text-left px-5 py-4 rounded-xl border font-medium text-sm
-                  transition-all duration-200 `
-    if (!isAnswered) {
-      return base + (selectedOption === idx
-        ? 'border-primary-500 bg-primary-500/15 text-white glow-border'
-        : 'border-surface-border bg-surface-card text-surface-muted hover:border-primary-500/40 hover:text-white')
-    }
-    if (idx === question.correctIndex) return base + 'border-accent-teal bg-accent-teal/10 text-accent-teal'
-    if (idx === selectedOption)        return base + 'border-accent-rose bg-accent-rose/10 text-accent-rose'
-    return base + 'border-surface-border bg-surface-card text-surface-muted opacity-50'
-  }
-
-  // ── Render ────────────────────────────────────────────
-  if (isSubmitting) return <LoadingSpinner label="Analysing your response…" size="lg" />
 
   return (
-    <div className="container-page max-w-3xl animate-fade-in">
-
-      {/* ── Progress ── */}
-      <div className="mb-8">
-        <ProgressBar current={currentIndex + 1} total={total} />
+    <div className="container-page max-w-4xl animate-fade-in">
+      <div className="mb-6 flex flex-wrap items-center gap-2 text-xs text-surface-muted">
+        {subjectLabel && <span className="badge-primary">{subjectLabel}</span>}
+        <span className="badge-teal">{topicLabel}</span>
       </div>
 
-      {/* ── Question card ── */}
-      <article
-        id={`question-card-${question.id}`}
-        className="card mb-6"
-        aria-label={`Question ${currentIndex + 1}`}
-      >
-        {/* Meta row */}
-        <div className="flex items-center gap-3 mb-5">
-          <span className="badge-primary">Q{currentIndex + 1}</span>
-          <span className="flex items-center gap-1 text-xs text-surface-muted">
-            <ClockIcon className="w-3.5 h-3.5" />
-            ~30 sec
-          </span>
-        </div>
-
-        {/* Question text */}
-        <h2 className="text-white font-semibold text-lg leading-relaxed mb-6">
-          {question.text}
-        </h2>
-
-        {/* MCQ Options */}
-        <fieldset>
-          <legend className="sr-only">Choose your answer</legend>
-          <div className="flex flex-col gap-3">
-            {question.options.map((opt, idx) => (
-              <button
-                key={idx}
-                id={`option-${question.id}-${idx}`}
-                type="button"
-                onClick={() => handleOptionSelect(idx)}
-                className={optionClass(idx)}
-                aria-pressed={selectedOption === idx}
-                disabled={isAnswered}
-              >
-                <span className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-full border border-current flex items-center
-                                   justify-center text-xs shrink-0 font-bold">
-                    {String.fromCharCode(65 + idx)}
-                  </span>
-                  {opt}
-                </span>
-              </button>
-            ))}
+      {isLoadingQuestion && (
+        <article className="card mb-6 overflow-hidden">
+          <div className="mb-6 flex items-center justify-between gap-4">
+            <div className="skeleton h-7 w-16" />
+            <div className="skeleton h-6 w-6 rounded-full" />
           </div>
-        </fieldset>
+          <div className="space-y-3">
+            <div className="skeleton h-10 w-full" />
+            <div className="skeleton h-10 w-5/6" />
+          </div>
+        </article>
+      )}
+
+      {questionError && (
+        <div className="mb-6 rounded-xl border border-accent-rose/30 bg-accent-rose/10 px-4 py-3 text-sm text-accent-rose">
+          {questionError}
+        </div>
+      )}
+
+      {question && (
+      <article className="card mb-6 overflow-hidden">
+        <div className="mb-6 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <span className="badge-primary">Q1</span>
+            <span className="flex items-center gap-1 text-xs text-surface-muted">
+              <ClockIcon className="h-3.5 w-3.5" />
+              {question.estimatedTime}
+            </span>
+          </div>
+          <SparklesIcon className="h-5 w-5 text-primary-300" />
+        </div>
+
+        <h1 className="mb-8 text-2xl font-display font-bold leading-snug text-white sm:text-3xl">
+          {question.text}
+        </h1>
+
+        <div className="rounded-2xl border border-surface-border bg-surface/40 p-4">
+          <label htmlFor="student-answer" className="mb-3 block text-sm font-semibold text-white">
+            Your answer
+          </label>
+          <textarea
+            id="student-answer"
+            value={answerText}
+            onChange={(event) => setAnswerText(event.target.value)}
+            rows={7}
+            className="input min-h-44 resize-none text-base leading-relaxed"
+            placeholder="Type your thinking here..."
+          />
+
+          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <button
+              id="voice-answer-btn"
+              type="button"
+              onClick={handleVoiceInput}
+              className={`btn-secondary px-4 ${isListening ? 'border-accent-rose/60 text-accent-rose' : ''}`}
+              aria-pressed={isListening}
+            >
+              <MicrophoneIcon className="h-4 w-4" />
+              {isListening ? 'Listening...' : 'Voice'}
+            </button>
+
+            <span className="text-xs text-surface-muted">
+              {answerText.trim().length} characters
+            </span>
+          </div>
+        </div>
       </article>
-
-      {/* ── Hint ── */}
-      {!isAnswered && (
-        <div className="mb-6">
-          <button
-            id="show-hint-btn"
-            type="button"
-            onClick={() => setShowHint((v) => !v)}
-            className="flex items-center gap-1.5 text-accent-amber text-sm font-medium
-                       hover:underline transition-all"
-          >
-            <LightBulbIcon className="w-4 h-4" />
-            {showHint ? 'Hide hint' : 'Need a hint?'}
-          </button>
-          {showHint && (
-            <div className="mt-3 glass p-4 text-sm text-accent-amber/90 animate-slide-up border-accent-amber/20">
-              💡 {question.hint}
-            </div>
-          )}
-        </div>
       )}
 
-      {/* ── Inline feedback after answering ── */}
-      {isAnswered && (
-        <div className={`card mb-6 animate-slide-up border
-                         ${selectedOption === question.correctIndex
-                           ? 'border-accent-teal/40 bg-accent-teal/5'
-                           : 'border-accent-rose/40 bg-accent-rose/5'}`}>
-          <p className={`font-semibold mb-1
-                         ${selectedOption === question.correctIndex ? 'text-accent-teal' : 'text-accent-rose'}`}>
-            {selectedOption === question.correctIndex ? '✅ Correct!' : '❌ Incorrect'}
-          </p>
-          <p className="text-surface-muted text-sm">
-            {selectedOption === question.correctIndex
-              ? 'Great job! Moving to the next question.'
-              : `The correct answer is: ${question.options[question.correctIndex]}`}
-          </p>
-        </div>
-      )}
-
-      {/* ── Action buttons ── */}
-      <div className="flex items-center justify-between gap-4">
-        <span className="text-surface-muted text-xs">
-          {total - currentIndex - 1} question{total - currentIndex - 1 !== 1 ? 's' : ''} remaining
-        </span>
-        <div className="flex gap-3">
-          {!isAnswered ? (
-            <button
-              id="submit-answer-btn"
-              type="button"
-              onClick={handleSubmit}
-              disabled={selectedOption === null}
-              className="btn-primary"
-            >
-              Submit Answer
-            </button>
-          ) : (
-            <button
-              id="next-question-btn"
-              type="button"
-              onClick={handleNext}
-              className="btn-primary"
-            >
-              {currentIndex + 1 < total ? 'Next Question →' : 'View Results →'}
-            </button>
-          )}
-        </div>
+      <div className="mb-6">
+        <button
+          id="show-hint-btn"
+          type="button"
+          disabled={!question}
+          onClick={() => setShowHint((value) => !value)}
+          className="flex items-center gap-1.5 text-sm font-medium text-accent-amber hover:underline"
+        >
+          <LightBulbIcon className="h-4 w-4" />
+          {showHint ? 'Hide hint' : 'Hint'}
+        </button>
+        {showHint && question && (
+          <div className="mt-3 glass border-accent-amber/20 p-4 text-sm text-accent-amber/90 animate-slide-up">
+            {question.hint}
+          </div>
+        )}
       </div>
 
+      {(voiceError || submitError) && (
+        <div className="mb-6 rounded-xl border border-accent-rose/30 bg-accent-rose/10 px-4 py-3 text-sm text-accent-rose">
+          {voiceError || submitError}
+        </div>
+      )}
+
+      <div className="flex items-center justify-end">
+        <button
+          id="submit-answer-btn"
+          type="button"
+          onClick={handleSubmit}
+          disabled={!answerReady || isSubmitting || !question}
+          className="btn-primary"
+        >
+          <PaperAirplaneIcon className="h-4 w-4" />
+          {isSubmitting ? 'Saving...' : 'Submit'}
+        </button>
+      </div>
     </div>
   )
 }

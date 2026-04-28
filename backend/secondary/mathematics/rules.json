@@ -1,0 +1,65 @@
+{
+  "subject": "mathematics",
+  "rules": [
+    {
+      "id": "math_derivative_integration_confusion",
+      "misconception_type": "Concept misunderstanding",
+      "description": "The answer confuses differentiation with integration or treats inverse operations as identical.",
+      "confidence": 0.59,
+      "question_keywords": ["derivative", "differentiate", "integration", "integrate", "rate of change"],
+      "answer_keywords": ["derivative is area", "integration is slope", "both are same"],
+      "answer_patterns": ["derivative\\s+is\\s+area", "integration\\s+is\\s+slope", "both\\s+are\\s+same"],
+      "missing_concepts": ["rate of change", "slope"],
+      "requires_answer_match": false,
+      "guidance": "Map derivative to rate of change and integration to accumulation."
+    },
+    {
+      "id": "math_partial_steps_only",
+      "misconception_type": "Partial understanding",
+      "description": "The answer starts correctly but misses a condition, sign, unit, or final simplification.",
+      "confidence": 0.48,
+      "question_keywords": ["solve", "find", "equation", "probability", "matrix"],
+      "answer_keywords": ["i know", "first step", "formula", "almost"],
+      "answer_patterns": [],
+      "missing_concepts": ["final answer", "condition"],
+      "requires_answer_match": true,
+      "guidance": "Ask the student to complete the final step and verify any conditions."
+    },
+    {
+      "id": "math_formula_misapplication",
+      "misconception_type": "Wrong logic application",
+      "description": "The answer applies an unrelated formula or operation to the problem.",
+      "confidence": 0.56,
+      "question_keywords": ["solve", "find", "equation", "area", "probability", "derivative"],
+      "answer_keywords": ["use quadratic formula", "cross multiply", "differentiate both sides", "add instead"],
+      "answer_patterns": ["use\\s+quadratic\\s+formula", "cross\\s*multiply", "differentiate\\s+both\\s+sides"],
+      "missing_concepts": ["given", "condition"],
+      "requires_answer_match": false,
+      "guidance": "Identify the problem type before choosing a formula."
+    },
+    {
+      "id": "math_formula_only",
+      "misconception_type": "Rote memorization",
+      "description": "The answer lists a formula without substitution, reasoning, or result.",
+      "confidence": 0.46,
+      "question_keywords": ["find", "calculate", "solve", "prove"],
+      "answer_keywords": ["formula is", "x equals", "a square plus b square"],
+      "answer_patterns": ["^\\s*[a-z0-9+\\-*/^= ()]+\\s*$"],
+      "missing_concepts": ["therefore", "substitute", "result"],
+      "requires_answer_match": true,
+      "guidance": "Prompt for substitution and one reasoning step after the formula."
+    },
+    {
+      "id": "math_word_problem_language",
+      "misconception_type": "Language misunderstanding",
+      "description": "The answer misreads comparative words such as more than, less than, difference, or total.",
+      "confidence": 0.55,
+      "question_keywords": ["more than", "less than", "difference", "total", "remaining"],
+      "answer_keywords": ["add all", "subtract all", "more means subtract", "less means add"],
+      "answer_patterns": ["more\\s+means\\s+subtract", "less\\s+means\\s+add"],
+      "missing_concepts": ["compare"],
+      "requires_answer_match": false,
+      "guidance": "Underline the comparison words and translate them into an operation before calculating."
+    }
+  ]
+}

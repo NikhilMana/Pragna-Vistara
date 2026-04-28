@@ -1,0 +1,65 @@
+{
+  "subject": "languages",
+  "rules": [
+    {
+      "id": "languages_main_idea_confusion",
+      "misconception_type": "Concept misunderstanding",
+      "description": "The answer confuses the main idea with a minor detail or isolated phrase.",
+      "confidence": 0.56,
+      "question_keywords": ["main idea", "theme", "central idea", "summary"],
+      "answer_keywords": ["one word", "small detail", "only this line", "character name only"],
+      "answer_patterns": ["main\\s+idea\\s+is\\s+one\\s+word", "theme\\s+is\\s+the\\s+title"],
+      "missing_concepts": ["overall", "message"],
+      "requires_answer_match": false,
+      "guidance": "Ask what the whole passage is mostly saying, not just one line."
+    },
+    {
+      "id": "languages_partial_evidence",
+      "misconception_type": "Partial understanding",
+      "description": "The answer has a reasonable claim but lacks evidence from the text.",
+      "confidence": 0.5,
+      "question_keywords": ["explain", "justify", "why", "evidence"],
+      "answer_keywords": ["because", "i think", "maybe", "it says"],
+      "answer_patterns": [],
+      "missing_concepts": ["quote", "evidence", "line"],
+      "requires_answer_match": true,
+      "guidance": "Ask for one supporting word, phrase, or line from the passage."
+    },
+    {
+      "id": "languages_grammar_rule_misapplied",
+      "misconception_type": "Wrong logic application",
+      "description": "The answer applies the wrong grammar rule or tense transformation.",
+      "confidence": 0.56,
+      "question_keywords": ["tense", "voice", "reported speech", "grammar", "verb"],
+      "answer_keywords": ["always add ed", "always use is", "change every verb", "same tense"],
+      "answer_patterns": ["always\\s+add\\s+ed", "change\\s+every\\s+verb"],
+      "missing_concepts": ["context"],
+      "requires_answer_match": false,
+      "guidance": "Check the sentence context before applying the grammar rule."
+    },
+    {
+      "id": "languages_memorized_definition",
+      "misconception_type": "Rote memorization",
+      "description": "The answer gives a memorized definition without applying it to the passage or sentence.",
+      "confidence": 0.45,
+      "question_keywords": ["metaphor", "simile", "noun", "verb", "theme"],
+      "answer_keywords": ["is a figure of speech", "is a naming word", "is an action word"],
+      "answer_patterns": ["^\\s*[a-z ]+\\s+is\\s+a\\s+[a-z ]+\\s*$"],
+      "missing_concepts": ["example", "sentence"],
+      "requires_answer_match": true,
+      "guidance": "Ask the student to identify the exact word or phrase in the given text."
+    },
+    {
+      "id": "languages_question_word_misread",
+      "misconception_type": "Language misunderstanding",
+      "description": "The answer responds to a different question word such as who, why, how, or where.",
+      "confidence": 0.54,
+      "question_keywords": ["who", "why", "how", "where", "when"],
+      "answer_keywords": ["person instead of reason", "place instead of reason", "reason instead of person"],
+      "answer_patterns": ["person\\s+instead\\s+of\\s+reason", "place\\s+instead\\s+of\\s+reason"],
+      "missing_concepts": ["question word"],
+      "requires_answer_match": false,
+      "guidance": "Circle the question word first, then answer only that demand."
+    }
+  ]
+}

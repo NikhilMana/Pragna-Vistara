@@ -1,0 +1,21 @@
+{
+  "subject": "chemistry",
+  "explanations": [
+    {
+      "topic": "atomic-structure",
+      "misconception_type": "Concept misunderstanding",
+      "type": "hybrid",
+      "content": "An atom is one basic particle of an element. A molecule is two or more atoms bonded together. A compound is made from atoms of different elements bonded together.",
+      "story": "Think of atoms as letters. A molecule is a word made from letters. A compound is a word using different kinds of letters together.",
+      "diagram": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 620 210'><rect width='620' height='210' rx='18' fill='#0f172a'/><circle cx='120' cy='105' r='26' fill='#2dd4bf'/><g fill='#fbbf24'><circle cx='300' cy='88' r='24'/><circle cx='350' cy='122' r='24'/></g><g fill='#f43f5e'><circle cx='500' cy='82' r='23'/><circle cx='545' cy='124' r='23'/></g><text x='120' y='160' fill='#e2e8f0' font-family='Inter,Arial' font-size='16' text-anchor='middle'>atom</text><text x='325' y='160' fill='#e2e8f0' font-family='Inter,Arial' font-size='16' text-anchor='middle'>molecule</text><text x='522' y='160' fill='#e2e8f0' font-family='Inter,Arial' font-size='16' text-anchor='middle'>compound</text></svg>"
+    },
+    {
+      "topic": "chemical-bonding",
+      "misconception_type": "Partial understanding",
+      "type": "hybrid",
+      "content": "Chemical bonding is not just atoms joining. The key idea is what happens to electrons: ionic bonds transfer electrons, while covalent bonds share electrons.",
+      "story": "Two friends can handle lunch money in two ways: one gives money to the other, or both share the cost. Bonds work similarly with electrons.",
+      "diagram": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 620 210'><rect width='620' height='210' rx='18' fill='#0f172a'/><g fill='#e2e8f0' font-family='Inter,Arial' font-size='16' text-anchor='middle'><text x='170' y='50'>ionic: transfer</text><text x='460' y='50'>covalent: share</text></g><circle cx='115' cy='115' r='28' fill='#38bdf8'/><circle cx='225' cy='115' r='28' fill='#f43f5e'/><path d='M150 115h42' stroke='#fbbf24' stroke-width='5'/><path d='M192 115l-14-11m14 11l-14 11' stroke='#fbbf24' stroke-width='5'/><circle cx='415' cy='115' r='28' fill='#38bdf8'/><circle cx='505' cy='115' r='28' fill='#f43f5e'/><circle cx='460' cy='115' r='10' fill='#fbbf24'/></svg>"
+    }
+  ]
+}

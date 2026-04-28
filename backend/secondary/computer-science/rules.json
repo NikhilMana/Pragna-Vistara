@@ -1,0 +1,65 @@
+{
+  "subject": "computer-science",
+  "rules": [
+    {
+      "id": "cs_variable_constant_confusion",
+      "misconception_type": "Concept misunderstanding",
+      "description": "The answer confuses variables, constants, values, or memory names.",
+      "confidence": 0.57,
+      "question_keywords": ["variable", "constant", "data type", "value"],
+      "answer_keywords": ["variable cannot change", "constant changes", "data type is value"],
+      "answer_patterns": ["variable\\s+cannot\\s+change", "constant\\s+changes"],
+      "missing_concepts": ["memory", "value"],
+      "requires_answer_match": false,
+      "guidance": "Use a small code example to separate name, type, and stored value."
+    },
+    {
+      "id": "cs_algorithm_partial",
+      "misconception_type": "Partial understanding",
+      "description": "The answer gives steps but misses input, output, or termination.",
+      "confidence": 0.49,
+      "question_keywords": ["algorithm", "program", "function", "loop"],
+      "answer_keywords": ["steps", "logic", "process", "loop"],
+      "answer_patterns": [],
+      "missing_concepts": ["input", "output", "end"],
+      "requires_answer_match": true,
+      "guidance": "Ask for input, process, output, and when the algorithm stops."
+    },
+    {
+      "id": "cs_loop_condition_error",
+      "misconception_type": "Wrong logic application",
+      "description": "The answer uses a loop or condition in a way that would skip, repeat forever, or run at the wrong time.",
+      "confidence": 0.56,
+      "question_keywords": ["loop", "condition", "if", "while", "for"],
+      "answer_keywords": ["while true", "no update", "condition after loop", "if repeats"],
+      "answer_patterns": ["while\\s+true", "if\\s+.*\\s+repeats", "no\\s+update"],
+      "missing_concepts": ["condition", "update"],
+      "requires_answer_match": false,
+      "guidance": "Trace the loop with one example value and check the update step."
+    },
+    {
+      "id": "cs_syntax_only",
+      "misconception_type": "Rote memorization",
+      "description": "The answer only recalls syntax and does not explain program behavior.",
+      "confidence": 0.45,
+      "question_keywords": ["explain", "output", "why", "program"],
+      "answer_keywords": ["syntax is", "semicolon", "brackets", "keyword"],
+      "answer_patterns": ["^\\s*(for|while|if)\\s*\\(.*\\)\\s*$"],
+      "missing_concepts": ["output", "flow"],
+      "requires_answer_match": true,
+      "guidance": "Ask what the code does after each line, not only what the syntax is."
+    },
+    {
+      "id": "cs_language_misread",
+      "misconception_type": "Language misunderstanding",
+      "description": "The answer misreads programming vocabulary such as class, object, function, or return.",
+      "confidence": 0.51,
+      "question_keywords": ["class", "object", "function", "return"],
+      "answer_keywords": ["class means school class", "object means thing only", "return means go back"],
+      "answer_patterns": ["class\\s+means\\s+school", "return\\s+means\\s+go\\s+back"],
+      "missing_concepts": ["programming"],
+      "requires_answer_match": false,
+      "guidance": "Clarify the programming meaning of the term before analyzing code."
+    }
+  ]
+}

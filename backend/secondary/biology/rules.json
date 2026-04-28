@@ -1,0 +1,65 @@
+{
+  "subject": "biology",
+  "rules": [
+    {
+      "id": "biology_cell_organelle_confusion",
+      "misconception_type": "Concept misunderstanding",
+      "description": "The answer confuses the roles of cell organelles or treats them as interchangeable.",
+      "confidence": 0.58,
+      "question_keywords": ["cell", "organelle", "mitochondria", "chloroplast", "nucleus"],
+      "answer_keywords": ["mitochondria controls cell", "nucleus makes energy", "chloroplast in animal"],
+      "answer_patterns": ["nucleus\\s+makes\\s+energy", "mitochondria\\s+controls\\s+cell"],
+      "missing_concepts": ["function"],
+      "requires_answer_match": false,
+      "guidance": "Review each organelle by matching its structure to its function."
+    },
+    {
+      "id": "biology_process_partial",
+      "misconception_type": "Partial understanding",
+      "description": "The answer names the biological process but misses a key reactant, product, or location.",
+      "confidence": 0.5,
+      "question_keywords": ["photosynthesis", "respiration", "digestion", "transport"],
+      "answer_keywords": ["photosynthesis", "respiration", "digestion"],
+      "answer_patterns": [],
+      "missing_concepts": ["reactant", "product", "location"],
+      "requires_answer_match": true,
+      "guidance": "Ask for where the process happens and what enters and leaves it."
+    },
+    {
+      "id": "biology_cause_effect_error",
+      "misconception_type": "Wrong logic application",
+      "description": "The answer reverses cause and effect in a biological system.",
+      "confidence": 0.55,
+      "question_keywords": ["why", "effect", "cause", "hormone", "system"],
+      "answer_keywords": ["because it happens", "effect causes", "hormone is produced after the result"],
+      "answer_patterns": ["effect\\s+causes", "result\\s+causes\\s+the\\s+process"],
+      "missing_concepts": ["cause"],
+      "requires_answer_match": false,
+      "guidance": "Draw the sequence from stimulus to response before explaining."
+    },
+    {
+      "id": "biology_definition_only",
+      "misconception_type": "Rote memorization",
+      "description": "The answer repeats a definition without linking it to the given organism, cell, or system.",
+      "confidence": 0.45,
+      "question_keywords": ["explain", "why", "function", "role"],
+      "answer_keywords": ["is defined as", "is called", "definition"],
+      "answer_patterns": ["^\\s*[a-z ]+\\s+is\\s+called\\s+[a-z ]+\\s*$"],
+      "missing_concepts": ["function", "because"],
+      "requires_answer_match": true,
+      "guidance": "Ask the student to add the function or reason after the definition."
+    },
+    {
+      "id": "biology_term_language",
+      "misconception_type": "Language misunderstanding",
+      "description": "The answer appears to confuse similar biology vocabulary.",
+      "confidence": 0.5,
+      "question_keywords": ["tissue", "organ", "organism", "system", "adaptation"],
+      "answer_keywords": ["tissue is organ", "organ is organism", "adaptation means adoption"],
+      "answer_patterns": ["tissue\\s+is\\s+organ", "organ\\s+is\\s+organism"],
+      "missing_concepts": ["level"],
+      "requires_answer_match": false,
+      "guidance": "Clarify the vocabulary level: cell, tissue, organ, system, organism."
+    }
+  ]
+}

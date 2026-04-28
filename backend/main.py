@@ -17,6 +17,9 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
 from app.routes import api_router
+from app.routes.analyze import router as analyze_router
+from app.routes.explain import router as explain_router
+from app.routes.local_explanation import router as local_explanation_router
 from app.schemas import HealthResponse
 
 # ─── Logging ─────────────────────────────────────────────────────────────────
@@ -55,6 +58,9 @@ def create_app() -> FastAPI:
 
     # ── Routes ────────────────────────────────────────
     app.include_router(api_router, prefix="/api/v1")
+    app.include_router(analyze_router)
+    app.include_router(explain_router)
+    app.include_router(local_explanation_router)
 
     # ── Lifecycle events ─────────────────────────────
     @app.on_event("startup")

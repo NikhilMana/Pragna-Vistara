@@ -3,7 +3,7 @@ import { openDB } from 'idb'
 // ─── Constants ───────────────────────────────────────────────────────────────
 
 const DB_NAME    = 'edu-sakhi-db'
-const DB_VERSION = 1
+const DB_VERSION = 4
 
 /**
  * Object store names used across the application.
@@ -13,8 +13,14 @@ export const STORES = {
   QUESTIONS:  'questions',
   RESPONSES:  'responses',
   EXPLANATIONS: 'explanations',
-  USER_STATE: 'user_state',
+  SELECTIONS: 'selections',
+  SESSIONS:   'sessions',
+  EXPLANATION_DRAFTS: 'explanationDrafts',
+  APPROVED_CONTENT: 'approvedContent',
+  PROGRESS_EVENTS: 'progressEvents',
 }
+
+const CURRENT_SELECTION_ID = 'current-learning-selection'
 
 // ─── DB Initialisation ────────────────────────────────────────────────────────
 
@@ -26,12 +32,11 @@ export const STORES = {
  * questions   { id, subjectId, topicId, text, type, options, correctIndex, difficulty }
  * responses   { id (auto), questionId, topicId, selectedIndex, isCorrect, timestamp }
  * explanations{ id, questionId, content, generatedAt }
- * user_state  { id, value }
  *
  * @returns {Promise<IDBPDatabase>}
  */
 async function getDB() {
-  return openDB(DB_NAME, DB_VERSION + 1, { // Increment version to trigger upgrade
+  return openDB(DB_NAME, DB_VERSION, {
     upgrade(db) {
       // ── questions store ────────────────────────────
       if (!db.objectStoreNames.contains(STORES.QUESTIONS)) {
@@ -55,12 +60,71 @@ async function getDB() {
         db.createObjectStore(STORES.EXPLANATIONS, { keyPath: 'id' })
       }
 
-      // ── user_state store ───────────────────────────
-      if (!db.objectStoreNames.contains(STORES.USER_STATE)) {
-        db.createObjectStore(STORES.USER_STATE, { keyPath: 'id' })
+      if (!db.objectStoreNames.contains(STORES.SELECTIONS)) {
+        db.createObjectStore(STORES.SELECTIONS, { keyPath: 'id' })
+      }
+
+      if (!db.objectStoreNames.contains(STORES.SESSIONS)) {
+        db.createObjectStore(STORES.SESSIONS, { keyPath: 'id' })
+      }
+
+      if (!db.objectStoreNames.contains(STORES.EXPLANATION_DRAFTS)) {
+        const drafts = db.createObjectStore(STORES.EXPLANATION_DRAFTS, { keyPath: 'id' })
+        drafts.createIndex('by-status', 'status', { unique: false })
+        drafts.createIndex('by-topic', 'topic', { unique: false })
+        drafts.createIndex('by-time', 'createdAt', { unique: false })
+      }
+
+      if (!db.objectStoreNames.contains(STORES.APPROVED_CONTENT)) {
+        const approved = db.createObjectStore(STORES.APPROVED_CONTENT, { keyPath: 'id' })
+        approved.createIndex('by-topic', 'topic', { unique: false })
+        approved.createIndex('by-time', 'approvedAt', { unique: false })
+      }
+
+      if (!db.objectStoreNames.contains(STORES.PROGRESS_EVENTS)) {
+        const progress = db.createObjectStore(STORES.PROGRESS_EVENTS, {
+          keyPath: 'id',
+          autoIncrement: true,
+        })
+        progress.createIndex('by-topic', 'topicId', { unique: false })
+        progress.createIndex('by-subject', 'subjectId', { unique: false })
+        progress.createIndex('by-time', 'createdAt', { unique: false })
+        progress.createIndex('by-misconception', 'misconceptionType', { unique: false })
       }
     },
   })
+}
+
+export async function saveLearningSelection(selection) {
+  const db = await getDB()
+  return db.put(STORES.SELECTIONS, {
+    id: CURRENT_SELECTION_ID,
+    ...selection,
+    updatedAt: Date.now(),
+  })
+}
+
+export async function getLearningSelection() {
+  const db = await getDB()
+  const selection = await db.get(STORES.SELECTIONS, CURRENT_SELECTION_ID)
+  if (!selection) return null
+
+  const { id, updatedAt, ...learningSelection } = selection
+  return learningSelection
+}
+
+export async function saveCurrentSession(sessionData) {
+  const db = await getDB()
+  return db.put(STORES.SESSIONS, {
+    id: 'current',
+    ...sessionData,
+    updatedAt: Date.now(),
+  })
+}
+
+export async function getCurrentSession() {
+  const db = await getDB()
+  return db.get(STORES.SESSIONS, 'current')
 }
 
 // ─── Questions ────────────────────────────────────────────────────────────────
@@ -137,6 +201,27 @@ export async function getAllResponses() {
   return db.getAll(STORES.RESPONSES)
 }
 
+export async function getPendingResponses() {
+  const responses = await getAllResponses()
+  return responses.filter((response) => response.syncStatus !== 'synced')
+}
+
+export async function updateResponse(responseId, updates) {
+  const db = await getDB()
+  const current = await db.get(STORES.RESPONSES, responseId)
+
+  if (!current) {
+    throw new Error('Response not found')
+  }
+
+  return db.put(STORES.RESPONSES, {
+    ...current,
+    ...updates,
+    id: responseId,
+    updatedAt: Date.now(),
+  })
+}
+
 // ─── Explanations ─────────────────────────────────────────────────────────────
 
 /**
@@ -163,27 +248,91 @@ export async function getExplanation(questionId) {
   return db.get(STORES.EXPLANATIONS, questionId)
 }
 
-// ─── User State ──────────────────────────────────────────────────────────────
-
-/**
- * Saves a key-value pair in user_state store.
- * @param {string} key
- * @param {any} value
- */
-export async function saveUserState(key, value) {
+export async function saveCachedExplanation(explanation) {
   const db = await getDB()
-  return db.put(STORES.USER_STATE, { id: key, value })
+  return db.put(STORES.EXPLANATIONS, {
+    ...explanation,
+    cachedAt: explanation.cachedAt ?? Date.now(),
+  })
 }
 
-/**
- * Retrieves a value from user_state store.
- * @param {string} key
- * @returns {Promise<any>}
- */
-export async function getUserState(key) {
+export async function getCachedExplanation(explanationId) {
   const db = await getDB()
-  const entry = await db.get(STORES.USER_STATE, key)
-  return entry ? entry.value : null
+  return db.get(STORES.EXPLANATIONS, explanationId)
+}
+
+export async function saveExplanationDraft(explanation) {
+  const db = await getDB()
+  const id = explanation.id ?? `${explanation.questionId ?? 'explanation'}-${Date.now()}`
+  const now = Date.now()
+
+  return db.put(STORES.EXPLANATION_DRAFTS, {
+    status: 'pending',
+    createdAt: now,
+    updatedAt: now,
+    ...explanation,
+    id,
+  })
+}
+
+export async function getExplanationDrafts() {
+  const db = await getDB()
+  return db.getAll(STORES.EXPLANATION_DRAFTS)
+}
+
+export async function updateExplanationDraft(explanation) {
+  const db = await getDB()
+  return db.put(STORES.EXPLANATION_DRAFTS, {
+    ...explanation,
+    updatedAt: Date.now(),
+  })
+}
+
+export async function rejectExplanationDraft(explanation) {
+  const db = await getDB()
+  return db.put(STORES.EXPLANATION_DRAFTS, {
+    ...explanation,
+    status: 'rejected',
+    rejectedAt: Date.now(),
+    updatedAt: Date.now(),
+  })
+}
+
+export async function approveExplanationDraft(explanation) {
+  const db = await getDB()
+  const now = Date.now()
+  const approvedContent = {
+    ...explanation,
+    status: 'approved',
+    approvedAt: now,
+    updatedAt: now,
+  }
+
+  const tx = db.transaction([STORES.EXPLANATION_DRAFTS, STORES.APPROVED_CONTENT], 'readwrite')
+  await Promise.all([
+    tx.objectStore(STORES.EXPLANATION_DRAFTS).put(approvedContent),
+    tx.objectStore(STORES.APPROVED_CONTENT).put(approvedContent),
+    tx.done,
+  ])
+  return approvedContent.id
+}
+
+export async function getApprovedContent() {
+  const db = await getDB()
+  return db.getAll(STORES.APPROVED_CONTENT)
+}
+
+export async function saveProgressEvent(event) {
+  const db = await getDB()
+  return db.add(STORES.PROGRESS_EVENTS, {
+    ...event,
+    createdAt: event.createdAt ?? Date.now(),
+  })
+}
+
+export async function getAllProgressEvents() {
+  const db = await getDB()
+  return db.getAll(STORES.PROGRESS_EVENTS)
 }
 
 // ─── Utility ──────────────────────────────────────────────────────────────────

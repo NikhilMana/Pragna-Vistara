@@ -1,0 +1,29 @@
+{
+  "subject": "physics",
+  "explanations": [
+    {
+      "topic": "kinematics",
+      "misconception_type": "Concept misunderstanding",
+      "type": "hybrid",
+      "content": "At the highest point, the ball's velocity is momentarily zero. It has stopped moving upward for an instant before it starts moving downward. Gravity is still acting, so acceleration is not zero.",
+      "story": "Imagine tossing keys upward. At the very top, they pause for a tiny moment before coming back. That pause is zero velocity, but gravity is already pulling them down.",
+      "diagram": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 560 240'><rect width='560' height='240' rx='18' fill='#0f172a'/><path d='M90 190C190 40 370 40 470 190' fill='none' stroke='#38bdf8' stroke-width='5' stroke-linecap='round'/><circle cx='280' cy='72' r='18' fill='#fbbf24'/><path d='M280 72v70' stroke='#f43f5e' stroke-width='5' stroke-linecap='round'/><path d='M280 142l-14-18m14 18l14-18' stroke='#f43f5e' stroke-width='5' stroke-linecap='round'/><text x='280' y='34' fill='#e2e8f0' font-family='Inter,Arial' font-size='18' text-anchor='middle'>top: v = 0</text><text x='280' y='174' fill='#f43f5e' font-family='Inter,Arial' font-size='16' text-anchor='middle'>gravity still acts downward</text></svg>"
+    },
+    {
+      "topic": "kinematics",
+      "misconception_type": "Partial understanding",
+      "type": "hybrid",
+      "content": "Saying the ball stops at the top is correct, but the complete idea is: velocity becomes zero only for an instant, while acceleration due to gravity remains downward.",
+      "story": "A swing pauses at the highest point, but the pull back toward the ground is still there. The pause does not mean the force disappeared.",
+      "diagram": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 560 210'><rect width='560' height='210' rx='18' fill='#0f172a'/><g font-family='Inter,Arial' font-size='17' fill='#e2e8f0' text-anchor='middle'><text x='110' y='60'>rising</text><text x='280' y='60'>instant stop</text><text x='450' y='60'>falling</text></g><path d='M120 105h315' stroke='#2dd4bf' stroke-width='4'/><path d='M435 105l-18-14m18 14l-18 14' stroke='#2dd4bf' stroke-width='4'/><circle cx='280' cy='105' r='20' fill='#fbbf24'/><text x='280' y='155' fill='#f43f5e' font-family='Inter,Arial' font-size='16' text-anchor='middle'>a = g downward all along</text></svg>"
+    },
+    {
+      "topic": "kinematics",
+      "misconception_type": "Wrong logic application",
+      "type": "visual",
+      "content": "Before using a formula, identify the condition. For the highest point in vertical motion, the condition is final velocity v = 0. Use that condition first, then solve any calculation.",
+      "story": "It is like choosing the right checkpoint on a map before measuring distance. If you choose the wrong checkpoint, even the correct formula takes you to the wrong place.",
+      "diagram": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 620 180'><rect width='620' height='180' rx='18' fill='#0f172a'/><g fill='none' stroke='#818cf8' stroke-width='4'><path d='M80 90h130'/><path d='M210 90l-18-14m18 14l-18 14'/><path d='M260 90h130'/><path d='M390 90l-18-14m18 14l-18 14'/><path d='M440 90h100'/><path d='M540 90l-18-14m18 14l-18 14'/></g><g fill='#e2e8f0' font-family='Inter,Arial' font-size='16' text-anchor='middle'><text x='90' y='65'>condition</text><text x='90' y='115'>top point</text><text x='300' y='98'>v = 0</text><text x='490' y='98'>formula</text></g></svg>"
+    }
+  ]
+}
