@@ -1,0 +1,65 @@
+{
+  "subject": "chemistry",
+  "rules": [
+    {
+      "id": "chemistry_atom_molecule_confusion",
+      "misconception_type": "Concept misunderstanding",
+      "description": "The answer confuses atoms, molecules, and compounds as the same kind of particle.",
+      "confidence": 0.6,
+      "question_keywords": ["atom", "molecule", "compound", "element"],
+      "answer_keywords": ["atom and molecule are same", "compound is an atom", "element is a compound"],
+      "answer_patterns": ["atom[s]?\\s+and\\s+molecule[s]?\\s+are\\s+same", "compound\\s+is\\s+an\\s+atom"],
+      "missing_concepts": ["bond", "element"],
+      "requires_answer_match": false,
+      "guidance": "Separate the meanings of atom, molecule, element, and compound with one example each."
+    },
+    {
+      "id": "chemistry_bonding_partial",
+      "misconception_type": "Partial understanding",
+      "description": "The answer names bonding but omits electron transfer or sharing.",
+      "confidence": 0.49,
+      "question_keywords": ["bond", "ionic", "covalent", "chemical bonding"],
+      "answer_keywords": ["bond", "join", "combine", "attract"],
+      "answer_patterns": [],
+      "missing_concepts": ["electron", "sharing", "transfer"],
+      "requires_answer_match": true,
+      "guidance": "Ask whether electrons are shared or transferred in the bond being discussed."
+    },
+    {
+      "id": "chemistry_balancing_wrong_logic",
+      "misconception_type": "Wrong logic application",
+      "description": "The answer changes formulas or subscripts while trying to balance an equation.",
+      "confidence": 0.57,
+      "question_keywords": ["balance", "equation", "reaction"],
+      "answer_keywords": ["change subscript", "change formula", "make h2o2"],
+      "answer_patterns": ["change\\s+the\\s+subscript", "alter\\s+the\\s+formula"],
+      "missing_concepts": ["coefficient"],
+      "requires_answer_match": false,
+      "guidance": "Review that balancing changes coefficients, not chemical formulas."
+    },
+    {
+      "id": "chemistry_definition_only",
+      "misconception_type": "Rote memorization",
+      "description": "The answer repeats a memorized definition without applying it to the question.",
+      "confidence": 0.45,
+      "question_keywords": ["why", "explain", "how", "reaction", "bond"],
+      "answer_keywords": ["it is a process", "according to definition", "as written in book"],
+      "answer_patterns": ["^\\s*[a-z ]{0,20}is\\s+a\\s+process\\s*$"],
+      "missing_concepts": ["because", "example"],
+      "requires_answer_match": true,
+      "guidance": "Ask for the cause or particle-level explanation, not just the definition."
+    },
+    {
+      "id": "chemistry_term_language_mixup",
+      "misconception_type": "Language misunderstanding",
+      "description": "The answer appears to mix similar chemistry terms rather than address the asked term.",
+      "confidence": 0.5,
+      "question_keywords": ["mole", "molar", "molecule", "mass"],
+      "answer_keywords": ["mole means molecule", "molar means molecule", "mass means mole"],
+      "answer_patterns": ["mole\\s+means\\s+molecule", "molar\\s+means\\s+molecule"],
+      "missing_concepts": ["amount", "unit"],
+      "requires_answer_match": false,
+      "guidance": "Clarify the vocabulary term first, then solve the numerical or conceptual part."
+    }
+  ]
+}

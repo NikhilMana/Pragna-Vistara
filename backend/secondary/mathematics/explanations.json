@@ -1,0 +1,21 @@
+{
+  "subject": "mathematics",
+  "explanations": [
+    {
+      "topic": "derivatives",
+      "misconception_type": "Concept misunderstanding",
+      "type": "hybrid",
+      "content": "A derivative tells how fast something is changing at a point. It is connected to the slope of a curve, not the area under it.",
+      "story": "On a bike ride, your speedometer shows your speed right now. That is like a derivative: the instant rate of change.",
+      "diagram": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 230'><rect width='600' height='230' rx='18' fill='#0f172a'/><path d='M80 180C190 165 230 50 350 76S455 165 520 80' fill='none' stroke='#818cf8' stroke-width='5'/><path d='M245 92l160 55' stroke='#2dd4bf' stroke-width='5' stroke-linecap='round'/><circle cx='325' cy='120' r='9' fill='#fbbf24'/><text x='330' y='45' fill='#e2e8f0' font-family='Inter,Arial' font-size='17' text-anchor='middle'>derivative = slope at a point</text></svg>"
+    },
+    {
+      "topic": "probability",
+      "misconception_type": "Language misunderstanding",
+      "type": "story",
+      "content": "In word problems, translate words before calculating. 'At least', 'exactly', 'more than', and 'not' each change the set of outcomes.",
+      "story": "Imagine sorting event tickets. 'At least two' means two or more tickets, not only two. The wording decides which tickets go into the answer pile.",
+      "diagram": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 560 190'><rect width='560' height='190' rx='18' fill='#0f172a'/><g fill='none' stroke='#2dd4bf' stroke-width='4'><circle cx='220' cy='96' r='58'/><circle cx='335' cy='96' r='58'/></g><text x='178' y='102' fill='#e2e8f0' font-family='Inter,Arial' font-size='16' text-anchor='middle'>words</text><text x='375' y='102' fill='#e2e8f0' font-family='Inter,Arial' font-size='16' text-anchor='middle'>outcomes</text><text x='280' y='160' fill='#94a3b8' font-family='Inter,Arial' font-size='15' text-anchor='middle'>read the condition first</text></svg>"
+    }
+  ]
+}

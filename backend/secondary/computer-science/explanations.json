@@ -1,0 +1,21 @@
+{
+  "subject": "computer-science",
+  "explanations": [
+    {
+      "topic": "programming-basics",
+      "misconception_type": "Concept misunderstanding",
+      "type": "hybrid",
+      "content": "A variable is a named storage place whose value can change. A constant stores a value that should not change while the program runs.",
+      "story": "A variable is like a whiteboard where you can erase and write a new score. A constant is like a printed rule pasted on the wall.",
+      "diagram": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 210'><rect width='600' height='210' rx='18' fill='#0f172a'/><rect x='90' y='70' width='170' height='90' rx='12' fill='#1e293b' stroke='#2dd4bf' stroke-width='4'/><rect x='340' y='70' width='170' height='90' rx='12' fill='#1e293b' stroke='#fbbf24' stroke-width='4'/><text x='175' y='108' fill='#e2e8f0' font-family='Inter,Arial' font-size='18' text-anchor='middle'>variable</text><text x='175' y='136' fill='#94a3b8' font-family='Inter,Arial' font-size='14' text-anchor='middle'>can update</text><text x='425' y='108' fill='#e2e8f0' font-family='Inter,Arial' font-size='18' text-anchor='middle'>constant</text><text x='425' y='136' fill='#94a3b8' font-family='Inter,Arial' font-size='14' text-anchor='middle'>stays fixed</text></svg>"
+    },
+    {
+      "topic": "algorithms",
+      "misconception_type": "Partial understanding",
+      "type": "visual",
+      "content": "A complete algorithm has input, ordered steps, output, and a stopping point. Missing any one of these makes the explanation incomplete.",
+      "story": "A recipe needs ingredients, steps, the final dish, and a clear moment when cooking is done. Algorithms need the same kind of completeness.",
+      "diagram": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 180'><rect width='640' height='180' rx='18' fill='#0f172a'/><g fill='none' stroke='#818cf8' stroke-width='4'><path d='M80 90h110M220 90h110M360 90h110M500 90h60'/><path d='M190 90l-16-12m16 12l-16 12M330 90l-16-12m16 12l-16 12M470 90l-16-12m16 12l-16 12'/></g><g fill='#e2e8f0' font-family='Inter,Arial' font-size='16' text-anchor='middle'><text x='88' y='66'>input</text><text x='245' y='66'>steps</text><text x='400' y='66'>output</text><text x='545' y='66'>stop</text></g></svg>"
+    }
+  ]
+}

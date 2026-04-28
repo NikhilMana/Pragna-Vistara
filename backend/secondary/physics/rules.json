@@ -1,0 +1,65 @@
+{
+  "subject": "physics",
+  "rules": [
+    {
+      "id": "physics_top_velocity_nonzero",
+      "misconception_type": "Concept misunderstanding",
+      "description": "The answer treats velocity at the highest point as non-zero instead of momentarily zero.",
+      "confidence": 0.62,
+      "question_keywords": ["velocity", "highest point", "thrown vertically", "ball"],
+      "answer_keywords": ["20 m/s", "same velocity", "upward velocity", "keeps moving up", "maximum velocity"],
+      "answer_patterns": ["\\b20\\s*m\\/?s\\b", "\\bsame speed\\b"],
+      "missing_concepts": ["zero", "0", "momentarily at rest"],
+      "requires_answer_match": true,
+      "guidance": "Reinforce that the object is momentarily at rest at the highest point, while acceleration due to gravity still acts downward."
+    },
+    {
+      "id": "physics_incomplete_peak_explanation",
+      "misconception_type": "Partial understanding",
+      "description": "The answer identifies stopping or zero velocity but misses the role of gravity or acceleration.",
+      "confidence": 0.5,
+      "question_keywords": ["velocity", "highest point", "thrown vertically", "ball"],
+      "answer_keywords": ["stops", "rest", "zero", "0"],
+      "answer_patterns": [],
+      "missing_concepts": ["gravity", "acceleration"],
+      "requires_answer_match": true,
+      "guidance": "Build on the zero-velocity idea and add that gravitational acceleration continues downward."
+    },
+    {
+      "id": "physics_formula_substitution_error",
+      "misconception_type": "Wrong logic application",
+      "description": "The answer appears to substitute values into a motion formula without choosing the correct instant or condition.",
+      "confidence": 0.58,
+      "question_keywords": ["velocity", "motion", "thrown", "acceleration"],
+      "answer_keywords": ["v = u - gt", "v=u-gt", "u - gt"],
+      "answer_patterns": ["v\\s*=\\s*u\\s*[-+]\\s*g\\s*t", "\\b20\\s*-\\s*9\\.8\\b", "\\b10\\.2\\s*m\\/?s\\b"],
+      "missing_concepts": ["highest point", "zero"],
+      "requires_answer_match": false,
+      "guidance": "Ask the student to identify the condition at the highest point before applying equations."
+    },
+    {
+      "id": "physics_formula_only_response",
+      "misconception_type": "Rote memorization",
+      "description": "The response gives a memorized formula with little or no conceptual explanation.",
+      "confidence": 0.47,
+      "question_keywords": ["velocity", "force", "motion", "acceleration"],
+      "answer_keywords": ["v = u", "f = ma", "s = ut"],
+      "answer_patterns": ["^\\s*v\\s*=\\s*u\\s*[-+]\\s*a\\s*t\\s*$", "^\\s*f\\s*=\\s*m\\s*a\\s*$"],
+      "missing_concepts": ["because", "therefore", "concept"],
+      "requires_answer_match": true,
+      "guidance": "Ask for a one-sentence explanation of why the formula applies."
+    },
+    {
+      "id": "physics_asked_velocity_answered_height",
+      "misconception_type": "Language misunderstanding",
+      "description": "The answer focuses on height, distance, or time when the question asks for velocity.",
+      "confidence": 0.56,
+      "question_keywords": ["velocity", "highest point"],
+      "answer_keywords": ["height", "distance", "maximum height", "time taken"],
+      "answer_patterns": [],
+      "missing_concepts": ["velocity"],
+      "requires_answer_match": true,
+      "guidance": "Clarify the target quantity in the question before solving."
+    }
+  ]
+}

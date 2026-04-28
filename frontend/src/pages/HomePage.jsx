@@ -1,169 +1,90 @@
 import { Link } from 'react-router-dom'
-import { SparklesIcon, ChevronRightIcon } from '@/components/ui/Icons'
-import { saveUserState } from '@/utils/indexedDB'
+import { ChartBarIcon, ChevronRightIcon, SparklesIcon } from '@/components/ui/Icons'
+import { SUBJECTS } from '@/data/learningCatalog'
+import { useLearningSelection } from '@/context/LearningSelectionContext'
 
-/**
- * SUBJECTS — static catalogue for 11th & 12th grade.
- * Each entry maps to a route: /subject/:subjectId
- */
-const SUBJECTS = [
-  {
-    id: 'physics',
-    label: 'Physics',
-    emoji: '⚛️',
-    description: 'Mechanics, thermodynamics, waves, electromagnetism & modern physics',
-    color: 'from-blue-500/20 to-primary-500/10',
-    border: 'hover:border-blue-500/50',
-    glow: 'hover:shadow-[0_8px_40px_rgba(59,130,246,0.15)]',
-    badge: '32 Topics',
-  },
-  {
-    id: 'chemistry',
-    label: 'Chemistry',
-    emoji: '🧪',
-    description: 'Atomic structure, bonding, reactions, organic & physical chemistry',
-    color: 'from-accent-teal/20 to-blue-500/10',
-    border: 'hover:border-accent-teal/50',
-    glow: 'hover:shadow-[0_8px_40px_rgba(45,212,191,0.15)]',
-    badge: '28 Topics',
-  },
-  {
-    id: 'mathematics',
-    label: 'Mathematics',
-    emoji: '📐',
-    description: 'Calculus, algebra, trigonometry, probability & statistics',
-    color: 'from-primary-500/20 to-accent-violet/10',
-    border: 'hover:border-primary-400/50',
-    glow: 'hover:shadow-[0_8px_40px_rgba(108,99,255,0.20)]',
-    badge: '40 Topics',
-  },
-  {
-    id: 'biology',
-    label: 'Biology',
-    emoji: '🧬',
-    description: 'Cell biology, genetics, ecology, human physiology & evolution',
-    color: 'from-green-500/20 to-accent-teal/10',
-    border: 'hover:border-green-500/50',
-    glow: 'hover:shadow-[0_8px_40px_rgba(34,197,94,0.15)]',
-    badge: '35 Topics',
-  },
-  {
-    id: 'computer-science',
-    label: 'Computer Science',
-    emoji: '💻',
-    description: 'Data structures, algorithms, databases & programming paradigms',
-    color: 'from-accent-amber/20 to-accent-rose/10',
-    border: 'hover:border-accent-amber/50',
-    glow: 'hover:shadow-[0_8px_40px_rgba(251,191,36,0.15)]',
-    badge: '25 Topics',
-  },
-  {
-    id: 'electronics',
-    label: 'Electronics',
-    emoji: '🔌',
-    description: 'Semiconductors, digital logic, circuit analysis & microcontrollers',
-    color: 'from-accent-rose/20 to-orange-500/10',
-    border: 'hover:border-accent-rose/50',
-    glow: 'hover:shadow-[0_8px_40px_rgba(244,63,94,0.15)]',
-    badge: '20 Topics',
-  },
-  {
-    id: 'languages',
-    label: 'Languages',
-    emoji: '🗣️',
-    description: 'Grammar, literature, comprehension & communication skills',
-    color: 'from-purple-500/20 to-accent-violet/10',
-    border: 'hover:border-purple-500/50',
-    glow: 'hover:shadow-[0_8px_40px_rgba(168,85,247,0.15)]',
-    badge: '15 Topics',
-  },
-]
-
-/**
- * HomePage — subject selection dashboard.
- * Entry point for the student learning journey.
- */
 export default function HomePage() {
+  const { selection, selectSubject } = useLearningSelection()
+
   return (
     <div className="container-page">
+      <section className="py-8 sm:py-10 animate-slide-up" aria-labelledby="subject-heading">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <div className="inline-flex items-center gap-2 badge-primary mb-4">
+              <SparklesIcon className="w-3.5 h-3.5" />
+              Pick your path
+            </div>
+            <h1 id="subject-heading" className="text-4xl sm:text-5xl font-display font-bold leading-tight">
+              Choose a <span className="text-gradient">subject</span>
+            </h1>
+          </div>
 
-      {/* ── Hero ── */}
-      <section className="text-center py-12 animate-slide-up" aria-labelledby="hero-heading">
-        <div className="inline-flex items-center gap-2 badge-primary mb-6">
-          <SparklesIcon className="w-3.5 h-3.5" />
-          AI-Powered Learning for Class 11 &amp; 12
+          {selection.subjectLabel && (
+            <div className="glass px-4 py-3 text-sm text-surface-muted">
+              Last opened <span className="text-white font-semibold">{selection.subjectLabel}</span>
+            </div>
+          )}
         </div>
 
-        <h1 id="hero-heading" className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold mb-4 leading-tight">
-          Master Concepts with{' '}
-          <span className="text-gradient">Edu-Sakhi</span>
-        </h1>
-
-        <p className="text-surface-muted text-lg max-w-2xl mx-auto leading-relaxed">
-          Detect misconceptions, learn visually, and study even without the internet.
-          Pick a subject to begin your personalised learning session.
-        </p>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Link to="/progress" className="btn-secondary">
+            <ChartBarIcon className="h-4 w-4" />
+            View progress dashboard
+          </Link>
+        </div>
       </section>
 
-      {/* ── Subject Grid ── */}
-      <section aria-labelledby="subject-grid-heading" className="mt-4">
-        <h2 id="subject-grid-heading" className="sr-only">Choose a Subject</h2>
+      <section aria-label="Subjects" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {SUBJECTS.map((subject, index) => {
+          const Icon = subject.Icon
+          const isActive = selection.subjectId === subject.id
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {SUBJECTS.map((subject, i) => (
+          return (
             <Link
               key={subject.id}
               to={`/subject/${subject.id}`}
               id={`subject-card-${subject.id}`}
-              onClick={() => saveUserState('selected_subject', subject.id)}
-              className={`card-hover bg-gradient-to-br ${subject.color} ${subject.border} ${subject.glow}
-                          animate-slide-up group`}
-              style={{ animationDelay: `${i * 70}ms` }}
+              onClick={() => selectSubject(subject)}
+              className={`group relative min-h-52 overflow-hidden rounded-2xl border bg-gradient-to-br ${subject.gradient}
+                          ${subject.ring} ${isActive ? 'border-primary-400/70' : 'border-surface-border'}
+                          p-5 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover`}
+              style={{ animationDelay: `${index * 55}ms` }}
             >
-              {/* Header */}
-              <div className="flex items-start justify-between mb-4">
-                <span className="text-3xl" role="img" aria-label={subject.label}>
-                  {subject.emoji}
-                </span>
-                <span className="badge-primary text-xs">{subject.badge}</span>
+              <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full border border-white/10 bg-white/5" />
+              <div className="absolute bottom-4 right-5 text-7xl font-display font-bold text-white/[0.04]">
+                {subject.shortLabel}
               </div>
 
-              {/* Body */}
-              <h3 className="font-display font-bold text-lg text-white mb-2 group-hover:text-gradient transition-all">
-                {subject.label}
-              </h3>
-              <p className="text-surface-muted text-sm leading-relaxed mb-4">
-                {subject.description}
-              </p>
+              <div className="relative flex h-full flex-col justify-between">
+                <div className="flex items-start justify-between">
+                  <div className={`flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10 ${subject.accent}`}>
+                    <Icon className="h-8 w-8" />
+                  </div>
+                  <span className="badge-primary text-xs">{subject.topics}</span>
+                </div>
 
-              {/* Footer CTA */}
-              <div className="flex items-center gap-1 text-primary-400 text-sm font-medium
-                              group-hover:gap-2 transition-all duration-200">
-                Start Learning
-                <ChevronRightIcon className="w-4 h-4" />
+                <div>
+                  <h2 className="mb-3 text-2xl font-display font-bold text-white">
+                    {subject.label}
+                  </h2>
+                  <div className="flex items-center justify-between">
+                    <div className="flex gap-1.5" aria-hidden="true">
+                      {['bg-white/80', 'bg-white/50', 'bg-white/25'].map((dotClass) => (
+                        <span key={dotClass} className={`h-2.5 w-2.5 rounded-full ${dotClass}`} />
+                      ))}
+                    </div>
+                    <span className="flex items-center gap-1 text-sm font-semibold text-white/80 transition-all group-hover:gap-2">
+                      Topics
+                      <ChevronRightIcon className="h-4 w-4" />
+                    </span>
+                  </div>
+                </div>
               </div>
             </Link>
-          ))}
-        </div>
+          )
+        })}
       </section>
-
-      {/* ── Feature highlights ── */}
-      <section className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-4" aria-label="Platform features">
-        {[
-          { emoji: '🧠', title: 'Misconception Detection', desc: 'AI identifies where your understanding breaks down and corrects it.' },
-          { emoji: '🖼️', title: 'Visual Learning',        desc: 'Diagrams and step-by-step visual explanations for complex concepts.' },
-          { emoji: '📴', title: 'Offline-First',           desc: 'All questions and explanations cached locally — study anywhere.' },
-        ].map(({ emoji, title, desc }) => (
-          <div key={title} className="glass p-5 flex gap-4 items-start">
-            <span className="text-2xl mt-0.5">{emoji}</span>
-            <div>
-              <h3 className="font-semibold text-white text-sm mb-1">{title}</h3>
-              <p className="text-surface-muted text-xs leading-relaxed">{desc}</p>
-            </div>
-          </div>
-        ))}
-      </section>
-
     </div>
   )
 }

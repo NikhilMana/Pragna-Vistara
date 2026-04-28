@@ -1,0 +1,65 @@
+{
+  "subject": "electronics",
+  "rules": [
+    {
+      "id": "electronics_voltage_current_confusion",
+      "misconception_type": "Concept misunderstanding",
+      "description": "The answer confuses voltage, current, and resistance.",
+      "confidence": 0.6,
+      "question_keywords": ["voltage", "current", "resistance", "ohm"],
+      "answer_keywords": ["voltage flows", "current is pressure", "resistance is current"],
+      "answer_patterns": ["voltage\\s+flows", "resistance\\s+is\\s+current"],
+      "missing_concepts": ["potential difference", "charge flow"],
+      "requires_answer_match": false,
+      "guidance": "Separate voltage as potential difference, current as charge flow, and resistance as opposition."
+    },
+    {
+      "id": "electronics_logic_gate_partial",
+      "misconception_type": "Partial understanding",
+      "description": "The answer names a gate but misses the input-output condition.",
+      "confidence": 0.5,
+      "question_keywords": ["logic gate", "and gate", "or gate", "not gate"],
+      "answer_keywords": ["and", "or", "not", "gate"],
+      "answer_patterns": [],
+      "missing_concepts": ["input", "output", "truth table"],
+      "requires_answer_match": true,
+      "guidance": "Use a two-row or four-row truth table to complete the explanation."
+    },
+    {
+      "id": "electronics_ohms_law_misapplication",
+      "misconception_type": "Wrong logic application",
+      "description": "The answer rearranges or applies Ohm's law incorrectly.",
+      "confidence": 0.56,
+      "question_keywords": ["ohm", "voltage", "current", "resistance"],
+      "answer_keywords": ["i = v x r", "v = i / r", "r = v x i"],
+      "answer_patterns": ["i\\s*=\\s*v\\s*\\*\\s*r", "v\\s*=\\s*i\\s*/\\s*r", "r\\s*=\\s*v\\s*\\*\\s*i"],
+      "missing_concepts": ["v = i r"],
+      "requires_answer_match": false,
+      "guidance": "Start from V = IR and rearrange one step at a time."
+    },
+    {
+      "id": "electronics_formula_only",
+      "misconception_type": "Rote memorization",
+      "description": "The answer only states a formula or gate name without explaining behavior.",
+      "confidence": 0.45,
+      "question_keywords": ["explain", "calculate", "why", "gate", "circuit"],
+      "answer_keywords": ["v=ir", "truth table", "formula"],
+      "answer_patterns": ["^\\s*v\\s*=\\s*i\\s*r\\s*$"],
+      "missing_concepts": ["because", "input", "output"],
+      "requires_answer_match": true,
+      "guidance": "Ask for the circuit meaning of each symbol or gate output."
+    },
+    {
+      "id": "electronics_term_language",
+      "misconception_type": "Language misunderstanding",
+      "description": "The answer misreads electronics terms such as ground, bias, or signal.",
+      "confidence": 0.49,
+      "question_keywords": ["ground", "bias", "signal", "terminal"],
+      "answer_keywords": ["ground means soil", "bias means opinion", "signal means sign only"],
+      "answer_patterns": ["ground\\s+means\\s+soil", "bias\\s+means\\s+opinion"],
+      "missing_concepts": ["circuit"],
+      "requires_answer_match": false,
+      "guidance": "Clarify the technical meaning of the term in a circuit context."
+    }
+  ]
+}

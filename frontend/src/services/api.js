@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { analyzeResponseOffline, generateExplanationOffline } from '@/utils/offlineEngine'
 
 /**
  * api.js — Axios client pre-configured for the Edu-Sakhi FastAPI backend.
@@ -47,23 +48,63 @@ client.interceptors.response.use(
  * @param {string} payload.topicId
  * @returns {Promise<Object>} AnalysisResult
  */
-export async function analyzeResponse(payload) {
+export async function analyzeResponseOnline(payload) {
   const { data } = await client.post('/analyze-response', payload)
   return data
 }
 
+export async function analyzeResponse(payload) {
+  if (typeof navigator !== 'undefined' && !navigator.onLine) {
+    return analyzeResponseOffline(payload)
+  }
+
+  try {
+    return await analyzeResponseOnline(payload)
+  } catch {
+    return analyzeResponseOffline(payload)
+  }
+}
+
 /**
- * Requests an AI-generated explanation for a question.
+ * Requests an offline stored explanation for a misconception.
  *
  * @param {Object} payload
- * @param {string} payload.questionId
- * @param {string} payload.questionText
- * @param {string} payload.topicId
- * @param {string} [payload.studentAnswer]
+ * @param {string} payload.misconception_type
+ * @param {string} payload.topic
+ * @param {string} [payload.subject]
+ * @param {string} [payload.question_text]
+ * @param {string} [payload.student_answer]
  * @returns {Promise<Object>} ExplanationResult
  */
-export async function generateExplanation(payload) {
+export async function generateExplanationOnline(payload) {
   const { data } = await client.post('/generate-explanation', payload)
+  return data
+}
+
+export async function generateExplanation(payload) {
+  if (typeof navigator !== 'undefined' && !navigator.onLine) {
+    return generateExplanationOffline(payload)
+  }
+
+  try {
+    return await generateExplanationOnline(payload)
+  } catch {
+    return generateExplanationOffline(payload)
+  }
+}
+
+/**
+ * Requests optional local Ollama/Mistral enhancement.
+ *
+ * @param {Object} payload
+ * @param {string} payload.topic
+ * @param {string} payload.content
+ * @param {string} [payload.story]
+ * @param {'rephrase'|'analogy'|'hybrid'} [payload.use_case]
+ * @returns {Promise<Object>} LocalExplanationResult
+ */
+export async function localExplanation(payload) {
+  const { data } = await client.post('/local-explanation', payload)
   return data
 }
 

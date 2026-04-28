@@ -8,7 +8,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 # ─── Shared ───────────────────────────────────────────────────────────────────
@@ -20,54 +20,144 @@ class ContentType(str, Enum):
 
 # ─── /analyze-response ────────────────────────────────────────────────────────
 
-class AnalyzeResponseRequest(BaseModel):
-    """Payload sent when a student submits an answer."""
+class MisconceptionCategory(str, Enum):
+    concept_misunderstanding = "Concept misunderstanding"
+    partial_understanding = "Partial understanding"
+    wrong_logic_application = "Wrong logic application"
+    rote_memorization = "Rote memorization"
+    language_misunderstanding = "Language misunderstanding"
 
-    question_id:    str = Field(..., description="Unique question identifier")
-    question_text:  str = Field(..., description="Full text of the question")
-    topic_id:       str = Field(..., description="Topic the question belongs to")
-    selected_index: int = Field(..., ge=0, description="Index of the option the student chose")
-    correct_index:  int = Field(..., ge=0, description="Index of the correct option")
-    options:        list[str] = Field(default_factory=list, description="All answer options")
+
+class ConfidenceLevel(str, Enum):
+    low = "low"
+    medium = "medium"
+    high = "high"
+
+
+class AnalyzeResponseRequest(BaseModel):
+    """Payload sent when a student submits a free-text answer."""
+
+    question:       str | None = Field(None, description="Question shown to the student")
+    question_text:  str | None = Field(None, description="Backward-compatible question field")
+    student_answer: str | None = Field(None, description="Student's written or transcribed answer")
+    answer_text:    str | None = Field(None, description="Alternate answer field")
+    answer:         str | None = Field(None, description="Alternate answer field")
+    subject:        str | None = Field(None, description="Optional subject slug, for example physics")
+    question_id:    str | None = Field(None, description="Optional question identifier")
+    topic_id:       str | None = Field(None, description="Optional topic identifier")
+    selected_index: int | None = Field(None, ge=0, description="Legacy MCQ selected option index")
+    correct_index:  int | None = Field(None, ge=0, description="Legacy MCQ correct option index")
+    options:        list[str]  = Field(default_factory=list, description="Legacy MCQ options")
+
+    @model_validator(mode="after")
+    def normalize_payload(self) -> "AnalyzeResponseRequest":
+        if not self.question and self.question_text:
+            self.question = self.question_text
+
+        if not self.student_answer:
+            if self.answer_text:
+                self.student_answer = self.answer_text
+            elif self.answer:
+                self.student_answer = self.answer
+            elif self.selected_index is not None and self.selected_index < len(self.options):
+                self.student_answer = self.options[self.selected_index]
+
+        if not self.question or not self.question.strip():
+            raise ValueError("question is required")
+        if not self.student_answer or not self.student_answer.strip():
+            raise ValueError("student_answer is required")
+        return self
 
 
 class MisconceptionDetail(BaseModel):
     """Describes a detected misconception."""
 
-    type:        str        = Field(..., description="Short label for the misconception category")
-    description: str        = Field(..., description="Human-readable explanation of the misconception")
-    confidence:  float      = Field(..., ge=0.0, le=1.0, description="Model confidence [0-1]")
+    type:             MisconceptionCategory = Field(..., description="Misconception category")
+    description:      str                   = Field(..., description="Human-readable explanation")
+    confidence:       float                 = Field(..., ge=0.0, le=1.0, description="Confidence [0-1]")
+    confidence_level: ConfidenceLevel       = Field(..., description="Bucketed confidence label")
+    rule_id:          str                   = Field("", description="Matched rule identifier")
+    matched_keywords: list[str]             = Field(default_factory=list)
+    matched_patterns: list[str]             = Field(default_factory=list)
+    missing_concepts: list[str]             = Field(default_factory=list)
 
 
 class AnalyzeResponseResult(BaseModel):
     """Response from the analysis endpoint."""
 
-    question_id:           str
-    is_correct:            bool
-    misconceptions:        list[MisconceptionDetail] = []
-    corrective_guidance:   str                        = ""
-    explanation_available: bool                       = False
+    question_id:           str | None
+    subject:               str
+    misconception_type:    MisconceptionCategory
+    confidence_level:      ConfidenceLevel
+    confidence:            float = Field(..., ge=0.0, le=1.0)
+    misconceptions:        list[MisconceptionDetail] = Field(default_factory=list)
+    corrective_guidance:   str = ""
+    explanation_available: bool = False
+    is_correct:            bool | None = None
+    analysis_method:       str = "offline_rule_engine"
+    execution_ms:          float = Field(..., ge=0.0)
 
 
 # ─── /generate-explanation ───────────────────────────────────────────────────
 
 class GenerateExplanationRequest(BaseModel):
-    """Payload to request an AI explanation for a question."""
+    """Payload to request an offline stored explanation."""
 
-    question_id:    str            = Field(...)
-    question_text:  str            = Field(...)
-    topic_id:       str            = Field(...)
-    student_answer: str | None     = Field(None, description="The student's chosen answer text (optional)")
-    include_visual: bool           = Field(False, description="Whether to include a visual diagram hint")
+    misconception_type: MisconceptionCategory | None = Field(None, description="Detected misconception category")
+    topic:              str | None            = Field(None, description="Topic label or slug")
+    topic_id:           str | None            = Field(None, description="Topic slug")
+    subject:            str | None            = Field(None, description="Optional subject slug")
+    question_id:        str | None            = Field(None)
+    question_text:      str | None            = Field(None)
+    student_answer:     str | None            = Field(None, description="The student's answer text")
+    include_visual:     bool                  = Field(True, description="Whether to include a diagram")
+
+    @model_validator(mode="after")
+    def require_analysis_input(self) -> "GenerateExplanationRequest":
+        has_answer_context = bool(self.question_text and self.student_answer)
+        if not self.misconception_type and not has_answer_context:
+            raise ValueError("misconception_type or question_text + student_answer is required")
+        return self
 
 
 class ExplanationResult(BaseModel):
-    """Structured AI explanation returned to the frontend."""
+    """Structured stored explanation returned to the frontend."""
 
-    question_id:  str
-    content:      str  = Field(..., description="Markdown-formatted explanation")
-    visual_hint:  str  = Field("",  description="Optional diagram description or data URI")
-    generated_at: float = Field(..., description="Unix timestamp of generation")
+    type:               str  = Field(..., pattern="^(visual|story|hybrid)$")
+    content:            str  = Field(..., description="Simplified explanation")
+    diagram:            str  = Field("", description="SVG markup, data URI, or static path")
+    story:              str  = Field("", description="Story-based analogy")
+    topic:              str
+    misconception_type: MisconceptionCategory
+    source:             str = "stored_json"
+    enhanced_by_ai:     bool = False
+    online_used:        bool = False
+    ai_provider:        str | None = None
+    question_id:        str | None = None
+    generated_at:       float = Field(..., description="Unix timestamp of retrieval")
+
+
+class LocalExplanationRequest(BaseModel):
+    """Payload for local Ollama explanation enhancement."""
+
+    topic:              str                  = Field(..., description="Topic label or slug")
+    misconception_type: MisconceptionCategory | None = Field(None)
+    content:            str                  = Field(..., description="Explanation text to rephrase")
+    story:              str                  = Field("", description="Existing analogy to improve")
+    use_case:           str                  = Field("hybrid", pattern="^(rephrase|analogy|hybrid)$")
+
+
+class LocalExplanationResult(BaseModel):
+    """Result from optional local Ollama enhancement."""
+
+    skipped:       bool
+    reason:        str = ""
+    provider:      str = "ollama"
+    model:         str
+    content:       str
+    story:         str = ""
+    enhanced:      bool = False
+    execution_ms:  float = Field(..., ge=0.0)
 
 
 # ─── /validate-content ───────────────────────────────────────────────────────

@@ -21,6 +21,15 @@ class Settings(BaseSettings):
     # ── AI Provider (placeholder) ──────────────────────
     openai_api_key:    str | None = None
     google_ai_api_key: str | None = None
+    deepseek_api_key:  str | None = None
+    deepseek_base_url: str = "https://api.deepseek.com"
+    deepseek_model:    str = "deepseek-v4-flash"
+    deepseek_timeout:  float = 6.0
+    deepseek_enabled:  bool = True
+    ollama_base_url:   str = "http://localhost:11434"
+    ollama_model:      str = "mistral"
+    ollama_timeout:    float = 8.0
+    ollama_enabled:    bool = True
 
     model_config = SettingsConfigDict(
         env_file=".env",

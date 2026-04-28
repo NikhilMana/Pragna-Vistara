@@ -1,0 +1,21 @@
+{
+  "subject": "languages",
+  "explanations": [
+    {
+      "topic": "reading-comprehension",
+      "misconception_type": "Concept misunderstanding",
+      "type": "hybrid",
+      "content": "The main idea is what the whole passage is mostly about. A detail supports the main idea, but it is not the main idea by itself.",
+      "story": "A movie title tells the main story, while one scene is just a detail. Do not confuse one scene with the whole movie.",
+      "diagram": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 210'><rect width='600' height='210' rx='18' fill='#0f172a'/><rect x='170' y='45' width='260' height='54' rx='12' fill='#818cf8'/><g fill='#2dd4bf'><rect x='95' y='130' width='110' height='42' rx='10'/><rect x='245' y='130' width='110' height='42' rx='10'/><rect x='395' y='130' width='110' height='42' rx='10'/></g><g fill='#e2e8f0' font-family='Inter,Arial' font-size='16' text-anchor='middle'><text x='300' y='78'>main idea</text><text x='150' y='157'>detail</text><text x='300' y='157'>detail</text><text x='450' y='157'>detail</text></g></svg>"
+    },
+    {
+      "topic": "grammar",
+      "misconception_type": "Wrong logic application",
+      "type": "story",
+      "content": "Grammar rules depend on context. A rule like adding -ed or changing tense cannot be applied blindly to every sentence.",
+      "story": "Grammar is like choosing clothes for weather. A raincoat is useful in rain, but not for every day. A grammar rule works only in the right sentence context.",
+      "diagram": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 560 190'><rect width='560' height='190' rx='18' fill='#0f172a'/><path d='M90 95h140M330 95h140' stroke='#fbbf24' stroke-width='5'/><path d='M230 95l-18-14m18 14l-18 14M470 95l-18-14m18 14l-18 14' stroke='#fbbf24' stroke-width='5'/><g fill='#e2e8f0' font-family='Inter,Arial' font-size='16' text-anchor='middle'><text x='105' y='70'>context</text><text x='280' y='101'>rule</text><text x='455' y='70'>sentence</text></g></svg>"
+    }
+  ]
+}
