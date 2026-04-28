@@ -13,6 +13,7 @@ export const STORES = {
   QUESTIONS:  'questions',
   RESPONSES:  'responses',
   EXPLANATIONS: 'explanations',
+  USER_STATE: 'user_state',
 }
 
 // ─── DB Initialisation ────────────────────────────────────────────────────────
@@ -25,11 +26,12 @@ export const STORES = {
  * questions   { id, subjectId, topicId, text, type, options, correctIndex, difficulty }
  * responses   { id (auto), questionId, topicId, selectedIndex, isCorrect, timestamp }
  * explanations{ id, questionId, content, generatedAt }
+ * user_state  { id, value }
  *
  * @returns {Promise<IDBPDatabase>}
  */
 async function getDB() {
-  return openDB(DB_NAME, DB_VERSION, {
+  return openDB(DB_NAME, DB_VERSION + 1, { // Increment version to trigger upgrade
     upgrade(db) {
       // ── questions store ────────────────────────────
       if (!db.objectStoreNames.contains(STORES.QUESTIONS)) {
@@ -51,6 +53,11 @@ async function getDB() {
       // ── explanations store ─────────────────────────
       if (!db.objectStoreNames.contains(STORES.EXPLANATIONS)) {
         db.createObjectStore(STORES.EXPLANATIONS, { keyPath: 'id' })
+      }
+
+      // ── user_state store ───────────────────────────
+      if (!db.objectStoreNames.contains(STORES.USER_STATE)) {
+        db.createObjectStore(STORES.USER_STATE, { keyPath: 'id' })
       }
     },
   })
@@ -154,6 +161,29 @@ export async function saveExplanation(questionId, content) {
 export async function getExplanation(questionId) {
   const db = await getDB()
   return db.get(STORES.EXPLANATIONS, questionId)
+}
+
+// ─── User State ──────────────────────────────────────────────────────────────
+
+/**
+ * Saves a key-value pair in user_state store.
+ * @param {string} key
+ * @param {any} value
+ */
+export async function saveUserState(key, value) {
+  const db = await getDB()
+  return db.put(STORES.USER_STATE, { id: key, value })
+}
+
+/**
+ * Retrieves a value from user_state store.
+ * @param {string} key
+ * @returns {Promise<any>}
+ */
+export async function getUserState(key) {
+  const db = await getDB()
+  const entry = await db.get(STORES.USER_STATE, key)
+  return entry ? entry.value : null
 }
 
 // ─── Utility ──────────────────────────────────────────────────────────────────

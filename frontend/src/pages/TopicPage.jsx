@@ -1,5 +1,6 @@
 import { useParams, Link } from 'react-router-dom'
 import { ArrowLeftIcon, ChevronRightIcon, ClockIcon, SparklesIcon } from '@/components/ui/Icons'
+import { saveUserState } from '@/utils/indexedDB'
 
 /**
  * TOPICS_BY_SUBJECT — placeholder catalogue.
@@ -26,6 +27,26 @@ const TOPICS_BY_SUBJECT = {
     { id: 'integration',      label: 'Integration',             questions: 15, difficulty: 'Hard',     time: '22 min' },
     { id: 'probability',      label: 'Probability',             questions: 10, difficulty: 'Easy',     time: '12 min' },
   ],
+  biology: [
+    { id: 'cell-cycle',       label: 'Cell Cycle & Division',   questions: 10, difficulty: 'Easy',     time: '10 min' },
+    { id: 'genetics',         label: 'Principles of Inheritance',questions: 15, difficulty: 'Hard',     time: '20 min' },
+    { id: 'photosynthesis',   label: 'Photosynthesis',          questions: 12, difficulty: 'Medium',   time: '15 min' },
+  ],
+  'computer-science': [
+    { id: 'oops',             label: 'OOP Concepts',            questions: 12, difficulty: 'Medium',   time: '15 min' },
+    { id: 'data-structures',  label: 'Data Structures',         questions: 15, difficulty: 'Hard',     time: '25 min' },
+    { id: 'sql',              label: 'SQL Queries',             questions: 10, difficulty: 'Easy',     time: '12 min' },
+  ],
+  electronics: [
+    { id: 'diodes',           label: 'Diodes & Applications',   questions: 10, difficulty: 'Medium',   time: '12 min' },
+    { id: 'logic-gates',      label: 'Logic Gates',             questions: 12, difficulty: 'Easy',     time: '10 min' },
+    { id: 'transistors',      label: 'Transistors',             questions: 15, difficulty: 'Hard',     time: '20 min' },
+  ],
+  languages: [
+    { id: 'grammar',          label: 'Advanced Grammar',        questions: 15, difficulty: 'Easy',     time: '15 min' },
+    { id: 'comprehension',    label: 'Reading Comprehension',   questions: 8,  difficulty: 'Medium',   time: '20 min' },
+    { id: 'writing-skills',   label: 'Creative Writing',        questions: 5,  difficulty: 'Hard',     time: '25 min' },
+  ],
 }
 
 const DIFFICULTY_STYLE = {
@@ -40,7 +61,8 @@ const SUBJECT_META = {
   mathematics:      { label: 'Mathematics',       emoji: '📐' },
   biology:          { label: 'Biology',           emoji: '🧬' },
   'computer-science':{ label: 'Computer Science', emoji: '💻' },
-  economics:        { label: 'Economics',         emoji: '📊' },
+  electronics:      { label: 'Electronics',       emoji: '🔌' },
+  languages:        { label: 'Languages',         emoji: '🗣️' },
 }
 
 /**
@@ -99,6 +121,7 @@ export default function TopicPage() {
                 key={topic.id}
                 to={`/topic/${topic.id}/question`}
                 id={`topic-card-${topic.id}`}
+                onClick={() => saveUserState('selected_topic', topic.id)}
                 state={{ subjectId, topicLabel: topic.label }}
                 className="card-hover group animate-slide-up"
                 style={{ animationDelay: `${i * 60}ms` }}
