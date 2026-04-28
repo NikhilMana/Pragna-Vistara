@@ -1,0 +1,28 @@
+import { useState, useEffect } from 'react'
+
+/**
+ * useOnlineStatus — reactive hook that tracks browser network connectivity.
+ *
+ * @returns {boolean} true when the browser is online, false when offline.
+ *
+ * Usage:
+ *   const isOnline = useOnlineStatus()
+ */
+export default function useOnlineStatus() {
+  const [isOnline, setIsOnline] = useState(navigator.onLine)
+
+  useEffect(() => {
+    const handleOnline  = () => setIsOnline(true)
+    const handleOffline = () => setIsOnline(false)
+
+    window.addEventListener('online',  handleOnline)
+    window.addEventListener('offline', handleOffline)
+
+    return () => {
+      window.removeEventListener('online',  handleOnline)
+      window.removeEventListener('offline', handleOffline)
+    }
+  }, [])
+
+  return isOnline
+}
