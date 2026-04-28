@@ -1,0 +1,21 @@
+{
+  "photosynthesis": {
+    "question": "What is photosynthesis?",
+    "expected_keywords": ["sunlight", "plants", "energy", "chlorophyll"],
+    "misconceptions": {
+      "partial": {
+        "condition": "missing_keywords",
+        "message": "You know the result but not the process."
+      },
+      "wrong_concept": {
+        "condition": "mentions respiration",
+        "message": "You are confusing photosynthesis with respiration."
+      }
+    },
+    "explanations": {
+      "simple": "Plants use sunlight to make food.",
+      "visual": "diagram_photosynthesis.png",
+      "story": "Think of plants as solar-powered kitchens..."
+    }
+  }
+}
