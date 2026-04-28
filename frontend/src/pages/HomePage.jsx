@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { SparklesIcon, ChevronRightIcon } from '@/components/ui/Icons'
+import { saveUserState } from '@/utils/indexedDB'
 
 /**
  * SUBJECTS — static catalogue for 11th & 12th grade.
@@ -57,14 +58,24 @@ const SUBJECTS = [
     badge: '25 Topics',
   },
   {
-    id: 'economics',
-    label: 'Economics',
-    emoji: '📊',
-    description: 'Micro & macro economics, market structures, national income & trade',
-    color: 'from-orange-500/20 to-accent-amber/10',
-    border: 'hover:border-orange-500/50',
-    glow: 'hover:shadow-[0_8px_40px_rgba(249,115,22,0.15)]',
-    badge: '22 Topics',
+    id: 'electronics',
+    label: 'Electronics',
+    emoji: '🔌',
+    description: 'Semiconductors, digital logic, circuit analysis & microcontrollers',
+    color: 'from-accent-rose/20 to-orange-500/10',
+    border: 'hover:border-accent-rose/50',
+    glow: 'hover:shadow-[0_8px_40px_rgba(244,63,94,0.15)]',
+    badge: '20 Topics',
+  },
+  {
+    id: 'languages',
+    label: 'Languages',
+    emoji: '🗣️',
+    description: 'Grammar, literature, comprehension & communication skills',
+    color: 'from-purple-500/20 to-accent-violet/10',
+    border: 'hover:border-purple-500/50',
+    glow: 'hover:shadow-[0_8px_40px_rgba(168,85,247,0.15)]',
+    badge: '15 Topics',
   },
 ]
 
@@ -104,6 +115,7 @@ export default function HomePage() {
               key={subject.id}
               to={`/subject/${subject.id}`}
               id={`subject-card-${subject.id}`}
+              onClick={() => saveUserState('selected_subject', subject.id)}
               className={`card-hover bg-gradient-to-br ${subject.color} ${subject.border} ${subject.glow}
                           animate-slide-up group`}
               style={{ animationDelay: `${i * 70}ms` }}
