@@ -148,11 +148,11 @@ const FALLBACK_CATALOG = {
       total_pages: 800,
       subject_count: 5,
       subjects: [
-        { subject_slug: "physics", subject_label: "Physics", total_pages: 200 },
-        { subject_slug: "chemistry", subject_label: "Chemistry", total_pages: 200 },
-        { subject_slug: "mathematics", subject_label: "Mathematics", total_pages: 200 },
-        { subject_slug: "biology", subject_label: "Biology", total_pages: 100 },
-        { subject_slug: "english", subject_label: "English", total_pages: 100 }
+        { subject_slug: "physics", subject_label: "Physics", total_pages: 200, document_count: 1, chapter_count: 14, documents: [{ document_title: "NCERT Physics", document_kind: "textbook" }] },
+        { subject_slug: "chemistry", subject_label: "Chemistry", total_pages: 200, document_count: 1, chapter_count: 10, documents: [{ document_title: "NCERT Chemistry", document_kind: "textbook" }] },
+        { subject_slug: "mathematics", subject_label: "Mathematics", total_pages: 200, document_count: 1, chapter_count: 13, documents: [{ document_title: "NCERT Mathematics", document_kind: "textbook" }] },
+        { subject_slug: "biology", subject_label: "Biology", total_pages: 100, document_count: 1, chapter_count: 16, documents: [{ document_title: "NCERT Biology", document_kind: "textbook" }] },
+        { subject_slug: "english", subject_label: "English", total_pages: 100, document_count: 1, chapter_count: 8, documents: [{ document_title: "Flamingo", document_kind: "textbook" }] }
       ]
     },
     {
@@ -161,7 +161,7 @@ const FALLBACK_CATALOG = {
       total_pages: 200,
       subject_count: 1,
       subjects: [
-        { subject_slug: "physics", subject_label: "Physics", total_pages: 200 },
+        { subject_slug: "physics", subject_label: "Physics", total_pages: 200, document_count: 1, chapter_count: 14, documents: [{ document_title: "NCERT Physics XI", document_kind: "textbook" }] },
       ]
     }
   ]
