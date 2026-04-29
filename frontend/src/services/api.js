@@ -2,7 +2,8 @@ import axios from 'axios'
 import { analyzeResponseOffline, generateExplanationOffline } from '@/utils/offlineEngine'
 
 /**
- * api.js — Axios client pre-configured for the Edu-Sakhi FastAPI backend.
+ * api.js — Axios client pre-configured for the Pragna Vistara FastAPI backend.
+
  *
  * Base URL: /api  →  proxied to http://localhost:8000 in dev (see vite.config.js)
  *

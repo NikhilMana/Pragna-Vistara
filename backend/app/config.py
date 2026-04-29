@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     app_env:     str = "development"
     app_host:    str = "0.0.0.0"
     app_port:    int = 8000
-    app_title:   str = "Edu-Sakhi API"
+    app_title:   str = "Pragna Vistara API"
     app_version: str = "0.1.0"
 
     # ── CORS ───────────────────────────────────────────

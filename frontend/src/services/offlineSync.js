@@ -7,7 +7,8 @@ import {
 } from '@/utils/indexedDB'
 import { buildExplanationCacheId } from '@/utils/offlineEngine'
 
-export const OFFLINE_SYNC_EVENT = 'edu-sakhi:sync-state-changed'
+export const OFFLINE_SYNC_EVENT = 'pragna-vistara:sync-state-changed'
+
 
 export async function prepareOfflineExperience() {
   await ensureOfflineQuestionBank()

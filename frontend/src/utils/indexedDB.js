@@ -2,7 +2,8 @@ import { openDB } from 'idb'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const DB_NAME    = 'edu-sakhi-db'
+const DB_NAME    = 'pragna-vistara-db'
+
 const DB_VERSION = 6
 
 
@@ -26,7 +27,8 @@ const CURRENT_SELECTION_ID = 'current-learning-selection'
 // ─── DB Initialisation ────────────────────────────────────────────────────────
 
 /**
- * Opens (and upgrades when needed) the Edu-Sakhi IndexedDB database.
+ * Opens (and upgrades when needed) the Pragna Vistara IndexedDB database.
+
  *
  * Schema
  * ──────

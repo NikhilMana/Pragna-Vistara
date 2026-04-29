@@ -8,13 +8,14 @@ import { saveResponse } from '@/utils/indexedDB'
 import { resolveTopicContext } from '@/utils/syllabusPractice'
 import useVoiceInput from '@/hooks/useVoiceInput'
 import { t } from '@/utils/translations'
+import { useLanguage } from '@/context/LanguageContext'
 
 export default function QuestionPage() {
   const { topicId } = useParams()
   const { state: locationState } = useLocation()
   const navigate = useNavigate()
   const { selection } = useLearningSelection()
-  const language = selection?.language || 'en'
+  const { language } = useLanguage()
 
   const topicContext = useMemo(
     () => resolveTopicContext(topicId, locationState ?? {}, selection),

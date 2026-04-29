@@ -3,7 +3,7 @@
  * Uses IndexedDB for offline-first storage.
  */
 
-const DB_NAME = 'edu-sakhi-misconceptions'
+const DB_NAME = 'pragna-vistara-misconceptions'
 const DB_VERSION = 1
 const STORE_NAME = 'misconception_results'
 

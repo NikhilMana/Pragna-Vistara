@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom'
-import { ArrowLeftIcon, CheckCircleIcon, SparklesIcon, XCircleIcon } from '@/components/ui/Icons'
-import { useLearningSelection } from '@/context/LearningSelectionContext'
+import { ArrowLeftIcon, CheckCircleIcon, SparklesIcon } from '@/components/ui/Icons'
 import { t } from '@/utils/translations'
+import { useLanguage } from '@/context/LanguageContext'
 
 const TYPE_BADGE = {
   wrong_concept: 'badge-rose',
@@ -15,8 +15,7 @@ const TYPE_BADGE = {
 
 export default function ResultPage() {
   const { state } = useLocation()
-  const { selection } = useLearningSelection()
-  const language = selection?.language || 'en'
+  const { language } = useLanguage()
   const detection = state?.detection
   const answer = state?.answer
   const topicLabel = state?.topicLabel ?? 'this topic'

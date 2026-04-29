@@ -27,7 +27,7 @@ const TOC_QUALITY_COPY = {
   page_index: 'The PDF mostly exposes page-style markers, so chapter quality is limited.',
 }
 
-const FALLBACK_TOC_COPY = 'No embedded bookmarks were found in this PDF, so Edu-Sakhi inferred practice sections from the page range.'
+const FALLBACK_TOC_COPY = 'No embedded bookmarks were found in this PDF, so Pragna Vistara inferred practice sections from the page range.'
 
 export default function TopicsPage() {
   const navigate = useNavigate()

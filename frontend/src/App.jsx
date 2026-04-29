@@ -16,13 +16,17 @@ import PhysicsChaptersPage from '@/pages/PhysicsChaptersPage'
 import PhysicsLearningPage from '@/pages/PhysicsLearningPage'
 import { LearningSelectionProvider } from '@/context/LearningSelectionContext'
 import { OfflineSyncProvider } from '@/context/OfflineSyncContext'
+import { LanguageProvider } from '@/context/LanguageContext'
+import GlobalTranslator from '@/components/language/GlobalTranslator'
 
 /**
  * App.jsx — Root component
  */
 export default function App() {
   return (
-    <OfflineSyncProvider>
+    <LanguageProvider>
+      <GlobalTranslator />
+      <OfflineSyncProvider>
       <LearningSelectionProvider>
         <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <Routes>
@@ -55,6 +59,7 @@ export default function App() {
           </Routes>
         </Router>
       </LearningSelectionProvider>
-    </OfflineSyncProvider>
+      </OfflineSyncProvider>
+    </LanguageProvider>
   )
 }
