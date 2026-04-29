@@ -5,7 +5,7 @@ import { useLanguage } from '@/context/LanguageContext'
 const originalText = new WeakMap()
 const originalAttributes = new WeakMap()
 const TRANSLATABLE_ATTRIBUTES = ['placeholder', 'title', 'aria-label', 'alt']
-const SKIP_TAGS = new Set(['SCRIPT', 'STYLE', 'TEXTAREA', 'INPUT', 'SELECT', 'OPTION', 'CODE', 'PRE'])
+const SKIP_TEXT_TAGS = new Set(['SCRIPT', 'STYLE', 'TEXTAREA', 'INPUT', 'SELECT', 'OPTION', 'CODE', 'PRE'])
 
 export default function GlobalTranslator() {
   const { language } = useLanguage()
@@ -14,9 +14,10 @@ export default function GlobalTranslator() {
     let isApplying = false
 
     function translateNode(node) {
-      if (!node || shouldSkip(node)) return
+      if (!node) return
 
       if (node.nodeType === Node.TEXT_NODE) {
+        if (shouldSkipText(node)) return
         translateTextNode(node)
         return
       }
@@ -24,6 +25,7 @@ export default function GlobalTranslator() {
       if (node.nodeType !== Node.ELEMENT_NODE) return
 
       translateAttributes(node)
+      if (shouldSkipText(node)) return
       node.childNodes.forEach(translateNode)
     }
 
@@ -110,7 +112,7 @@ export default function GlobalTranslator() {
   return null
 }
 
-function shouldSkip(node) {
+function shouldSkipText(node) {
   const element = node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement
-  return !element || element.closest('[data-no-translate]') || SKIP_TAGS.has(element.tagName)
+  return !element || element.closest('[data-no-translate]') || SKIP_TEXT_TAGS.has(element.tagName)
 }
