@@ -6,17 +6,17 @@
 @layer base {
   :root {
     --color-surface: 255 255 255;
-    --color-surface-card: 235 235 235;
-    --color-surface-border: 0 0 0;
-    --color-surface-muted: 0 0 0;
+    --color-surface-card: 245 245 245;
+    --color-surface-border: 200 200 200;
+    --color-surface-muted: 150 150 150;
     --color-text: 0 0 0;
   }
 
   .dark {
     --color-surface: 0 0 0;
-    --color-surface-card: 0 0 0;
-    --color-surface-border: 255 255 255;
-    --color-surface-muted: 255 255 255;
+    --color-surface-card: 15 15 15;
+    --color-surface-border: 60 60 60;
+    --color-surface-muted: 100 100 100;
     --color-text: 255 255 255;
   }
 
@@ -104,7 +104,7 @@
   /* Form inputs */
   .input {
     @apply w-full bg-surface-card border border-surface-border rounded-xl px-4 py-3
-           placeholder:text-surface-muted
+           placeholder:text-surface-muted/60
            focus:outline-none focus:ring-2 focus:ring-primary-500/60 focus:border-primary-500
            transition-all duration-200;
     color: var(--color-text);
