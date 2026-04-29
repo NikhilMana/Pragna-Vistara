@@ -139,24 +139,70 @@ export async function validateContent(payload) {
   return data
 }
 
+const FALLBACK_CATALOG = {
+  total_pages: 1000,
+  classes: [
+    {
+      class_slug: "class-12",
+      class_label: "Class XII",
+      total_pages: 800,
+      subject_count: 5,
+      subjects: [
+        { subject_slug: "physics", subject_label: "Physics", total_pages: 200 },
+        { subject_slug: "chemistry", subject_label: "Chemistry", total_pages: 200 },
+        { subject_slug: "mathematics", subject_label: "Mathematics", total_pages: 200 },
+        { subject_slug: "biology", subject_label: "Biology", total_pages: 100 },
+        { subject_slug: "english", subject_label: "English", total_pages: 100 }
+      ]
+    },
+    {
+      class_slug: "class-11",
+      class_label: "Class XI",
+      total_pages: 200,
+      subject_count: 1,
+      subjects: [
+        { subject_slug: "physics", subject_label: "Physics", total_pages: 200 },
+      ]
+    }
+  ]
+}
+
 export async function getSyllabusCatalog() {
   return getCachedSyllabusRequest('catalog', async () => {
-    const { data } = await client.get('/v1/syllabus')
-    return data
+    try {
+      const { data } = await client.get('/v1/syllabus')
+      return data
+    } catch {
+      return FALLBACK_CATALOG
+    }
   })
 }
 
 export async function getSyllabusClass(classSlug) {
   return getCachedSyllabusRequest(`class:${classSlug}`, async () => {
-    const { data } = await client.get(`/v1/syllabus/classes/${classSlug}`)
-    return data
+    try {
+      const { data } = await client.get(`/v1/syllabus/classes/${classSlug}`)
+      return data
+    } catch {
+      const foundClass = FALLBACK_CATALOG.classes.find(c => c.class_slug === classSlug)
+      if (!foundClass) throw new Error('Class not found offline')
+      return foundClass
+    }
   })
 }
 
 export async function getSyllabusSubject(classSlug, subjectSlug) {
   return getCachedSyllabusRequest(`subject:${classSlug}:${subjectSlug}`, async () => {
-    const { data } = await client.get(`/v1/syllabus/classes/${classSlug}/subjects/${subjectSlug}`)
-    return data
+    try {
+      const { data } = await client.get(`/v1/syllabus/classes/${classSlug}/subjects/${subjectSlug}`)
+      return data
+    } catch {
+      const foundClass = FALLBACK_CATALOG.classes.find(c => c.class_slug === classSlug)
+      if (!foundClass) throw new Error('Class not found offline')
+      const foundSubject = foundClass.subjects.find(s => s.subject_slug === subjectSlug)
+      if (!foundSubject) throw new Error('Subject not found offline')
+      return foundSubject
+    }
   })
 }
 

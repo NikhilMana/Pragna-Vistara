@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Shield, User, Lock, ArrowRight } from 'lucide-react';
 import LanguageSwitcher from '@/components/language/LanguageSwitcher';
+import logoImage from '@/assets/logo.png';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -41,7 +42,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md z-10 animate-slide-up">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-white border border-surface-border p-1 mb-4 shadow-glow-primary overflow-hidden">
-            <img src="/src/assets/logo.png" alt="Pragna Vistara Logo" className="w-full h-full object-contain" />
+            <img src={logoImage} alt="Pragna Vistara Logo" className="w-full h-full object-contain" />
           </div>
           <h1 className="text-3xl font-display font-bold text-surface-text mb-2">Pragna Vistara</h1>
           <p className="text-surface-muted">Sign in to your learning platform</p>

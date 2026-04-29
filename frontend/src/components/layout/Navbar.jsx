@@ -11,6 +11,7 @@ import {
 import { Sun, Moon } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import LanguageSwitcher from '@/components/language/LanguageSwitcher'
+import logoImage from '@/assets/logo.png'
 
 /**
  * Navbar - top navigation bar with logo, nav links, and sync-aware status indicator.
@@ -74,7 +75,7 @@ export default function Navbar() {
       <nav className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <Link to="/selection" className="flex items-center gap-3 group" id="nav-logo">
           <div className="w-9 h-9 rounded-xl bg-white p-0.5 shadow-md group-hover:scale-110 transition-transform duration-200 overflow-hidden">
-            <img src="/src/assets/logo.png" alt="Pragna Vistara Logo" className="w-full h-full object-contain" />
+            <img src={logoImage} alt="Pragna Vistara Logo" className="w-full h-full object-contain" />
           </div>
           <span className="font-display font-bold text-xl text-primary-500 tracking-tight">Pragna Vistara</span>
         </Link>
