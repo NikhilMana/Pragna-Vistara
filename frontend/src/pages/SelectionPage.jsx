@@ -87,7 +87,7 @@ export default function SelectionPage() {
   }
 
   return (
-    <div className="container-page animate-fade-in">
+    <div className="container-page animate-fade-in pb-32">
       <section className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <h1 className="text-4xl font-display font-bold text-surface-text sm:text-5xl">
@@ -159,7 +159,7 @@ export default function SelectionPage() {
                   onClick={() => setSelectedLevel(level.id)}
                   className={`w-full rounded-2xl border px-4 py-4 text-left transition-all ${
                     active
-                      ? 'border-primary-500 bg-primary-500 text-white'
+                      ? 'border-primary-500 bg-primary-500/10'
                       : 'border-surface-border bg-surface-card hover:border-primary-500'
                   }`}
                 >
@@ -223,7 +223,7 @@ export default function SelectionPage() {
                     onClick={() => setSelectedClassSlug(classItem.class_slug)}
                     className={`rounded-2xl border p-5 text-left transition-all ${
                       active
-                        ? 'border-primary-500 bg-primary-500 text-white shadow-card-hover'
+                        ? 'border-primary-500 bg-primary-500/10 shadow-[0_0_0_2px_rgba(108,99,255,0.2)]'
                         : 'border-surface-border bg-surface-card hover:border-primary-500'
                     }`}
                   >
