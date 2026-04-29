@@ -140,28 +140,1277 @@ export async function validateContent(payload) {
 }
 
 const FALLBACK_CATALOG = {
-  total_pages: 1000,
-  classes: [
+  "total_pages": 5000,
+  "classes": [
     {
-      class_slug: "class-12",
-      class_label: "Class XII",
-      total_pages: 800,
-      subject_count: 5,
-      subjects: [
-        { subject_slug: "physics", subject_label: "Physics", total_pages: 200, document_count: 1, chapter_count: 14, documents: [{ document_title: "NCERT Physics", document_kind: "textbook" }] },
-        { subject_slug: "chemistry", subject_label: "Chemistry", total_pages: 200, document_count: 1, chapter_count: 10, documents: [{ document_title: "NCERT Chemistry", document_kind: "textbook" }] },
-        { subject_slug: "mathematics", subject_label: "Mathematics", total_pages: 200, document_count: 1, chapter_count: 13, documents: [{ document_title: "NCERT Mathematics", document_kind: "textbook" }] },
-        { subject_slug: "biology", subject_label: "Biology", total_pages: 100, document_count: 1, chapter_count: 16, documents: [{ document_title: "NCERT Biology", document_kind: "textbook" }] },
-        { subject_slug: "english", subject_label: "English", total_pages: 100, document_count: 1, chapter_count: 8, documents: [{ document_title: "Flamingo", document_kind: "textbook" }] }
+      "class_slug": "class-12",
+      "class_label": "Class XII",
+      "total_pages": 2000,
+      "subject_count": 10,
+      "subjects": [
+        {
+          "subject_slug": "biology",
+          "subject_label": "Biology",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Biology Textbook XII",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "chemistry",
+          "subject_label": "Chemistry",
+          "total_pages": 200,
+          "document_count": 2,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Chemistry Textbook Part - 1 XII",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Chemistry Textbook Part - 2 XII",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "computer-science",
+          "subject_label": "Computer Science",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Computer Science Textbook XII",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "electronics",
+          "subject_label": "Electronics",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Electronics Textbook XII",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "english",
+          "subject_label": "English",
+          "total_pages": 200,
+          "document_count": 2,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "English Textbook XII",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "English Workbook XII",
+              "document_kind": "workbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "hindi",
+          "subject_label": "Hindi",
+          "total_pages": 200,
+          "document_count": 2,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Hindi Textbook XII",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Hindi Workbook XII",
+              "document_kind": "workbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "kannada",
+          "subject_label": "Kannada",
+          "total_pages": 200,
+          "document_count": 2,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Kannada Textbook XII",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Kannada Workbook XII",
+              "document_kind": "workbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "mathematics",
+          "subject_label": "Mathematics",
+          "total_pages": 200,
+          "document_count": 2,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Maths Textbook Part - 1 XII",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Maths Textbook Part - 2 XII",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "physics",
+          "subject_label": "Physics",
+          "total_pages": 200,
+          "document_count": 2,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Physics Textbook Part - 1 XII",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Physics Textbook Part - 2 XII",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "sanskrit",
+          "subject_label": "Sanskrit",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Sanskrit Textbook XII",
+              "document_kind": "textbook"
+            }
+          ]
+        }
       ]
     },
     {
-      class_slug: "class-11",
-      class_label: "Class XI",
-      total_pages: 200,
-      subject_count: 1,
-      subjects: [
-        { subject_slug: "physics", subject_label: "Physics", total_pages: 200, document_count: 1, chapter_count: 14, documents: [{ document_title: "NCERT Physics XI", document_kind: "textbook" }] },
+      "class_slug": "class-11",
+      "class_label": "Class XI",
+      "total_pages": 2000,
+      "subject_count": 10,
+      "subjects": [
+        {
+          "subject_slug": "biology",
+          "subject_label": "Biology",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Biology Textbook XI",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "chemistry",
+          "subject_label": "Chemistry",
+          "total_pages": 200,
+          "document_count": 2,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Chemistry Textbook Part - 1 XI",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Chemistry Textbook Part - 2 XI",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "computer-science",
+          "subject_label": "Computer Science",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Computer Science Textbook XI",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "electronics",
+          "subject_label": "Electronics",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Electronics Textbook XI",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "english",
+          "subject_label": "English",
+          "total_pages": 200,
+          "document_count": 2,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "English Textbook XI",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "English Workbook XI",
+              "document_kind": "workbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "hindi",
+          "subject_label": "Hindi",
+          "total_pages": 200,
+          "document_count": 2,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Hindi Textbook XI",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Hindi Workbook XI",
+              "document_kind": "workbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "kannada",
+          "subject_label": "Kannada",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Kannada Textbook XI",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "mathematics",
+          "subject_label": "Mathematics",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Mathematics Textbook XI",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "physics",
+          "subject_label": "Physics",
+          "total_pages": 200,
+          "document_count": 2,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Physics Textbook Part - 1 XI",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Physics Textbook Part - 2 XI",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "sanskrit",
+          "subject_label": "Sanskrit",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Sanskrit Textbook XI",
+              "document_kind": "textbook"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "class_slug": "class-10",
+      "class_label": "Class X",
+      "total_pages": 1400,
+      "subject_count": 7,
+      "subjects": [
+        {
+          "subject_slug": "english",
+          "subject_label": "English",
+          "total_pages": 200,
+          "document_count": 2,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "English Textbook 1",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "English Textbook 2",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "kannada",
+          "subject_label": "Kannada",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Kannada Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "mathematics",
+          "subject_label": "Mathematics",
+          "total_pages": 200,
+          "document_count": 2,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Maths Textbook 1",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Maths Textbook 2",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "physical-education",
+          "subject_label": "Physical Education",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Physical Education Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "sanskrit",
+          "subject_label": "Sanskrit",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Sanskrit Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "science",
+          "subject_label": "Science",
+          "total_pages": 200,
+          "document_count": 2,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Science Textbook 1",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Science Textbook 2",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "social-science",
+          "subject_label": "Social Science",
+          "total_pages": 200,
+          "document_count": 2,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Social Science Textbook 1",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Social Science Textbook 2",
+              "document_kind": "textbook"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "class_slug": "class-09",
+      "class_label": "Class IX",
+      "total_pages": 1400,
+      "subject_count": 7,
+      "subjects": [
+        {
+          "subject_slug": "english",
+          "subject_label": "English",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "English Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "hindi",
+          "subject_label": "Hindi",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Hindi Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "kannada",
+          "subject_label": "Kannada",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Kannada Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "mathematics",
+          "subject_label": "Mathematics",
+          "total_pages": 200,
+          "document_count": 2,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Maths Textbook 1",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Maths Textbook 2",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "sanskrit",
+          "subject_label": "Sanskrit",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Sanskrit Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "science",
+          "subject_label": "Science",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Science Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "social-science",
+          "subject_label": "Social Science",
+          "total_pages": 200,
+          "document_count": 2,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Social Science Textbook 1",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Social Science Textbook 2",
+              "document_kind": "textbook"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "class_slug": "class-08",
+      "class_label": "Class VIII",
+      "total_pages": 1400,
+      "subject_count": 7,
+      "subjects": [
+        {
+          "subject_slug": "english",
+          "subject_label": "English",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "English Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "hindi",
+          "subject_label": "Hindi",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Hindi Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "kannada",
+          "subject_label": "Kannada",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Kannada Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "mathematics",
+          "subject_label": "Mathematics",
+          "total_pages": 200,
+          "document_count": 2,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Maths Textbook 1",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Maths Textbook 2",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "sanskrit",
+          "subject_label": "Sanskrit",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Sanskrit Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "science",
+          "subject_label": "Science",
+          "total_pages": 200,
+          "document_count": 2,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Science Textbook 1",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Science Textbook 2",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "social-science",
+          "subject_label": "Social Science",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Social Science Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "class_slug": "class-07",
+      "class_label": "Class VII",
+      "total_pages": 1400,
+      "subject_count": 7,
+      "subjects": [
+        {
+          "subject_slug": "english",
+          "subject_label": "English",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "English Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "hindi",
+          "subject_label": "Hindi",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Hindi Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "kannada",
+          "subject_label": "Kannada",
+          "total_pages": 200,
+          "document_count": 3,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Kannada Textbook 1",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Kannada Textbook 2",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Kannada Textbook 3",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "mathematics",
+          "subject_label": "Mathematics",
+          "total_pages": 200,
+          "document_count": 2,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Maths Textbook 1",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Maths Textbook 2",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "sanskrit",
+          "subject_label": "Sanskrit",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Sanskrit Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "science",
+          "subject_label": "Science",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Science Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "social-science",
+          "subject_label": "Social Science",
+          "total_pages": 200,
+          "document_count": 2,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Social Science Textbook 1",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Social Science Textbook 2",
+              "document_kind": "textbook"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "class_slug": "class-06",
+      "class_label": "Class VI",
+      "total_pages": 1400,
+      "subject_count": 7,
+      "subjects": [
+        {
+          "subject_slug": "english",
+          "subject_label": "English",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "English Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "hindi",
+          "subject_label": "Hindi",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Hindi Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "kannada",
+          "subject_label": "Kannada",
+          "total_pages": 200,
+          "document_count": 3,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Kannada Textbook 1",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Kannada Textbook 2",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Kannada Textbook 3",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "mathematics",
+          "subject_label": "Mathematics",
+          "total_pages": 200,
+          "document_count": 2,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Maths Textbook 1",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Maths Textbook 2",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "sanskrit",
+          "subject_label": "Sanskrit",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Sanskrit Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "science",
+          "subject_label": "Science",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Science Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "social-science",
+          "subject_label": "Social Science",
+          "total_pages": 200,
+          "document_count": 2,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Social Science Textbook 1",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Social Science Textbook 2",
+              "document_kind": "textbook"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "class_slug": "class-05",
+      "class_label": "Class V",
+      "total_pages": 1000,
+      "subject_count": 5,
+      "subjects": [
+        {
+          "subject_slug": "english",
+          "subject_label": "English",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "English Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "evs",
+          "subject_label": "EVS",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "EVS Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "hindi",
+          "subject_label": "Hindi",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Hindi Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "kannada",
+          "subject_label": "Kannada",
+          "total_pages": 200,
+          "document_count": 2,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Kannada Textbook 1",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Kannada Textbook 2",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "mathematics",
+          "subject_label": "Mathematics",
+          "total_pages": 200,
+          "document_count": 2,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Maths Textbook 1",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Maths Textbook 2",
+              "document_kind": "textbook"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "class_slug": "class-04",
+      "class_label": "Class IV",
+      "total_pages": 1000,
+      "subject_count": 5,
+      "subjects": [
+        {
+          "subject_slug": "english",
+          "subject_label": "English",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "English Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "evs",
+          "subject_label": "EVS",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "EVS Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "hindi",
+          "subject_label": "Hindi",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Hindi Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "kannada",
+          "subject_label": "Kannada",
+          "total_pages": 200,
+          "document_count": 2,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Kannada Textbook 1",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Kannada Textbook 2",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "mathematics",
+          "subject_label": "Mathematics",
+          "total_pages": 200,
+          "document_count": 2,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Maths Textbook 1",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Maths Textbook 2",
+              "document_kind": "textbook"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "class_slug": "class-03",
+      "class_label": "Class III",
+      "total_pages": 1000,
+      "subject_count": 5,
+      "subjects": [
+        {
+          "subject_slug": "english",
+          "subject_label": "English",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "English Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "evs",
+          "subject_label": "EVS",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "EVS Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "hindi",
+          "subject_label": "Hindi",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Hindi Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "kannada",
+          "subject_label": "Kannada",
+          "total_pages": 200,
+          "document_count": 3,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Kannada Textbook 1",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Kannada Textbook 2",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Kannada Textbook 3",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "mathematics",
+          "subject_label": "Mathematics",
+          "total_pages": 200,
+          "document_count": 2,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Maths Textbook 1",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Maths Textbook 2",
+              "document_kind": "textbook"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "class_slug": "class-02",
+      "class_label": "Class II",
+      "total_pages": 1000,
+      "subject_count": 5,
+      "subjects": [
+        {
+          "subject_slug": "english",
+          "subject_label": "English",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "English Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "evs",
+          "subject_label": "EVS",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "EVS Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "hindi",
+          "subject_label": "Hindi",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Hindi Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "kannada",
+          "subject_label": "Kannada",
+          "total_pages": 200,
+          "document_count": 3,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Kannada Textbook 1",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Kannada Textbook 2",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Kannada Textbook 3",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "mathematics",
+          "subject_label": "Mathematics",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Maths Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "class_slug": "class-01",
+      "class_label": "Class I",
+      "total_pages": 800,
+      "subject_count": 4,
+      "subjects": [
+        {
+          "subject_slug": "english",
+          "subject_label": "English",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "English Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "evs",
+          "subject_label": "EVS",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "EVS Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "kannada",
+          "subject_label": "Kannada",
+          "total_pages": 200,
+          "document_count": 3,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Kannada Textbook 1",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Kannada Textbook 2",
+              "document_kind": "textbook"
+            },
+            {
+              "document_title": "Kannada Textbook 3",
+              "document_kind": "textbook"
+            }
+          ]
+        },
+        {
+          "subject_slug": "mathematics",
+          "subject_label": "Mathematics",
+          "total_pages": 200,
+          "document_count": 1,
+          "chapter_count": 10,
+          "documents": [
+            {
+              "document_title": "Maths Textbook",
+              "document_kind": "textbook"
+            }
+          ]
+        }
       ]
     }
   ]
