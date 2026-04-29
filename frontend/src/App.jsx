@@ -16,13 +16,19 @@ import SubjectChaptersPage from '@/pages/SubjectChaptersPage'
 import SubjectLearningPage from '@/pages/SubjectLearningPage'
 import { LearningSelectionProvider } from '@/context/LearningSelectionContext'
 import { OfflineSyncProvider } from '@/context/OfflineSyncContext'
+import { LanguageProvider } from '@/context/LanguageContext'
+import GlobalTranslator from '@/components/language/GlobalTranslator'
+import PWAInstallPrompt from '@/components/pwa/PWAInstallPrompt'
 
 /**
  * App.jsx — Root component
  */
 export default function App() {
   return (
-    <OfflineSyncProvider>
+    <LanguageProvider>
+      <GlobalTranslator />
+      <PWAInstallPrompt />
+      <OfflineSyncProvider>
       <LearningSelectionProvider>
         <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <Routes>
@@ -55,6 +61,7 @@ export default function App() {
           </Routes>
         </Router>
       </LearningSelectionProvider>
-    </OfflineSyncProvider>
+      </OfflineSyncProvider>
+    </LanguageProvider>
   )
 }

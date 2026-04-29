@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BookOpen, Shield, User, Lock, ArrowRight } from 'lucide-react';
+import { Shield, User, Lock, ArrowRight } from 'lucide-react';
+import LanguageSwitcher from '@/components/language/LanguageSwitcher';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -29,6 +30,10 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+      <div className="absolute right-4 top-4 z-20">
+        <LanguageSwitcher />
+      </div>
+
       {/* Background decoration */}
       <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-surface-card rounded-full blur-[100px]" />
       <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-secondary-400/20 rounded-full blur-[100px]" />

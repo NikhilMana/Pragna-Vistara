@@ -3,7 +3,6 @@ import { useOfflineSync } from '@/context/OfflineSyncContext'
 import useOnlineStatus from '@/hooks/useOnlineStatus'
 import {
   ArrowPathIcon,
-  BookOpenIcon,
   ChartBarIcon,
   ClipboardCheckIcon,
   HomeIcon,
@@ -11,6 +10,7 @@ import {
 } from '../ui/Icons'
 import { Sun, Moon } from 'lucide-react'
 import { useState, useEffect } from 'react'
+import LanguageSwitcher from '@/components/language/LanguageSwitcher'
 
 /**
  * Navbar - top navigation bar with logo, nav links, and sync-aware status indicator.
@@ -117,6 +117,8 @@ export default function Navbar() {
               <><span className="w-1.5 h-1.5 rounded-full bg-accent-teal animate-pulse-slow" />Online</>
             )}
           </div>
+
+          <LanguageSwitcher compact />
 
           {/* Theme Toggle */}
           <button
