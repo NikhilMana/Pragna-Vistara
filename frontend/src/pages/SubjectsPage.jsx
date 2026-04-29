@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, LoaderCircle, Search } from 'lucide-react'
 import { getSyllabusClass } from '@/services/api'
 import { useLearningSelection } from '@/context/LearningSelectionContext'
 import { formatCompactNumber, getSubjectVisual } from '@/utils/syllabus'
+import { hasCatalog } from '@/data/catalogRegistry'
 
 export default function SubjectsPage() {
   const navigate = useNavigate()
@@ -76,9 +77,15 @@ export default function SubjectsPage() {
   async function handleOpenSubject(subject) {
     await selectSubject(subject)
     
-    // Intercept Class 12 Physics and route to the new interactive curriculum
-    if (classSlug === 'class-xii' && subject.subject_slug === 'physics') {
-      navigate('/physics/class-12')
+    // Map class slugs to catalog classIds
+    const registryClassId = classSlug === 'class-xii' ? 'class-12' : 
+                            classSlug === 'class-xi' ? 'class-11' :
+                            classSlug === 'class-x' ? 'class-10' :
+                            classSlug === 'class-ix' ? 'class-09' : classSlug
+
+    // Intercept subjects that have an interactive catalog
+    if (hasCatalog(registryClassId, subject.subject_slug)) {
+      navigate(`/learn/${registryClassId}/${subject.subject_slug}`)
       return
     }
 

@@ -1,5 +1,6 @@
 """
-main.py — FastAPI application factory for Edu-Sakhi backend.
+main.py — FastAPI application factory for Pragna Vistara backend.
+
 
 Startup order:
   1. Load settings from environment
@@ -40,7 +41,7 @@ def create_app() -> FastAPI:
         title=settings.app_title,
         version=settings.app_version,
         description=(
-            "Edu-Sakhi API — AI-powered misconception detection and "
+            "Pragna Vistara API — AI-powered misconception detection and "
             "visual explanation generation for secondary school students."
         ),
         docs_url="/docs" if settings.is_development else None,
@@ -66,14 +67,15 @@ def create_app() -> FastAPI:
     @app.on_event("startup")
     async def on_startup():
         logger.info(
-            "Edu-Sakhi API starting | env=%s | version=%s",
+            "Pragna Vistara API starting | env=%s | version=%s",
             settings.app_env,
             settings.app_version,
         )
 
     @app.on_event("shutdown")
     async def on_shutdown():
-        logger.info("Edu-Sakhi API shutting down.")
+        logger.info("Pragna Vistara API shutting down.")
+
 
     # ── Health check ─────────────────────────────────
     @app.get("/health", response_model=HealthResponse, tags=["Health"])

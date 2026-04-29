@@ -72,15 +72,11 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-surface-border bg-surface/90 backdrop-blur-md">
       <nav className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <Link to="/selection" className="flex items-center gap-2.5 group" id="nav-logo">
-          <div
-            className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-accent-rose
-                       flex items-center justify-center shadow-glow-primary/30
-                       group-hover:scale-110 transition-transform duration-200"
-          >
-            <BookOpenIcon className="w-4 h-4 text-surface-text" />
+        <Link to="/selection" className="flex items-center gap-3 group" id="nav-logo">
+          <div className="w-9 h-9 rounded-xl bg-white p-0.5 shadow-md group-hover:scale-110 transition-transform duration-200 overflow-hidden">
+            <img src="/src/assets/logo.png" alt="Pragna Vistara Logo" className="w-full h-full object-contain" />
           </div>
-          <span className="font-display font-bold text-lg text-primary-500">Edu-Sakhi</span>
+          <span className="font-display font-bold text-xl text-primary-500 tracking-tight">Pragna Vistara</span>
         </Link>
 
         <div className="flex items-center gap-4">

@@ -35,10 +35,10 @@ export default function LoginPage() {
 
       <div className="w-full max-w-md z-10 animate-slide-up">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-surface-card border border-primary-500 text-primary-500 mb-4 shadow-glow-primary">
-            <BookOpen size={32} />
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-white border border-surface-border p-1 mb-4 shadow-glow-primary overflow-hidden">
+            <img src="/src/assets/logo.png" alt="Pragna Vistara Logo" className="w-full h-full object-contain" />
           </div>
-          <h1 className="text-3xl font-display font-bold text-surface-text mb-2">Edu-Sakhi</h1>
+          <h1 className="text-3xl font-display font-bold text-surface-text mb-2">Pragna Vistara</h1>
           <p className="text-surface-muted">Sign in to your learning platform</p>
         </div>
 

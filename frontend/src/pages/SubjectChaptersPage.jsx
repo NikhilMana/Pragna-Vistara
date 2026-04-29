@@ -1,32 +1,65 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { ArrowLeft, ArrowRight, BookOpen, ChevronDown, ChevronRight, Search } from 'lucide-react'
-import { getAllChapters, getChapter } from '@/data/physicsClass12Catalog'
+import { ArrowLeft, ArrowRight, BookOpen, ChevronDown, ChevronRight, Search, LoaderCircle } from 'lucide-react'
+import { loadCatalog, getCatalogChapter } from '@/data/catalogRegistry'
 
-/**
- * PhysicsChaptersPage — Lists all Class 12 NCERT Physics chapters
- * and topics within each chapter.
- */
-export default function PhysicsChaptersPage() {
+export default function SubjectChaptersPage() {
   const navigate = useNavigate()
-  const { chapterId } = useParams()
+  const { classId, subjectId, chapterId } = useParams()
+  
+  const [catalog, setCatalog] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [expandedChapters, setExpandedChapters] = useState([])
 
-  const chapters = useMemo(() => getAllChapters(), [])
-  const singleChapter = useMemo(() => chapterId ? getChapter(chapterId) : null, [chapterId])
+  useEffect(() => {
+    let cancelled = false
+    setIsLoading(true)
+    
+    loadCatalog(classId, subjectId).then(loadedCatalog => {
+      if (!cancelled) {
+        setCatalog(loadedCatalog)
+        setIsLoading(false)
+      }
+    })
+    
+    return () => { cancelled = true }
+  }, [classId, subjectId])
+
+  const chapters = catalog?.chapters ?? []
+  const singleChapter = useMemo(() => {
+    return (catalog && chapterId) ? getCatalogChapter(catalog, chapterId) : null
+  }, [catalog, chapterId])
+
+  if (isLoading) {
+    return (
+      <div className="container-page flex items-center justify-center">
+        <LoaderCircle className="h-8 w-8 animate-spin text-primary-500" />
+      </div>
+    )
+  }
+
+  if (!catalog) {
+    return (
+      <div className="container-page animate-fade-in text-center">
+        <h1 className="text-2xl font-bold">Catalog Not Found</h1>
+        <p className="mt-3 text-surface-muted">We could not load the content for {subjectId}.</p>
+        <button onClick={() => navigate('/selection')} className="btn-primary mt-6">Back to Selection</button>
+      </div>
+    )
+  }
 
   // If a specific chapter is selected, show its topics
   if (singleChapter) {
     return (
       <div className="container-page max-w-4xl animate-fade-in">
-        <button onClick={() => navigate('/physics/class-12')} className="btn-ghost mb-6 pl-0">
+        <button onClick={() => navigate(`/learn/${classId}/${subjectId}`)} className="btn-ghost mb-6 pl-0">
           <ArrowLeft size={18} className="mr-1" /> All Chapters
         </button>
 
         <div className="mb-6">
           <div className="mb-3 flex gap-2 text-xs">
-            <span className="badge-primary">Class XII Physics</span>
+            <span className="badge-primary">{catalog.classLabel} {catalog.subject}</span>
             <span className="badge-amber">Chapter {singleChapter.number}</span>
           </div>
           <h1 className="text-3xl font-display font-bold text-surface-text">{singleChapter.title}</h1>
@@ -38,7 +71,7 @@ export default function PhysicsChaptersPage() {
             <button
               key={topic.id}
               type="button"
-              onClick={() => navigate(`/physics/class-12/chapters/${chapterId}/topics/${topic.id}`)}
+              onClick={() => navigate(`/learn/${classId}/${subjectId}/chapters/${chapterId}/topics/${topic.id}`)}
               className="group w-full rounded-2xl border border-surface-border bg-surface-card/70 p-5 text-left transition-all hover:border-primary-500 hover:bg-surface-card"
             >
               <div className="flex items-center justify-between">
@@ -86,17 +119,16 @@ export default function PhysicsChaptersPage() {
 
       <div className="mb-8">
         <div className="mb-3 flex gap-2 text-xs">
-          <span className="badge-primary">CBSE / NCERT</span>
-          <span className="badge-teal">Class XII</span>
+          <span className="badge-primary">{catalog.board}</span>
+          <span className="badge-teal">{catalog.classLabel}</span>
         </div>
-        <h1 className="text-4xl font-display font-bold text-surface-text">Physics</h1>
+        <h1 className="text-4xl font-display font-bold text-surface-text">{catalog.subject}</h1>
         <p className="mt-2 text-surface-muted">
           {chapters.length} chapters • {chapters.reduce((s, c) => s + c.topics.length, 0)} topics •
           Interactive animations, questions, and misconception probes
         </p>
       </div>
 
-      {/* Search */}
       <div className="relative mb-6">
         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-surface-muted">
           <Search size={16} />
@@ -110,9 +142,6 @@ export default function PhysicsChaptersPage() {
         />
       </div>
 
-
-
-      {/* Chapter list */}
       <div className="space-y-3">
         {filtered.map((ch) => {
           const isExpanded = expandedChapters.includes(ch.id) || !!searchQuery.trim()
@@ -120,7 +149,7 @@ export default function PhysicsChaptersPage() {
             <div key={ch.id} className="rounded-2xl border border-surface-border bg-surface-card/70 overflow-hidden">
               <button
                 type="button"
-                onClick={() => searchQuery.trim() ? navigate(`/physics/class-12/chapters/${ch.id}`) : toggleChapter(ch.id)}
+                onClick={() => searchQuery.trim() ? navigate(`/learn/${classId}/${subjectId}/chapters/${ch.id}`) : toggleChapter(ch.id)}
                 className="w-full px-5 py-4 text-left flex items-center justify-between hover:bg-surface/40 transition-colors"
               >
                 <div className="flex items-center gap-4">
@@ -135,7 +164,7 @@ export default function PhysicsChaptersPage() {
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    onClick={(e) => { e.stopPropagation(); navigate(`/physics/class-12/chapters/${ch.id}`) }}
+                    onClick={(e) => { e.stopPropagation(); navigate(`/learn/${classId}/${subjectId}/chapters/${ch.id}`) }}
                     className="btn-secondary px-3 py-1.5 text-xs"
                   >
                     Open <ArrowRight size={12} />
@@ -151,7 +180,7 @@ export default function PhysicsChaptersPage() {
                       <button
                         key={t.id}
                         type="button"
-                        onClick={() => navigate(`/physics/class-12/chapters/${ch.id}/topics/${t.id}`)}
+                        onClick={() => navigate(`/learn/${classId}/${subjectId}/chapters/${ch.id}/topics/${t.id}`)}
                         className="flex items-center gap-3 rounded-lg border border-surface-border bg-surface-card px-3 py-2.5 text-left text-xs transition-colors hover:border-primary-500"
                       >
                         <BookOpen size={14} className="text-primary-500 shrink-0" />
@@ -165,15 +194,6 @@ export default function PhysicsChaptersPage() {
           )
         })}
       </div>
-    </div>
-  )
-}
-
-function StatCard({ label, value }) {
-  return (
-    <div className="rounded-xl border border-surface-border bg-surface-card px-4 py-3">
-      <p className="text-[11px] uppercase tracking-wider text-surface-muted">{label}</p>
-      <p className="mt-1 text-2xl font-display font-bold text-surface-text">{value}</p>
     </div>
   )
 }

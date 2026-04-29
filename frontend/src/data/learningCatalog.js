@@ -82,69 +82,6 @@ export const SUBJECTS = [
   },
 ]
 
-export const TOPICS_BY_SUBJECT = {
-  physics: [
-    { id: 'kinematics', label: 'Kinematics', level: 'Start', time: '15 min' },
-    { id: 'laws-of-motion', label: 'Laws of Motion', level: 'Core', time: '12 min' },
-    { id: 'gravitation', label: 'Gravitation', level: 'Core', time: '10 min' },
-    { id: 'thermodynamics', label: 'Thermodynamics', level: 'Deep', time: '20 min' },
-    { id: 'wave-optics', label: 'Wave Optics', level: 'Deep', time: '18 min' },
-    { id: 'electrostatics', label: 'Electrostatics', level: 'Core', time: '20 min' },
-  ],
-  chemistry: [
-    { id: 'atomic-structure', label: 'Atomic Structure', level: 'Start', time: '12 min' },
-    { id: 'chemical-bonding', label: 'Chemical Bonding', level: 'Core', time: '15 min' },
-    { id: 'equilibrium', label: 'Equilibrium', level: 'Deep', time: '14 min' },
-    { id: 'organic-basics', label: 'Organic Basics', level: 'Core', time: '18 min' },
-    { id: 'redox-reactions', label: 'Redox Reactions', level: 'Core', time: '16 min' },
-    { id: 'periodic-table', label: 'Periodic Table', level: 'Start', time: '10 min' },
-  ],
-  mathematics: [
-    { id: 'limits', label: 'Limits', level: 'Core', time: '15 min' },
-    { id: 'derivatives', label: 'Derivatives', level: 'Core', time: '18 min' },
-    { id: 'integration', label: 'Integration', level: 'Deep', time: '22 min' },
-    { id: 'probability', label: 'Probability', level: 'Start', time: '12 min' },
-    { id: 'matrices', label: 'Matrices', level: 'Core', time: '14 min' },
-    { id: 'vectors', label: 'Vectors', level: 'Core', time: '16 min' },
-  ],
-  biology: [
-    { id: 'cell-biology', label: 'Cell Biology', level: 'Start', time: '12 min' },
-    { id: 'genetics', label: 'Genetics', level: 'Deep', time: '20 min' },
-    { id: 'human-physiology', label: 'Human Physiology', level: 'Core', time: '18 min' },
-    { id: 'ecology', label: 'Ecology', level: 'Start', time: '10 min' },
-    { id: 'evolution', label: 'Evolution', level: 'Core', time: '14 min' },
-    { id: 'plant-systems', label: 'Plant Systems', level: 'Core', time: '16 min' },
-  ],
-  'computer-science': [
-    { id: 'programming-basics', label: 'Programming Basics', level: 'Start', time: '12 min' },
-    { id: 'data-structures', label: 'Data Structures', level: 'Core', time: '18 min' },
-    { id: 'algorithms', label: 'Algorithms', level: 'Deep', time: '20 min' },
-    { id: 'databases', label: 'Databases', level: 'Core', time: '14 min' },
-    { id: 'networks', label: 'Networks', level: 'Core', time: '15 min' },
-    { id: 'oop', label: 'OOP', level: 'Start', time: '12 min' },
-  ],
-  electronics: [
-    { id: 'circuits', label: 'Circuits', level: 'Start', time: '12 min' },
-    { id: 'semiconductors', label: 'Semiconductors', level: 'Core', time: '18 min' },
-    { id: 'logic-gates', label: 'Logic Gates', level: 'Start', time: '10 min' },
-    { id: 'microcontrollers', label: 'Microcontrollers', level: 'Deep', time: '20 min' },
-    { id: 'sensors', label: 'Sensors', level: 'Core', time: '14 min' },
-    { id: 'communication-systems', label: 'Communication', level: 'Core', time: '16 min' },
-  ],
-  languages: [
-    { id: 'grammar', label: 'Grammar', level: 'Start', time: '10 min' },
-    { id: 'reading-comprehension', label: 'Reading', level: 'Core', time: '15 min' },
-    { id: 'writing-skills', label: 'Writing', level: 'Core', time: '18 min' },
-    { id: 'vocabulary', label: 'Vocabulary', level: 'Start', time: '12 min' },
-    { id: 'literature', label: 'Literature', level: 'Deep', time: '20 min' },
-    { id: 'speaking-practice', label: 'Speaking', level: 'Core', time: '14 min' },
-  ],
-}
-
 export function getSubject(subjectId) {
   return SUBJECTS.find((subject) => subject.id === subjectId)
-}
-
-export function getTopic(subjectId, topicId) {
-  return TOPICS_BY_SUBJECT[subjectId]?.find((topic) => topic.id === topicId)
 }
