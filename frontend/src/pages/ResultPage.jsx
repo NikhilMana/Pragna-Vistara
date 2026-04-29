@@ -1,130 +1,141 @@
-import { useLocation, Link } from 'react-router-dom'
-import { CheckCircleIcon, XCircleIcon, SparklesIcon, ArrowLeftIcon } from '@/components/ui/Icons'
+import { Link, useLocation } from 'react-router-dom'
+import { ArrowLeftIcon, CheckCircleIcon, SparklesIcon, XCircleIcon } from '@/components/ui/Icons'
+import { useLearningSelection } from '@/context/LearningSelectionContext'
+import { t } from '@/utils/translations'
 
-/**
- * ResultPage — post-session summary with score, per-question feedback,
- * and placeholder for AI-generated explanation.
- * Route: /result
- * Expects location.state: { responses[], topicId, topicLabel }
- */
+const TYPE_BADGE = {
+  wrong_concept: 'badge-rose',
+  partial_understanding: 'badge-amber',
+  conceptual_error: 'badge-rose',
+  formula_misuse: 'badge-amber',
+  step_error: 'badge-amber',
+  derivation_error: 'badge-rose',
+  no_misconception: 'badge-teal',
+}
+
 export default function ResultPage() {
   const { state } = useLocation()
-  const responses  = state?.responses  ?? []
+  const { selection } = useLearningSelection()
+  const language = selection?.language || 'en'
+  const detection = state?.detection
+  const answer = state?.answer
   const topicLabel = state?.topicLabel ?? 'this topic'
   const topicId    = state?.topicId    ?? ''
 
-  const correct   = responses.filter((r) => r.isCorrect).length
-  const total     = responses.length
-  const scorePct  = total > 0 ? Math.round((correct / total) * 100) : 0
+  // Fallback for simple results (if detection is missing)
+  const responses = state?.responses ?? []
+  const correct = responses.filter((r) => r.isCorrect).length
+  const total = responses.length
+  const scorePct = total > 0 ? Math.round((correct / total) * 100) : (detection?.confidence || 0)
 
-  // ── Score styling ────────────────────────────────────
   const scoreConfig = (() => {
-    if (scorePct >= 80) return { label: 'Excellent!',   color: 'text-accent-teal',  ring: 'stroke-accent-teal'  }
+    if (scorePct >= 80) return { label: 'Excellent!', color: 'text-accent-teal', ring: 'stroke-accent-teal' }
     if (scorePct >= 50) return { label: 'Good effort!', color: 'text-accent-amber', ring: 'stroke-accent-amber' }
-    return                    { label: 'Keep trying!',  color: 'text-accent-rose',  ring: 'stroke-accent-rose'  }
+    return { label: 'Keep trying!', color: 'text-accent-rose', ring: 'stroke-accent-rose' }
   })()
-
-  const circumference = 2 * Math.PI * 45  // r=45
-  const dashOffset    = circumference - (circumference * scorePct) / 100
 
   return (
     <div className="container-page max-w-3xl animate-fade-in">
-
-      {/* ── Header ── */}
       <header className="text-center mb-10">
         <div className="inline-flex items-center gap-2 badge-primary mb-4">
           <SparklesIcon className="w-3.5 h-3.5" />
           Session Complete
         </div>
         <h1 className="font-display font-bold text-3xl text-surface-text mb-2">
-          Results for <span className="text-gradient">{topicLabel}</span>
+          Results for <span className="text-primary-500">{topicLabel}</span>
         </h1>
         <p className="text-surface-muted text-sm">
           Here's how you performed and where to focus next.
         </p>
       </header>
 
-      {/* ── Score ring ── */}
-      <div className="flex flex-col items-center mb-10">
-        <div className="relative w-36 h-36">
-          <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90" aria-hidden="true">
-            {/* Track */}
-            <circle cx="50" cy="50" r="45" fill="none" stroke="#334155" strokeWidth="8" />
-            {/* Fill */}
-            <circle
-              cx="50" cy="50" r="45" fill="none"
-              className={`${scoreConfig.ring} transition-all duration-1000 ease-out`}
-              strokeWidth="8"
-              strokeDasharray={circumference}
-              strokeDashoffset={dashOffset}
-              strokeLinecap="round"
-            />
-          </svg>
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className={`font-display font-bold text-3xl ${scoreConfig.color}`}>{scorePct}%</span>
-            <span className="text-surface-muted text-xs">{correct}/{total}</span>
+      {detection ? (
+        <section className="card mb-6 overflow-hidden">
+          <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-surface-border pb-5">
+            <div>
+              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-surface-muted">
+                {t(language, 'ui', 'misconception_label')}
+              </p>
+              <span className={`badge ${TYPE_BADGE[detection.misconception_type] || 'badge-primary'}`}>
+                {t(language, 'misconception_types', detection.misconception_type)}
+              </span>
+            </div>
+            <div className="text-left sm:text-right">
+              <p className="text-xs text-surface-muted">Confidence</p>
+              <p className={`text-3xl font-display font-bold ${scoreConfig.color}`}>{scorePct}%</p>
+            </div>
           </div>
-        </div>
-        <p className={`font-semibold text-lg mt-3 ${scoreConfig.color}`}>{scoreConfig.label}</p>
-      </div>
 
-      {/* ── AI Explanation placeholder ── */}
-      <section
-        id="ai-explanation-panel"
-        aria-label="AI Explanation"
-        className="card mb-8 border-primary-500 bg-surface-card"
-      >
-        <div className="flex items-center gap-2 mb-3">
-          <SparklesIcon className="w-5 h-5 text-primary-500" />
-          <h2 className="font-semibold text-surface-text">AI-Generated Explanation</h2>
-          <span className="badge-primary text-xs ml-auto">Coming Soon</span>
-        </div>
-        <div className="space-y-2">
-          {/* Skeleton placeholder lines */}
-          {[80, 65, 90, 55].map((w, i) => (
-            <div key={i} className="skeleton h-3 rounded" style={{ width: `${w}%` }} />
-          ))}
-        </div>
-        <p className="text-surface-muted text-xs mt-4">
-          The AI misconception analyser will surface detailed explanations and corrective guidance here.
-        </p>
-      </section>
-
-      {/* ── Per-question breakdown ── */}
-      {responses.length > 0 && (
-        <section aria-label="Question breakdown" className="mb-10">
-          <h2 className="font-semibold text-surface-text mb-4">Question Breakdown</h2>
-          <div className="flex flex-col gap-3">
-            {responses.map((r, i) => (
-              <div
-                key={r.questionId}
-                id={`result-row-${r.questionId}`}
-                className={`card flex items-start gap-4 border
-                            ${r.isCorrect ? 'border-accent-teal/20' : 'border-accent-rose/20'}`}
-              >
-                {r.isCorrect
-                  ? <CheckCircleIcon className="w-5 h-5 text-accent-teal shrink-0 mt-0.5" />
-                  : <XCircleIcon    className="w-5 h-5 text-accent-rose shrink-0 mt-0.5" />
-                }
-                <div className="flex-1 min-w-0">
-                  <p className="text-surface-text text-sm font-medium leading-snug mb-1 line-clamp-2">
-                    Q{i + 1}. {r.questionText}
-                  </p>
-                  {!r.isCorrect && (
-                    <p className="text-surface-muted text-xs">
-                      Your answer was incorrect.&nbsp;
-                      <span className="text-accent-teal">Review the correct concept.</span>
-                    </p>
-                  )}
-                </div>
+          <div className="grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
+            <article className="rounded-2xl border border-primary-500/20 bg-primary-500/5 p-5">
+              <div className="mb-3 flex items-center gap-2 text-primary-500">
+                {detection.misconception_type === 'no_misconception'
+                  ? <CheckCircleIcon className="h-5 w-5 text-accent-teal" />
+                  : <SparklesIcon className="h-5 w-5" />}
+                <h2 className="font-semibold text-surface-text">{t(language, 'ui', 'explanation_label')}</h2>
               </div>
-            ))}
+              <p className="text-sm leading-relaxed text-surface-muted">{detection.explanation}</p>
+            </article>
+
+            <article className="rounded-2xl border border-surface-border bg-surface/40 p-5">
+              <h2 className="mb-3 font-semibold text-surface-text">{t(language, 'ui', 'suggestion_label')}</h2>
+              <span className="badge-teal">{t(language, 'suggestions', detection.suggestion) || detection.suggestion}</span>
+              {detection.textbooks && detection.textbooks.length > 0 && (
+                <div className="mt-5">
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-surface-muted">
+                    Syllabus sources
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {detection.textbooks.map((book) => (
+                      <span key={book} className="badge-primary text-[10px]">{book}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </article>
           </div>
+        </section>
+      ) : (
+        <div className="card text-center py-12 mb-6">
+           <p className="text-surface-muted mb-4">Detailed analysis for this topic is loading...</p>
+           <div className="flex justify-center gap-1">
+             <div className="skeleton h-2 w-2 rounded-full animate-pulse" />
+             <div className="skeleton h-2 w-2 rounded-full animate-pulse delay-75" />
+             <div className="skeleton h-2 w-2 rounded-full animate-pulse delay-150" />
+           </div>
+        </div>
+      )}
+
+      {detection?.visual && (
+        <section className="card mb-6">
+          <h2 className="mb-4 font-semibold text-surface-text">{t(language, 'ui', 'visual_label')}</h2>
+          {detection.visual.svg ? (
+            <div
+              className="overflow-hidden rounded-2xl border border-surface-border bg-surface/40 p-4"
+              dangerouslySetInnerHTML={{ __html: detection.visual.svg }}
+            />
+          ) : (
+            <img src={detection.visual.image_url} alt="" className="w-full rounded-2xl border border-surface-border" />
+          )}
+          {detection.visual.caption && (
+            <p className="mt-3 text-xs leading-relaxed text-surface-muted">{detection.visual.caption}</p>
+          )}
         </section>
       )}
 
-      {/* ── Actions ── */}
-      <div className="flex flex-col sm:flex-row gap-3 justify-center">
+      {answer?.answerText && (
+        <section className="mb-8 rounded-2xl border border-surface-border bg-surface/40 p-5">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <span className="text-sm font-semibold text-surface-text">Your answer</span>
+            <span className="badge-teal text-[10px]">{language.toUpperCase()}</span>
+          </div>
+          <p className="text-sm italic text-surface-muted leading-relaxed">
+            "{answer.answerText}"
+          </p>
+        </section>
+      )}
+
+      <div className="flex flex-col sm:flex-row gap-3 justify-center mt-10">
         <Link to="/" id="back-home-result" className="btn-secondary">
           <ArrowLeftIcon className="w-4 h-4" />
           Back to Subjects
@@ -140,7 +151,6 @@ export default function ResultPage() {
           </Link>
         )}
       </div>
-
     </div>
   )
 }

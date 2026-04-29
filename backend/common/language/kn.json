@@ -1,0 +1,29 @@
+{
+  "ui": {
+    "select_level": "ನಿಮ್ಮ ತರಗತಿಯ ಮಟ್ಟವನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+    "select_subject": "ವಿಷಯವನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+    "select_topic": "ವಿಷಯವನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+    "enter_answer": "ನಿಮ್ಮ ಉತ್ತರವನ್ನು ನಮೂದಿಸಿ",
+    "speak": "ನಿಮ್ಮ ಉತ್ತರವನ್ನು ಹೇಳಿ",
+    "submit": "ನನ್ನ ತಿಳುವಳಿಕೆಯನ್ನು ಪರಿಶೀಲಿಸಿ",
+    "misconception_label": "ನಾವು ಕಂಡುಕೊಂಡದ್ದು",
+    "explanation_label": "ಇಲ್ಲಿ ತಿದ್ದುಪಡಿ ಇದೆ",
+    "visual_label": "ದೃಶ್ಯ ವಿವರಣೆ",
+    "suggestion_label": "ಮುಂದೆ ಏನು ಮಾಡಬೇಕು"
+  },
+  "misconception_types": {
+    "partial_understanding": "ಭಾಗಶಃ ತಿಳುವಳಿಕೆ",
+    "wrong_concept": "ತಪ್ಪು ಪರಿಕಲ್ಪನೆ",
+    "conceptual_error": "ಪರಿಕಲ್ಪನಾ ದೋಷ",
+    "formula_misuse": "ಸೂತ್ರದ ದುರ್ಬಳಕೆ",
+    "step_error": "ಹಂತದ ದೋಷ",
+    "derivation_error": "ಉತ್ಪನ್ನ ದೋಷ",
+    "no_misconception": "ಸರಿ!"
+  },
+  "suggestions": {
+    "retry": "ಈ ಸುಳಿವಿನೊಂದಿಗೆ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ",
+    "peer_learning": "ಸಹಪಾಠಿಯೊಂದಿಗೆ ಚರ್ಚಿಸಿ",
+    "teacher_flag": "ನಿಮ್ಮ ಶಿಕ್ಷಕರನ್ನು ಕೇಳಿ",
+    "advance": "ಅದ್ಭುತ! ಮುಂದಿನ ವಿಷಯಕ್ಕೆ ಹೋಗಿ"
+  }
+}

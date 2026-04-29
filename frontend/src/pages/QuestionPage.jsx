@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeftIcon, ClockIcon, LightBulbIcon, MicrophoneIcon, PaperAirplaneIcon, SparklesIcon } from '@/components/ui/Icons'
 import { useLearningSelection } from '@/context/LearningSelectionContext'
@@ -6,13 +6,15 @@ import { getQuestionForTopic } from '@/services/offlineContent'
 import { notifyOfflineSyncStateChanged } from '@/services/offlineSync'
 import { saveResponse } from '@/utils/indexedDB'
 import { resolveTopicContext } from '@/utils/syllabusPractice'
+import useVoiceInput from '@/hooks/useVoiceInput'
+import { t } from '@/utils/translations'
 
 export default function QuestionPage() {
   const { topicId } = useParams()
   const { state: locationState } = useLocation()
   const navigate = useNavigate()
   const { selection } = useLearningSelection()
-  const recognitionRef = useRef(null)
+  const language = selection?.language || 'en'
 
   const topicContext = useMemo(
     () => resolveTopicContext(topicId, locationState ?? {}, selection),
@@ -24,26 +26,21 @@ export default function QuestionPage() {
 
   const [question, setQuestion] = useState(null)
   const [answerText, setAnswerText] = useState('')
+  const [interimText, setInterimText] = useState('')
   const [showHint, setShowHint] = useState(false)
-  const [isListening, setIsListening] = useState(false)
-  const [voiceError, setVoiceError] = useState('')
   const [submitError, setSubmitError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isLoadingQuestion, setIsLoadingQuestion] = useState(true)
   const [questionError, setQuestionError] = useState('')
 
-  const SpeechRecognition =
-    typeof window !== 'undefined'
-      ? window.SpeechRecognition || window.webkitSpeechRecognition
-      : null
-  const canUseVoice = Boolean(SpeechRecognition)
-  const answerReady = answerText.trim().length > 0
-
-  useEffect(() => {
-    return () => {
-      recognitionRef.current?.stop()
+  const { isListening, voiceError, toggleListening } = useVoiceInput(language, (newFinal, currentInterim) => {
+    if (newFinal) {
+      setAnswerText((current) => [current.trim(), newFinal.trim()].filter(Boolean).join(' '))
     }
-  }, [])
+    setInterimText(currentInterim)
+  })
+
+  const answerReady = answerText.trim().length > 0
 
   useEffect(() => {
     let active = true
@@ -79,44 +76,6 @@ export default function QuestionPage() {
       active = false
     }
   }, [topicContext, topicId])
-
-  function handleVoiceInput() {
-    setVoiceError('')
-
-    if (!canUseVoice) {
-      setVoiceError('Voice input is not supported in this browser.')
-      return
-    }
-
-    if (isListening) {
-      recognitionRef.current?.stop()
-      setIsListening(false)
-      return
-    }
-
-    const recognition = new SpeechRecognition()
-    recognition.lang = 'en-IN'
-    recognition.interimResults = false
-    recognition.continuous = false
-
-    recognition.onstart = () => setIsListening(true)
-    recognition.onerror = () => {
-      setVoiceError('Could not capture voice. Try again or type your answer.')
-      setIsListening(false)
-    }
-    recognition.onend = () => setIsListening(false)
-    recognition.onresult = (event) => {
-      const transcript = Array.from(event.results)
-        .map((result) => result[0]?.transcript)
-        .filter(Boolean)
-        .join(' ')
-
-      setAnswerText((current) => [current.trim(), transcript.trim()].filter(Boolean).join(' '))
-    }
-
-    recognitionRef.current = recognition
-    recognition.start()
-  }
 
   async function handleSubmit() {
     if (!answerReady || isSubmitting || !question) return
@@ -223,12 +182,15 @@ export default function QuestionPage() {
 
         <div className="rounded-2xl border border-surface-border bg-surface/40 p-4">
           <label htmlFor="student-answer" className="mb-3 block text-sm font-semibold text-surface-text">
-            Your answer
+            {t(language, 'ui', 'enter_answer')}
           </label>
           <textarea
             id="student-answer"
-            value={answerText}
-            onChange={(event) => setAnswerText(event.target.value)}
+            value={answerText + (interimText ? (answerText ? ' ' : '') + interimText : '')}
+            onChange={(event) => {
+              setAnswerText(event.target.value)
+              setInterimText('')
+            }}
             rows={7}
             className="input min-h-44 resize-none text-base leading-relaxed"
             placeholder="Type your thinking here..."
@@ -238,12 +200,12 @@ export default function QuestionPage() {
             <button
               id="voice-answer-btn"
               type="button"
-              onClick={handleVoiceInput}
+              onClick={toggleListening}
               className={`btn-secondary px-4 ${isListening ? 'border-accent-rose/60 text-accent-rose' : ''}`}
               aria-pressed={isListening}
             >
               <MicrophoneIcon className="h-4 w-4" />
-              {isListening ? 'Listening...' : 'Voice'}
+              {isListening ? 'Listening...' : t(language, 'ui', 'speak')}
             </button>
 
             <span className="text-xs text-surface-muted">
@@ -287,7 +249,7 @@ export default function QuestionPage() {
           className="btn-primary"
         >
           <PaperAirplaneIcon className="h-4 w-4" />
-          {isSubmitting ? 'Saving...' : 'Submit'}
+          {isSubmitting ? 'Saving...' : t(language, 'ui', 'submit')}
         </button>
       </div>
     </div>

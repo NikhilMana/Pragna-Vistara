@@ -1,0 +1,29 @@
+{
+  "ui": {
+    "select_level": "Select your class level",
+    "select_subject": "Select subject",
+    "select_topic": "Select topic",
+    "enter_answer": "Enter your answer",
+    "speak": "Speak your answer",
+    "submit": "Check my understanding",
+    "misconception_label": "What we found",
+    "explanation_label": "Here is the correction",
+    "visual_label": "Visual explanation",
+    "suggestion_label": "What to do next"
+  },
+  "misconception_types": {
+    "partial_understanding": "Partial Understanding",
+    "wrong_concept": "Wrong Concept",
+    "conceptual_error": "Conceptual Error",
+    "formula_misuse": "Formula Misuse",
+    "step_error": "Step Error",
+    "derivation_error": "Derivation Error",
+    "no_misconception": "Correct!"
+  },
+  "suggestions": {
+    "retry": "Try again with this hint",
+    "peer_learning": "Discuss with a classmate",
+    "teacher_flag": "Ask your teacher",
+    "advance": "Great! Move to next topic"
+  }
+}

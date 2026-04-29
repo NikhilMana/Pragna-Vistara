@@ -3,7 +3,8 @@ import { openDB } from 'idb'
 // ─── Constants ───────────────────────────────────────────────────────────────
 
 const DB_NAME    = 'edu-sakhi-db'
-const DB_VERSION = 4
+const DB_VERSION = 6
+
 
 /**
  * Object store names used across the application.

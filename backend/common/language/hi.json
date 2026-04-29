@@ -1,0 +1,29 @@
+{
+  "ui": {
+    "select_level": "अपनी कक्षा का स्तर चुनें",
+    "select_subject": "विषय चुनें",
+    "select_topic": "प्रकरण चुनें",
+    "enter_answer": "अपना उत्तर दर्ज करें",
+    "speak": "अपना उत्तर बोलें",
+    "submit": "मेरी समझ की जांच करें",
+    "misconception_label": "हमने क्या पाया",
+    "explanation_label": "यहाँ सुधार है",
+    "visual_label": "दृश्य स्पष्टीकरण",
+    "suggestion_label": "आगे क्या करना है"
+  },
+  "misconception_types": {
+    "partial_understanding": "आंशिक समझ",
+    "wrong_concept": "गलत अवधारणा",
+    "conceptual_error": "वैचारिक त्रुटि",
+    "formula_misuse": "सूत्र का गलत उपयोग",
+    "step_error": "चरण त्रुटि",
+    "derivation_error": "व्युत्पत्ति त्रुटि",
+    "no_misconception": "सही!"
+  },
+  "suggestions": {
+    "retry": "इस संकेत के साथ पुनः प्रयास करें",
+    "peer_learning": "सहपाठी के साथ चर्चा करें",
+    "teacher_flag": "अपने शिक्षक से पूछें",
+    "advance": "बहुत बढ़िया! अगले विषय पर जाएं"
+  }
+}
