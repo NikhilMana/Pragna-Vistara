@@ -9,6 +9,8 @@ import {
   HomeIcon,
   WifiOffIcon,
 } from '../ui/Icons'
+import { Sun, Moon } from 'lucide-react'
+import { useState, useEffect } from 'react'
 
 /**
  * Navbar - top navigation bar with logo, nav links, and sync-aware status indicator.
@@ -18,8 +20,35 @@ export default function Navbar() {
   const isOnline = useOnlineStatus()
   const { isSyncing, pendingSyncCount } = useOfflineSync()
 
+  const [isDarkMode, setIsDarkMode] = useState(true)
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme')
+    if (savedTheme === 'light') {
+      setIsDarkMode(false)
+      document.documentElement.classList.remove('dark')
+    } else {
+      setIsDarkMode(true)
+      document.documentElement.classList.add('dark')
+    }
+  }, [])
+
+  function toggleTheme() {
+    setIsDarkMode((prev) => {
+      const next = !prev
+      if (next) {
+        document.documentElement.classList.add('dark')
+        localStorage.setItem('theme', 'dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+        localStorage.setItem('theme', 'light')
+      }
+      return next
+    })
+  }
+
   const links = [
-    { to: '/', label: 'Home', Icon: HomeIcon },
+    { to: '/selection', label: 'Home', Icon: HomeIcon },
     { to: '/progress', label: 'Progress', Icon: ChartBarIcon },
     { to: '/teacher-validation', label: 'Review', Icon: ClipboardCheckIcon },
   ]
@@ -35,23 +64,23 @@ export default function Navbar() {
   const statusClass = !isOnline
     ? 'bg-accent-rose/10 border-accent-rose/30 text-accent-rose'
     : isSyncing
-      ? 'bg-primary-500/10 border-primary-500/30 text-primary-300'
+      ? 'bg-surface-card border-primary-500 text-primary-300'
       : pendingSyncCount > 0
         ? 'bg-accent-amber/10 border-accent-amber/30 text-accent-amber'
         : 'bg-accent-teal/10 border-accent-teal/30 text-accent-teal'
 
   return (
-    <header className="sticky top-0 z-50 border-b border-surface-border glass">
+    <header className="sticky top-0 z-50 border-b border-surface-border bg-surface/90 backdrop-blur-md">
       <nav className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2.5 group" id="nav-logo">
+        <Link to="/selection" className="flex items-center gap-2.5 group" id="nav-logo">
           <div
-            className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-accent-teal
+            className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-accent-rose
                        flex items-center justify-center shadow-glow-primary/30
                        group-hover:scale-110 transition-transform duration-200"
           >
-            <BookOpenIcon className="w-4 h-4 text-white" />
+            <BookOpenIcon className="w-4 h-4 text-surface-text" />
           </div>
-          <span className="font-display font-bold text-lg text-gradient">Edu-Sakhi</span>
+          <span className="font-display font-bold text-lg text-primary-500">Edu-Sakhi</span>
         </Link>
 
         <div className="flex items-center gap-4">
@@ -66,8 +95,8 @@ export default function Navbar() {
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium
                               transition-all duration-200
                               ${active
-                                ? 'bg-primary-500/20 text-primary-300'
-                                : 'text-surface-muted hover:text-white hover:bg-surface-card'
+                                ? 'bg-primary-500 text-white'
+                                : 'text-surface-muted hover:text-surface-text hover:bg-surface-card'
                               }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -91,6 +120,31 @@ export default function Navbar() {
             {isOnline && !isSyncing && pendingSyncCount === 0 && (
               <><span className="w-1.5 h-1.5 rounded-full bg-accent-teal animate-pulse-slow" />Online</>
             )}
+          </div>
+
+          {/* Theme Toggle */}
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-full bg-surface-card border border-surface-border text-surface-muted hover:text-surface-text hover:border-primary-500 transition-colors"
+            title="Toggle theme"
+          >
+            {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
+
+          {/* User Profile & Logout */}
+          <div className="flex items-center gap-3 pl-4 border-l border-surface-border">
+            <div className="flex items-center gap-2 cursor-pointer group">
+              <div className="w-8 h-8 rounded-full bg-surface-card border border-primary-500 flex items-center justify-center text-primary-500 group-hover:bg-primary-500 group-hover:text-surface-text transition-colors">
+                <span className="text-sm font-semibold">JD</span>
+              </div>
+            </div>
+            <button 
+              onClick={() => window.location.href = '/login'}
+              className="text-sm font-medium text-surface-muted hover:text-accent-rose transition-colors"
+              title="Logout"
+            >
+              Logout
+            </button>
           </div>
         </div>
       </nav>

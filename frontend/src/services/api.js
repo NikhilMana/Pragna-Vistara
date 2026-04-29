@@ -16,6 +16,23 @@ const client = axios.create({
   headers: { 'Content-Type': 'application/json' },
 })
 
+const syllabusRequestCache = new Map()
+
+async function getCachedSyllabusRequest(cacheKey, request) {
+  if (syllabusRequestCache.has(cacheKey)) {
+    return syllabusRequestCache.get(cacheKey)
+  }
+
+  const promise = request()
+    .catch((error) => {
+      syllabusRequestCache.delete(cacheKey)
+      throw error
+    })
+
+  syllabusRequestCache.set(cacheKey, promise)
+  return promise
+}
+
 // ─── Request interceptor (attach auth token when available) ──────────────────
 client.interceptors.request.use((config) => {
   // TODO: attach JWT / session token from localStorage if auth is added
@@ -118,6 +135,41 @@ export async function localExplanation(payload) {
  */
 export async function validateContent(payload) {
   const { data } = await client.post('/validate-content', payload)
+  return data
+}
+
+export async function getSyllabusCatalog() {
+  return getCachedSyllabusRequest('catalog', async () => {
+    const { data } = await client.get('/v1/syllabus')
+    return data
+  })
+}
+
+export async function getSyllabusClass(classSlug) {
+  return getCachedSyllabusRequest(`class:${classSlug}`, async () => {
+    const { data } = await client.get(`/v1/syllabus/classes/${classSlug}`)
+    return data
+  })
+}
+
+export async function getSyllabusSubject(classSlug, subjectSlug) {
+  return getCachedSyllabusRequest(`subject:${classSlug}:${subjectSlug}`, async () => {
+    const { data } = await client.get(`/v1/syllabus/classes/${classSlug}/subjects/${subjectSlug}`)
+    return data
+  })
+}
+
+export async function getSyllabusDocument(documentId) {
+  return getCachedSyllabusRequest(`document:${documentId}`, async () => {
+    const { data } = await client.get(`/v1/syllabus/documents/${documentId}`)
+    return data
+  })
+}
+
+export async function searchSyllabus(query, limit = 20) {
+  const { data } = await client.get('/v1/syllabus/search', {
+    params: { q: query, limit },
+  })
   return data
 }
 

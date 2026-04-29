@@ -16,7 +16,7 @@ export default function ErrorMessage({ message = 'Something went wrong.', onRetr
         <WarningIcon className="w-6 h-6 text-accent-rose" />
       </div>
       <div>
-        <h3 className="font-semibold text-white mb-1">Oops!</h3>
+        <h3 className="font-semibold text-surface-text mb-1">Oops!</h3>
         <p className="text-surface-muted text-sm">{message}</p>
       </div>
       {onRetry && (

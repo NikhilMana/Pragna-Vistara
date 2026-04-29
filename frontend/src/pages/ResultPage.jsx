@@ -36,7 +36,7 @@ export default function ResultPage() {
           <SparklesIcon className="w-3.5 h-3.5" />
           Session Complete
         </div>
-        <h1 className="font-display font-bold text-3xl text-white mb-2">
+        <h1 className="font-display font-bold text-3xl text-surface-text mb-2">
           Results for <span className="text-gradient">{topicLabel}</span>
         </h1>
         <p className="text-surface-muted text-sm">
@@ -72,11 +72,11 @@ export default function ResultPage() {
       <section
         id="ai-explanation-panel"
         aria-label="AI Explanation"
-        className="card mb-8 border-primary-500/20 bg-primary-500/5"
+        className="card mb-8 border-primary-500 bg-surface-card"
       >
         <div className="flex items-center gap-2 mb-3">
-          <SparklesIcon className="w-5 h-5 text-primary-400" />
-          <h2 className="font-semibold text-white">AI-Generated Explanation</h2>
+          <SparklesIcon className="w-5 h-5 text-primary-500" />
+          <h2 className="font-semibold text-surface-text">AI-Generated Explanation</h2>
           <span className="badge-primary text-xs ml-auto">Coming Soon</span>
         </div>
         <div className="space-y-2">
@@ -93,7 +93,7 @@ export default function ResultPage() {
       {/* ── Per-question breakdown ── */}
       {responses.length > 0 && (
         <section aria-label="Question breakdown" className="mb-10">
-          <h2 className="font-semibold text-white mb-4">Question Breakdown</h2>
+          <h2 className="font-semibold text-surface-text mb-4">Question Breakdown</h2>
           <div className="flex flex-col gap-3">
             {responses.map((r, i) => (
               <div
@@ -107,7 +107,7 @@ export default function ResultPage() {
                   : <XCircleIcon    className="w-5 h-5 text-accent-rose shrink-0 mt-0.5" />
                 }
                 <div className="flex-1 min-w-0">
-                  <p className="text-white text-sm font-medium leading-snug mb-1 line-clamp-2">
+                  <p className="text-surface-text text-sm font-medium leading-snug mb-1 line-clamp-2">
                     Q{i + 1}. {r.questionText}
                   </p>
                   {!r.isCorrect && (

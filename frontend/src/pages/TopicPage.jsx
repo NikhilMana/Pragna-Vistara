@@ -40,10 +40,10 @@ export default function TopicPage() {
           <Link to="/" id="back-to-home" className="btn-ghost p-2 rounded-xl" aria-label="Back to subjects">
             <ArrowLeftIcon className="w-5 h-5" />
           </Link>
-          <div className="flex items-center gap-2 text-xs text-white/70">
+          <div className="flex items-center gap-2 text-xs text-surface-text/70">
             <span>Subject</span>
             <ChevronRightIcon className="h-3.5 w-3.5" />
-            <span className="font-semibold text-white">Topic</span>
+            <span className="font-semibold text-surface-text">Topic</span>
             <ChevronRightIcon className="h-3.5 w-3.5" />
             <span>Questions</span>
           </div>
@@ -54,11 +54,11 @@ export default function TopicPage() {
             <div className={`mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10 ${subject.accent}`}>
               <Icon className="h-8 w-8" />
             </div>
-            <h1 className="font-display text-4xl font-bold text-white">{subject.label}</h1>
+            <h1 className="font-display text-4xl font-bold text-surface-text">{subject.label}</h1>
           </div>
           <div className="hidden text-right sm:block">
-            <p className="text-5xl font-display font-bold text-white/90">{topics.length}</p>
-            <p className="text-sm text-white/60">topics</p>
+            <p className="text-5xl font-display font-bold text-surface-text/90">{topics.length}</p>
+            <p className="text-sm text-surface-text/60">topics</p>
           </div>
         </div>
       </header>
@@ -84,7 +84,7 @@ export default function TopicPage() {
                 <span className={LEVEL_STYLE[topic.level] ?? 'badge-primary'}>{topic.level}</span>
               </div>
 
-              <h2 className="mb-5 text-xl font-display font-bold text-white group-hover:text-gradient">
+              <h2 className="mb-5 text-xl font-display font-bold text-surface-text group-hover:text-gradient">
                 {topic.label}
               </h2>
 
@@ -93,7 +93,7 @@ export default function TopicPage() {
                   <ClockIcon className="h-3.5 w-3.5" />
                   {topic.time}
                 </span>
-                <span className="flex items-center gap-1 font-semibold text-primary-300 transition-all group-hover:gap-2">
+                <span className="flex items-center gap-1 font-semibold text-primary-500 transition-all group-hover:gap-2">
                   Start
                   <ChevronRightIcon className="h-3.5 w-3.5" />
                 </span>

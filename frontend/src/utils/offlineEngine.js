@@ -1,5 +1,6 @@
 import { getExplanationTemplate } from '@/data/offlineExplanationTemplates'
 import { getOfflineQuestionById, getOfflineQuestionByTopicId } from '@/data/offlineQuestionBank'
+import { buildQuestionFromTopicContext } from '@/utils/syllabusPractice'
 
 const CATEGORY = {
   CONCEPT: 'Concept misunderstanding',
@@ -27,7 +28,11 @@ export function analyzeResponseOffline(payload) {
   const studentAnswer = payload.student_answer ?? payload.answer_text ?? payload.answer ?? ''
   const topicId = payload.topic_id ?? payload.topicId
   const questionId = payload.question_id ?? payload.questionId
-  const question = getOfflineQuestionById(questionId) ?? getOfflineQuestionByTopicId(topicId)
+  const question = (
+    getOfflineQuestionById(questionId) ??
+    getOfflineQuestionByTopicId(topicId) ??
+    buildQuestionFromTopicContext(buildOfflineTopicContext(payload, topicId))
+  )
 
   const normalizedAnswer = normalizeText(studentAnswer)
   const answerTokens = tokenize(normalizedAnswer)
@@ -106,7 +111,11 @@ export function generateExplanationOffline(payload) {
   const topicId = payload.topic_id ?? payload.topicId
   const questionId = payload.question_id ?? payload.questionId
   const misconceptionType = payload.misconception_type ?? CATEGORY.CONCEPT
-  const question = getOfflineQuestionById(questionId) ?? getOfflineQuestionByTopicId(topicId)
+  const question = (
+    getOfflineQuestionById(questionId) ??
+    getOfflineQuestionByTopicId(topicId) ??
+    buildQuestionFromTopicContext(buildOfflineTopicContext(payload, topicId))
+  )
   const template = getExplanationTemplate(misconceptionType)
   const topicLabel = payload.topic ?? question?.topicLabel ?? 'this topic'
   const conceptSummary = question?.conceptSummary ?? 'the core idea, the reasoning step, and the final conclusion'
@@ -142,6 +151,18 @@ export function generateExplanationOffline(payload) {
 
 function normalizeText(text) {
   return (text ?? '').toLowerCase().replace(/\s+/g, ' ').trim()
+}
+
+function buildOfflineTopicContext(payload, topicId) {
+  return {
+    topicId,
+    topicLabel: payload.topic ?? payload.topicLabel ?? payload.topic_label,
+    subjectId: payload.subject ?? payload.subjectId,
+    subjectLabel: payload.subject_label ?? payload.subjectLabel ?? payload.subject,
+    chapterLabel: payload.chapter_label ?? payload.chapterLabel,
+    documentTitle: payload.document_title ?? payload.documentTitle,
+    classLabel: payload.class_label ?? payload.classLabel,
+  }
 }
 
 function tokenize(text) {

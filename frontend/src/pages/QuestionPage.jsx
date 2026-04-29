@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import { ClockIcon, LightBulbIcon, MicrophoneIcon, PaperAirplaneIcon, SparklesIcon } from '@/components/ui/Icons'
+import { ArrowLeftIcon, ClockIcon, LightBulbIcon, MicrophoneIcon, PaperAirplaneIcon, SparklesIcon } from '@/components/ui/Icons'
 import { useLearningSelection } from '@/context/LearningSelectionContext'
 import { getQuestionForTopic } from '@/services/offlineContent'
 import { notifyOfflineSyncStateChanged } from '@/services/offlineSync'
 import { saveResponse } from '@/utils/indexedDB'
+import { resolveTopicContext } from '@/utils/syllabusPractice'
 
 export default function QuestionPage() {
   const { topicId } = useParams()
@@ -13,9 +14,13 @@ export default function QuestionPage() {
   const { selection } = useLearningSelection()
   const recognitionRef = useRef(null)
 
-  const subjectId = locationState?.subjectId ?? selection.subjectId
-  const subjectLabel = locationState?.subjectLabel ?? selection.subjectLabel
-  const topicLabel = locationState?.topicLabel ?? selection.topicLabel ?? topicId
+  const topicContext = useMemo(
+    () => resolveTopicContext(topicId, locationState ?? {}, selection),
+    [locationState, selection, topicId],
+  )
+  const subjectId = topicContext.subjectId
+  const subjectLabel = topicContext.subjectLabel
+  const topicLabel = topicContext.topicLabel
 
   const [question, setQuestion] = useState(null)
   const [answerText, setAnswerText] = useState('')
@@ -48,7 +53,7 @@ export default function QuestionPage() {
       setQuestionError('')
 
       try {
-        const nextQuestion = await getQuestionForTopic(topicId)
+        const nextQuestion = await getQuestionForTopic(topicId, topicContext)
 
         if (active) {
           if (nextQuestion) {
@@ -73,7 +78,7 @@ export default function QuestionPage() {
     return () => {
       active = false
     }
-  }, [topicId])
+  }, [topicContext, topicId])
 
   function handleVoiceInput() {
     setVoiceError('')
@@ -125,9 +130,18 @@ export default function QuestionPage() {
       answerText: answerText.trim(),
       inputMode: isListening ? 'voice' : 'text',
       subjectId,
+      classSlug: topicContext.classSlug,
+      classLabel: topicContext.classLabel,
+      documentId: topicContext.documentId,
+      documentTitle: topicContext.documentTitle,
+      chapterId: topicContext.chapterId,
+      chapterLabel: topicContext.chapterLabel,
       topicId,
       topicLabel,
       subjectLabel,
+      topicPath: topicContext.topicPath,
+      topicLevel: topicContext.topicLevel,
+      topicPageNumber: topicContext.topicPageNumber,
       status: 'pending-analysis',
       syncStatus: 'pending',
     }
@@ -139,6 +153,7 @@ export default function QuestionPage() {
         state: {
           responseId,
           answer,
+          topicContext,
           topicId,
           topicLabel,
           subjectLabel,
@@ -152,10 +167,23 @@ export default function QuestionPage() {
 
   return (
     <div className="container-page max-w-4xl animate-fade-in">
+      <button onClick={() => navigate(-1)} className="btn-ghost mb-5 pl-0">
+        <ArrowLeftIcon className="h-4 w-4" />
+        Back
+      </button>
+
       <div className="mb-6 flex flex-wrap items-center gap-2 text-xs text-surface-muted">
+        {topicContext.classLabel && <span className="badge-primary">{topicContext.classLabel}</span>}
         {subjectLabel && <span className="badge-primary">{subjectLabel}</span>}
+        {topicContext.chapterLabel && <span className="badge-amber">{topicContext.chapterLabel}</span>}
         <span className="badge-teal">{topicLabel}</span>
       </div>
+
+      {topicContext.documentTitle && (
+        <div className="mb-6 rounded-xl border border-surface-border bg-surface/40 px-4 py-3 text-sm text-surface-muted">
+          Source textbook: <span className="font-semibold text-surface-text">{topicContext.documentTitle}</span>
+        </div>
+      )}
 
       {isLoadingQuestion && (
         <article className="card mb-6 overflow-hidden">
@@ -186,15 +214,15 @@ export default function QuestionPage() {
               {question.estimatedTime}
             </span>
           </div>
-          <SparklesIcon className="h-5 w-5 text-primary-300" />
+          <SparklesIcon className="h-5 w-5 text-primary-500" />
         </div>
 
-        <h1 className="mb-8 text-2xl font-display font-bold leading-snug text-white sm:text-3xl">
+        <h1 className="mb-8 text-2xl font-display font-bold leading-snug text-surface-text sm:text-3xl">
           {question.text}
         </h1>
 
         <div className="rounded-2xl border border-surface-border bg-surface/40 p-4">
-          <label htmlFor="student-answer" className="mb-3 block text-sm font-semibold text-white">
+          <label htmlFor="student-answer" className="mb-3 block text-sm font-semibold text-surface-text">
             Your answer
           </label>
           <textarea

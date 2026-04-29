@@ -120,7 +120,7 @@ export default function TeacherValidationPage() {
             <ClipboardCheckIcon className="h-3.5 w-3.5" />
             Teacher review
           </div>
-          <h1 className="text-4xl font-display font-bold text-white">
+          <h1 className="text-4xl font-display font-bold text-surface-text">
             Validate explanations
           </h1>
         </div>
@@ -132,11 +132,11 @@ export default function TeacherValidationPage() {
               onClick={() => setFilter(item)}
               className={`rounded-xl border px-3 py-2 text-xs font-semibold transition-all
                           ${filter === item
-                            ? 'border-primary-500 bg-primary-500/20 text-primary-200'
-                            : 'border-surface-border bg-surface-card text-surface-muted hover:text-white'
+                            ? 'border-primary-500 bg-primary-500 text-white'
+                            : 'border-surface-border bg-surface-card text-surface-muted hover:text-surface-text'
                           }`}
             >
-              <span className="block text-base text-white">{counts[item]}</span>
+              <span className="block text-base text-surface-text">{counts[item]}</span>
               {item}
             </button>
           ))}
@@ -160,11 +160,11 @@ export default function TeacherValidationPage() {
               {visibleDrafts.map((draft) => (
                 <tr key={draft.id} className="align-top hover:bg-white/[0.03]">
                   <td className="px-4 py-4">
-                    <p className="font-semibold text-white">{draft.topic}</p>
+                    <p className="font-semibold text-surface-text">{draft.topic}</p>
                     <p className="text-xs text-surface-muted">{draft.subject}</p>
                   </td>
                   <td className="px-4 py-4">
-                    <p className="text-white">{draft.misconceptionType}</p>
+                    <p className="text-surface-text">{draft.misconceptionType}</p>
                     <p className="text-xs text-surface-muted">{draft.confidenceLevel}</p>
                   </td>
                   <td className="max-w-md px-4 py-4">
@@ -226,11 +226,11 @@ export default function TeacherValidationPage() {
           <form onSubmit={handleSave} className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl border border-surface-border bg-surface-card p-6 shadow-card">
             <div className="mb-6 flex items-start justify-between gap-4">
               <div>
-                <div className="mb-2 flex items-center gap-2 text-primary-300">
+                <div className="mb-2 flex items-center gap-2 text-primary-500">
                   <SparklesIcon className="h-4 w-4" />
                   <span className="text-sm font-semibold">Edit explanation</span>
                 </div>
-                <h2 className="text-2xl font-display font-bold text-white">{editing.topic}</h2>
+                <h2 className="text-2xl font-display font-bold text-surface-text">{editing.topic}</h2>
               </div>
               <button type="button" onClick={() => setEditing(null)} className="btn-ghost px-3 py-2">
                 <XCircleIcon className="h-5 w-5" />
@@ -239,7 +239,7 @@ export default function TeacherValidationPage() {
 
             <div className="grid gap-4 lg:grid-cols-2">
               <label className="block">
-                <span className="mb-2 block text-sm font-semibold text-white">Topic</span>
+                <span className="mb-2 block text-sm font-semibold text-surface-text">Topic</span>
                 <input
                   className="input"
                   value={editing.topic}
@@ -247,7 +247,7 @@ export default function TeacherValidationPage() {
                 />
               </label>
               <label className="block">
-                <span className="mb-2 block text-sm font-semibold text-white">Type</span>
+                <span className="mb-2 block text-sm font-semibold text-surface-text">Type</span>
                 <select
                   className="input"
                   value={editing.type}
@@ -261,7 +261,7 @@ export default function TeacherValidationPage() {
             </div>
 
             <label className="mt-4 block">
-              <span className="mb-2 block text-sm font-semibold text-white">Simplified explanation</span>
+              <span className="mb-2 block text-sm font-semibold text-surface-text">Simplified explanation</span>
               <textarea
                 className="input min-h-32 resize-y"
                 value={editing.content}
@@ -270,7 +270,7 @@ export default function TeacherValidationPage() {
             </label>
 
             <label className="mt-4 block">
-              <span className="mb-2 block text-sm font-semibold text-white">Story analogy</span>
+              <span className="mb-2 block text-sm font-semibold text-surface-text">Story analogy</span>
               <textarea
                 className="input min-h-28 resize-y"
                 value={editing.story}
@@ -279,7 +279,7 @@ export default function TeacherValidationPage() {
             </label>
 
             <label className="mt-4 block">
-              <span className="mb-2 block text-sm font-semibold text-white">Diagram SVG or path</span>
+              <span className="mb-2 block text-sm font-semibold text-surface-text">Diagram SVG or path</span>
               <textarea
                 className="input min-h-28 resize-y font-mono text-xs"
                 value={editing.diagram}

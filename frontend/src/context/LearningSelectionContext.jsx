@@ -1,18 +1,30 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { getLearningSelection, saveLearningSelection } from '@/utils/indexedDB'
 
 const LearningSelectionContext = createContext(null)
 
 const initialSelection = {
+  boardId: null,
+  boardLabel: null,
+  classSlug: null,
+  classLabel: null,
   subjectId: null,
   subjectLabel: null,
+  documentId: null,
+  documentTitle: null,
+  chapterId: null,
+  chapterLabel: null,
   topicId: null,
   topicLabel: null,
+  topicPath: null,
+  topicLevel: null,
+  topicPageNumber: null,
 }
 
 export function LearningSelectionProvider({ children }) {
   const [selection, setSelection] = useState(initialSelection)
   const [isSelectionLoaded, setIsSelectionLoaded] = useState(false)
+  const selectionRef = useRef(initialSelection)
 
   useEffect(() => {
     let cancelled = false
@@ -20,11 +32,16 @@ export function LearningSelectionProvider({ children }) {
     getLearningSelection()
       .then((storedSelection) => {
         if (!cancelled && storedSelection) {
-          setSelection({ ...initialSelection, ...storedSelection })
+          const nextSelection = { ...initialSelection, ...storedSelection }
+          selectionRef.current = nextSelection
+          setSelection(nextSelection)
         }
       })
       .catch(() => {
-        if (!cancelled) setSelection(initialSelection)
+        if (!cancelled) {
+          selectionRef.current = initialSelection
+          setSelection(initialSelection)
+        }
       })
       .finally(() => {
         if (!cancelled) setIsSelectionLoaded(true)
@@ -35,31 +52,64 @@ export function LearningSelectionProvider({ children }) {
     }
   }, [])
 
-  const selectSubject = useCallback(async (subject) => {
+  const selectClass = useCallback(async (classItem, board = null) => {
     const nextSelection = {
-      subjectId: subject.id,
-      subjectLabel: subject.label,
-      topicId: null,
-      topicLabel: null,
+      ...initialSelection,
+      boardId: board?.id ?? selectionRef.current.boardId,
+      boardLabel: board?.label ?? selectionRef.current.boardLabel,
+      classSlug: classItem.class_slug ?? classItem.classSlug ?? classItem.id ?? null,
+      classLabel: classItem.class_label ?? classItem.classLabel ?? classItem.label ?? null,
     }
+    selectionRef.current = nextSelection
     setSelection(nextSelection)
     await saveLearningSelection(nextSelection)
   }, [])
 
-  const selectTopic = useCallback(async (subject, topic) => {
+  const selectSubject = useCallback(async (subject) => {
     const nextSelection = {
-      subjectId: subject.id,
-      subjectLabel: subject.label,
-      topicId: topic.id,
-      topicLabel: topic.label,
+      ...selectionRef.current,
+      subjectId: subject.subject_slug ?? subject.subjectSlug ?? subject.id ?? subject.slug ?? null,
+      subjectLabel: subject.subject_label ?? subject.subjectLabel ?? subject.label ?? subject.name ?? null,
+      documentId: null,
+      documentTitle: null,
+      chapterId: null,
+      chapterLabel: null,
+      topicId: null,
+      topicLabel: null,
+      topicPath: null,
+      topicLevel: null,
+      topicPageNumber: null,
     }
+    selectionRef.current = nextSelection
+    setSelection(nextSelection)
+    await saveLearningSelection(nextSelection)
+  }, [])
+
+  const selectTopic = useCallback(async (subject, topic, metadata = {}) => {
+    const nextSelection = {
+      ...selectionRef.current,
+      classSlug: metadata.classSlug ?? topic.classSlug ?? topic.class_slug ?? selectionRef.current.classSlug,
+      classLabel: metadata.classLabel ?? topic.classLabel ?? topic.class_label ?? selectionRef.current.classLabel,
+      subjectId: subject.subject_slug ?? subject.subjectSlug ?? subject.id ?? subject.slug ?? selectionRef.current.subjectId,
+      subjectLabel: subject.subject_label ?? subject.subjectLabel ?? subject.label ?? subject.name ?? selectionRef.current.subjectLabel,
+      documentId: metadata.documentId ?? topic.documentId ?? topic.document_id ?? selectionRef.current.documentId,
+      documentTitle: metadata.documentTitle ?? topic.documentTitle ?? topic.document_title ?? selectionRef.current.documentTitle,
+      chapterId: metadata.chapterId ?? topic.chapterId ?? topic.chapter_id ?? selectionRef.current.chapterId,
+      chapterLabel: metadata.chapterLabel ?? topic.chapterLabel ?? topic.chapter_label ?? selectionRef.current.chapterLabel,
+      topicId: topic.id ?? topic.slug ?? topic.topicId ?? null,
+      topicLabel: topic.label ?? topic.topicLabel ?? topic.title ?? null,
+      topicPath: metadata.topicPath ?? topic.topicPath ?? topic.pathLabel ?? selectionRef.current.topicPath,
+      topicLevel: metadata.topicLevel ?? topic.topicLevel ?? topic.level ?? selectionRef.current.topicLevel,
+      topicPageNumber: metadata.topicPageNumber ?? topic.topicPageNumber ?? topic.page_number ?? selectionRef.current.topicPageNumber,
+    }
+    selectionRef.current = nextSelection
     setSelection(nextSelection)
     await saveLearningSelection(nextSelection)
   }, [])
 
   const value = useMemo(
-    () => ({ selection, isSelectionLoaded, selectSubject, selectTopic }),
-    [selection, isSelectionLoaded],
+    () => ({ selection, isSelectionLoaded, selectClass, selectSubject, selectTopic }),
+    [selection, isSelectionLoaded, selectClass, selectSubject, selectTopic],
   )
 
   return (

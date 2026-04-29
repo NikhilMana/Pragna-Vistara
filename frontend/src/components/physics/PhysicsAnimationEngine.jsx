@@ -135,7 +135,7 @@ export default function PhysicsAnimationEngine({ animation, title, className = '
     <div ref={containerRef} className={`relative overflow-hidden rounded-2xl border border-surface-border bg-surface/60 ${className}`}>
       {/* Title bar */}
       <div className="flex items-center justify-between border-b border-surface-border bg-surface/80 px-4 py-3">
-        <h3 className="text-sm font-semibold text-white">{title ?? 'Physics Animation'}</h3>
+        <h3 className="text-sm font-semibold text-surface-text">{title ?? 'Physics Animation'}</h3>
         <div className="flex items-center gap-2 text-xs text-surface-muted">
           <span className="rounded-full border border-surface-border bg-surface px-2 py-0.5">
             Stage {stageIndex + 1}/{stages.length || 1}
@@ -157,7 +157,7 @@ export default function PhysicsAnimationEngine({ animation, title, className = '
       {/* Stage narration */}
       {currentStage && (
         <div className="border-t border-surface-border bg-surface/80 px-4 py-3">
-          <p className="text-sm leading-relaxed text-white">{currentStage.narration}</p>
+          <p className="text-sm leading-relaxed text-surface-text">{currentStage.narration}</p>
           {currentStage.detail && (
             <p className="mt-1 text-xs text-surface-muted">{currentStage.detail}</p>
           )}
@@ -215,8 +215,8 @@ function ControlButton({ icon: Icon, label, onClick, active }) {
       title={label}
       className={`flex h-8 w-8 items-center justify-center rounded-lg border transition-colors ${
         active
-          ? 'border-primary-500/40 bg-primary-500/10 text-primary-300'
-          : 'border-surface-border bg-surface text-surface-muted hover:text-white'
+          ? 'border-primary-500 bg-primary-500 text-white'
+          : 'border-surface-border bg-surface text-surface-muted hover:text-surface-text'
       }`}
     >
       <Icon size={16} />

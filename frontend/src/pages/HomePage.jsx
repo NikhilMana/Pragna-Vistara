@@ -22,7 +22,7 @@ export default function HomePage() {
 
           {selection.subjectLabel && (
             <div className="glass px-4 py-3 text-sm text-surface-muted">
-              Last opened <span className="text-white font-semibold">{selection.subjectLabel}</span>
+              Last opened <span className="text-surface-text font-semibold">{selection.subjectLabel}</span>
             </div>
           )}
         </div>
@@ -52,7 +52,7 @@ export default function HomePage() {
               style={{ animationDelay: `${index * 55}ms` }}
             >
               <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full border border-white/10 bg-white/5" />
-              <div className="absolute bottom-4 right-5 text-7xl font-display font-bold text-white/[0.04]">
+              <div className="absolute bottom-4 right-5 text-7xl font-display font-bold text-surface-text/[0.04]">
                 {subject.shortLabel}
               </div>
 
@@ -65,7 +65,7 @@ export default function HomePage() {
                 </div>
 
                 <div>
-                  <h2 className="mb-3 text-2xl font-display font-bold text-white">
+                  <h2 className="mb-3 text-2xl font-display font-bold text-surface-text">
                     {subject.label}
                   </h2>
                   <div className="flex items-center justify-between">
@@ -74,7 +74,7 @@ export default function HomePage() {
                         <span key={dotClass} className={`h-2.5 w-2.5 rounded-full ${dotClass}`} />
                       ))}
                     </div>
-                    <span className="flex items-center gap-1 text-sm font-semibold text-white/80 transition-all group-hover:gap-2">
+                    <span className="flex items-center gap-1 text-sm font-semibold text-surface-text/80 transition-all group-hover:gap-2">
                       Topics
                       <ChevronRightIcon className="h-4 w-4" />
                     </span>

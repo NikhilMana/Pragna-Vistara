@@ -29,7 +29,7 @@ export default function PhysicsChaptersPage() {
             <span className="badge-primary">Class XII Physics</span>
             <span className="badge-amber">Chapter {singleChapter.number}</span>
           </div>
-          <h1 className="text-3xl font-display font-bold text-white">{singleChapter.title}</h1>
+          <h1 className="text-3xl font-display font-bold text-surface-text">{singleChapter.title}</h1>
           <p className="mt-2 text-sm text-surface-muted">{singleChapter.topics.length} topics</p>
         </div>
 
@@ -39,31 +39,25 @@ export default function PhysicsChaptersPage() {
               key={topic.id}
               type="button"
               onClick={() => navigate(`/physics/class-12/chapters/${chapterId}/topics/${topic.id}`)}
-              className="group w-full rounded-2xl border border-surface-border bg-surface-card/70 p-5 text-left transition-all hover:border-primary-500/30 hover:bg-surface-card"
+              className="group w-full rounded-2xl border border-surface-border bg-surface-card/70 p-5 text-left transition-all hover:border-primary-500 hover:bg-surface-card"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-start gap-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-surface-border bg-surface text-sm font-bold text-primary-300">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-surface-border bg-surface-card text-sm font-bold text-primary-500">
                     {i + 1}
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-white group-hover:text-primary-200">
+                    <p className="text-sm font-semibold text-surface-text group-hover:text-primary-500">
                       {topic.title}
                     </p>
                     <div className="mt-2 flex flex-wrap gap-2 text-xs text-surface-muted">
                       <span className="rounded-full border border-surface-border bg-surface px-2 py-0.5">
                         {topic.duration}
                       </span>
-                      <span className="rounded-full border border-surface-border bg-surface px-2 py-0.5">
-                        {topic.questions.length} questions
-                      </span>
-                      <span className="rounded-full border border-surface-border bg-surface px-2 py-0.5">
-                        {topic.misconceptions.length} misconception probes
-                      </span>
                     </div>
                   </div>
                 </div>
-                <ArrowRight size={18} className="text-surface-muted group-hover:text-primary-300 transition-colors" />
+                <ArrowRight size={18} className="text-surface-muted group-hover:text-primary-500 transition-colors" />
               </div>
             </button>
           ))}
@@ -95,7 +89,7 @@ export default function PhysicsChaptersPage() {
           <span className="badge-primary">CBSE / NCERT</span>
           <span className="badge-teal">Class XII</span>
         </div>
-        <h1 className="text-4xl font-display font-bold text-white">Physics</h1>
+        <h1 className="text-4xl font-display font-bold text-surface-text">Physics</h1>
         <p className="mt-2 text-surface-muted">
           {chapters.length} chapters • {chapters.reduce((s, c) => s + c.topics.length, 0)} topics •
           Interactive animations, questions, and misconception probes
@@ -116,13 +110,7 @@ export default function PhysicsChaptersPage() {
         />
       </div>
 
-      {/* Summary stats */}
-      <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatCard label="Chapters" value={chapters.length} />
-        <StatCard label="Topics" value={chapters.reduce((s, c) => s + c.topics.length, 0)} />
-        <StatCard label="Questions" value={chapters.reduce((s, c) => s + c.topics.reduce((ts, t) => ts + t.questions.length, 0), 0)} />
-        <StatCard label="Misconception Probes" value={chapters.reduce((s, c) => s + c.topics.reduce((ts, t) => ts + t.misconceptions.length, 0), 0)} />
-      </div>
+
 
       {/* Chapter list */}
       <div className="space-y-3">
@@ -136,11 +124,11 @@ export default function PhysicsChaptersPage() {
                 className="w-full px-5 py-4 text-left flex items-center justify-between hover:bg-surface/40 transition-colors"
               >
                 <div className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-primary-500/20 bg-primary-500/5 text-lg font-bold text-primary-300">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-primary-500 bg-surface-card text-lg font-bold text-primary-500">
                     {ch.number}
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-white">{ch.title}</p>
+                    <p className="text-sm font-semibold text-surface-text">{ch.title}</p>
                     <p className="text-xs text-surface-muted mt-1">{ch.topics.length} topics</p>
                   </div>
                 </div>
@@ -164,10 +152,10 @@ export default function PhysicsChaptersPage() {
                         key={t.id}
                         type="button"
                         onClick={() => navigate(`/physics/class-12/chapters/${ch.id}/topics/${t.id}`)}
-                        className="flex items-center gap-3 rounded-lg border border-surface-border bg-surface/50 px-3 py-2.5 text-left text-xs transition-colors hover:border-primary-500/30"
+                        className="flex items-center gap-3 rounded-lg border border-surface-border bg-surface-card px-3 py-2.5 text-left text-xs transition-colors hover:border-primary-500"
                       >
-                        <BookOpen size={14} className="text-primary-300 shrink-0" />
-                        <span className="text-white">{t.title}</span>
+                        <BookOpen size={14} className="text-primary-500 shrink-0" />
+                        <span className="text-surface-text">{t.title}</span>
                       </button>
                     ))}
                   </div>
@@ -183,9 +171,9 @@ export default function PhysicsChaptersPage() {
 
 function StatCard({ label, value }) {
   return (
-    <div className="rounded-xl border border-surface-border bg-surface px-4 py-3">
+    <div className="rounded-xl border border-surface-border bg-surface-card px-4 py-3">
       <p className="text-[11px] uppercase tracking-wider text-surface-muted">{label}</p>
-      <p className="mt-1 text-2xl font-display font-bold text-white">{value}</p>
+      <p className="mt-1 text-2xl font-display font-bold text-surface-text">{value}</p>
     </div>
   )
 }

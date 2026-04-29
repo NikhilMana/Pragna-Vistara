@@ -68,7 +68,7 @@ function MetricCard({ icon: Icon, label, value, hint, accentClass }) {
         <span className="text-xs text-surface-muted">{hint}</span>
       </div>
       <p className="text-sm text-surface-muted">{label}</p>
-      <p className="mt-2 text-3xl font-display font-bold text-white">{value}</p>
+      <p className="mt-2 text-3xl font-display font-bold text-surface-text">{value}</p>
     </article>
   )
 }
@@ -121,7 +121,7 @@ export default function ProgressDashboardPage() {
             <SparklesIcon className="h-3.5 w-3.5" />
             Student dashboard
           </div>
-          <h1 className="text-4xl font-display font-bold text-white">
+          <h1 className="text-4xl font-display font-bold text-surface-text">
             Progress at a glance
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-surface-muted">
@@ -139,7 +139,7 @@ export default function ProgressDashboardPage() {
           label="Questions attempted"
           value={snapshot.attempted}
           hint="All saved locally"
-          accentClass="text-primary-300"
+          accentClass="text-primary-500"
         />
         <MetricCard
           icon={TargetIcon}
@@ -161,7 +161,7 @@ export default function ProgressDashboardPage() {
         <article className="card">
           <div className="mb-5 flex items-center justify-between gap-3">
             <div>
-              <h2 className="text-xl font-display font-bold text-white">Improvement over time</h2>
+              <h2 className="text-xl font-display font-bold text-surface-text">Improvement over time</h2>
               <p className="mt-1 text-sm text-surface-muted">
                 A simple mastery curve from your last eight analyzed responses.
               </p>
@@ -173,7 +173,7 @@ export default function ProgressDashboardPage() {
 
         <article className="card">
           <div className="mb-5">
-            <h2 className="text-xl font-display font-bold text-white">Misconception types</h2>
+            <h2 className="text-xl font-display font-bold text-surface-text">Misconception types</h2>
             <p className="mt-1 text-sm text-surface-muted">
               Most common patterns detected in recent learning.
             </p>
@@ -188,7 +188,7 @@ export default function ProgressDashboardPage() {
               {snapshot.misconceptionBreakdown.map((item) => (
                 <div key={item.type}>
                   <div className="mb-2 flex items-center justify-between gap-3 text-sm">
-                    <span className="text-white">{item.type}</span>
+                    <span className="text-surface-text">{item.type}</span>
                     <span className="text-surface-muted">{item.count}</span>
                   </div>
                   <div className="progress-track h-3">
@@ -208,7 +208,7 @@ export default function ProgressDashboardPage() {
         <article className="card">
           <div className="mb-5 flex items-center justify-between gap-3">
             <div>
-              <h2 className="text-xl font-display font-bold text-white">Weak areas</h2>
+              <h2 className="text-xl font-display font-bold text-surface-text">Weak areas</h2>
               <p className="mt-1 text-sm text-surface-muted">
                 Topics where misconception frequency and lower mastery suggest more practice.
               </p>
@@ -228,7 +228,7 @@ export default function ProgressDashboardPage() {
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="text-lg font-semibold text-white">{area.topicLabel}</h3>
+                      <h3 className="text-lg font-semibold text-surface-text">{area.topicLabel}</h3>
                       <span className={area.severity === 'high' ? 'badge-rose' : area.severity === 'medium' ? 'badge-amber' : 'badge-teal'}>
                         {getSeverityLabel(area.severity)}
                       </span>
@@ -236,7 +236,7 @@ export default function ProgressDashboardPage() {
                     <p className="mt-1 text-sm text-surface-muted">{area.subjectLabel}</p>
                   </div>
                   <div className="text-left sm:text-right">
-                    <p className="text-2xl font-display font-bold text-white">{area.averageScore}%</p>
+                    <p className="text-2xl font-display font-bold text-surface-text">{area.averageScore}%</p>
                     <p className="text-xs text-surface-muted">average mastery</p>
                   </div>
                 </div>
@@ -244,15 +244,15 @@ export default function ProgressDashboardPage() {
                 <div className="mt-4 grid gap-3 sm:grid-cols-3">
                   <div className="rounded-xl bg-white/5 px-3 py-3">
                     <p className="text-xs uppercase tracking-wide text-surface-muted">Attempts</p>
-                    <p className="mt-1 text-lg font-semibold text-white">{area.attempts}</p>
+                    <p className="mt-1 text-lg font-semibold text-surface-text">{area.attempts}</p>
                   </div>
                   <div className="rounded-xl bg-white/5 px-3 py-3">
                     <p className="text-xs uppercase tracking-wide text-surface-muted">Top misconception</p>
-                    <p className="mt-1 text-sm font-semibold text-white">{area.topMisconception}</p>
+                    <p className="mt-1 text-sm font-semibold text-surface-text">{area.topMisconception}</p>
                   </div>
                   <div className="rounded-xl bg-white/5 px-3 py-3">
                     <p className="text-xs uppercase tracking-wide text-surface-muted">Last practiced</p>
-                    <p className="mt-1 text-sm font-semibold text-white">
+                    <p className="mt-1 text-sm font-semibold text-surface-text">
                       {new Intl.DateTimeFormat('en-IN', { dateStyle: 'medium' }).format(new Date(area.lastPracticedAt))}
                     </p>
                   </div>
@@ -263,9 +263,9 @@ export default function ProgressDashboardPage() {
         </article>
 
         <article className="card">
-          <h2 className="text-xl font-display font-bold text-white">Focus next</h2>
+          <h2 className="text-xl font-display font-bold text-surface-text">Focus next</h2>
           <p className="mt-2 text-sm leading-relaxed text-surface-muted">
-            The current top pattern is <span className="font-semibold text-white">{snapshot.topMisconception}</span>. A good next step is to revisit the lowest-scoring topic and answer one fresh question in your own words.
+            The current top pattern is <span className="font-semibold text-surface-text">{snapshot.topMisconception}</span>. A good next step is to revisit the lowest-scoring topic and answer one fresh question in your own words.
           </p>
 
           <div className="divider" />
@@ -274,11 +274,11 @@ export default function ProgressDashboardPage() {
             {snapshot.recentTimeline.slice().reverse().map((point) => (
               <div key={point.id} className="flex items-center justify-between rounded-xl bg-white/5 px-4 py-3">
                 <div>
-                  <p className="text-sm font-semibold text-white">{point.topicLabel}</p>
+                  <p className="text-sm font-semibold text-surface-text">{point.topicLabel}</p>
                   <p className="text-xs text-surface-muted">{point.misconceptionType}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-lg font-display font-bold text-white">{point.masteryScore}%</p>
+                  <p className="text-lg font-display font-bold text-surface-text">{point.masteryScore}%</p>
                   <p className="text-xs text-surface-muted">{point.label}</p>
                 </div>
               </div>

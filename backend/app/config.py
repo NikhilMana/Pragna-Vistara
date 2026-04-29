@@ -4,7 +4,10 @@ Uses pydantic-settings for type-safe configuration.
 """
 
 from functools import lru_cache
+from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+BACKEND_ROOT = Path(__file__).resolve().parents[1]
 
 
 class Settings(BaseSettings):
@@ -30,6 +33,8 @@ class Settings(BaseSettings):
     ollama_model:      str = "mistral"
     ollama_timeout:    float = 8.0
     ollama_enabled:    bool = True
+    textbook_dataset_root: Path = BACKEND_ROOT.parent / "dataset"
+    textbook_extracted_root: Path = BACKEND_ROOT / "generated" / "textbooks"
 
     model_config = SettingsConfigDict(
         env_file=".env",

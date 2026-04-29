@@ -21,7 +21,7 @@ export default function OfflineBanner() {
     >
       {!isOnline && (
         <div
-          className="bg-accent-rose/90 backdrop-blur-sm text-white text-sm font-medium
+          className="bg-accent-rose/90 backdrop-blur-sm text-surface-text text-sm font-medium
                      flex items-center justify-center gap-2 py-2.5"
         >
           <WifiOffIcon className="w-4 h-4 shrink-0" />

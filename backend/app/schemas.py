@@ -188,3 +188,142 @@ class HealthResponse(BaseModel):
     status:  str = "ok"
     version: str
     env:     str
+
+
+# --- /syllabus ---
+
+class SyllabusSubjectRef(BaseModel):
+    label: str
+    slug: str
+
+
+class SyllabusTocEntry(BaseModel):
+    id: str
+    title: str
+    level: int = Field(..., ge=1)
+    parent_id: str | None = None
+    page_number: int | None = Field(None, ge=1)
+
+
+class SyllabusTocNode(BaseModel):
+    id: str
+    title: str
+    level: int = Field(..., ge=1)
+    parent_id: str | None = None
+    page_number: int | None = Field(None, ge=1)
+    children: list["SyllabusTocNode"] = Field(default_factory=list)
+
+
+class SyllabusDocumentSummary(BaseModel):
+    document_id: str
+    document_title: str
+    class_label: str
+    class_slug: str
+    subject_label: str
+    subject_slug: str
+    subject: SyllabusSubjectRef
+    document_kind: str = Field(..., pattern="^(textbook|reader|workbook)$")
+    part_number: int | None = Field(None, ge=1)
+    part_label: str = ""
+    page_count: int = Field(..., ge=0)
+    has_toc: bool = False
+    toc_entry_count: int = Field(..., ge=0)
+    chapter_count: int = Field(..., ge=0)
+    toc_quality: str = Field(..., pattern="^(none|page_index|flat|structured)$")
+    file_name: str
+    relative_pdf_path: str
+    output_json_path: str
+    file_size_bytes: int = Field(..., ge=0)
+    modified_at: str
+
+
+class SyllabusClassDetail(BaseModel):
+    class_label: str
+    class_slug: str
+    subject_count: int = Field(..., ge=0)
+    document_count: int = Field(..., ge=0)
+    total_pages: int = Field(..., ge=0)
+    toc_document_count: int = Field(..., ge=0)
+    chapter_count: int = Field(..., ge=0)
+    subjects: list["SyllabusSubjectDetail"] = Field(default_factory=list)
+
+
+class SyllabusSubjectDetail(BaseModel):
+    class_label: str
+    class_slug: str
+    subject_label: str
+    subject_slug: str
+    document_count: int = Field(..., ge=0)
+    total_pages: int = Field(..., ge=0)
+    toc_document_count: int = Field(..., ge=0)
+    chapter_count: int = Field(..., ge=0)
+    documents: list[SyllabusDocumentSummary] = Field(default_factory=list)
+
+
+class SyllabusCatalogResponse(BaseModel):
+    generated_at: str
+    extracted_root: str
+    class_count: int = Field(..., ge=0)
+    subject_count: int = Field(..., ge=0)
+    document_count: int = Field(..., ge=0)
+    total_pages: int = Field(..., ge=0)
+    classes: list[SyllabusClassDetail] = Field(default_factory=list)
+
+
+class SyllabusDocumentSource(BaseModel):
+    file_name: str
+    relative_pdf_path: str
+    absolute_pdf_path: str
+    file_size_bytes: int = Field(..., ge=0)
+    modified_at: str
+    sha256: str | None = None
+
+
+class SyllabusDocumentCurriculum(BaseModel):
+    class_label: str
+    class_slug: str
+    subject_label: str
+    subject_slug: str
+    document_title: str
+    subject: SyllabusSubjectRef
+
+
+class SyllabusDocumentPdfInfo(BaseModel):
+    page_count: int = Field(..., ge=0)
+    metadata: dict[str, Any] = Field(default_factory=dict)
+    has_toc: bool = False
+    toc_quality: str = Field(..., pattern="^(none|page_index|flat|structured)$")
+    toc_entry_count: int = Field(..., ge=0)
+    chapter_count: int = Field(..., ge=0)
+
+
+class SyllabusDocumentDetail(SyllabusDocumentSummary):
+    extracted_at: str
+    source: SyllabusDocumentSource
+    curriculum: SyllabusDocumentCurriculum
+    pdf: SyllabusDocumentPdfInfo
+    toc: list[SyllabusTocEntry] = Field(default_factory=list)
+    toc_tree: list[SyllabusTocNode] = Field(default_factory=list)
+
+
+class SyllabusSearchResult(BaseModel):
+    document_id: str
+    document_title: str
+    class_label: str
+    class_slug: str
+    subject_label: str
+    subject_slug: str
+    match_type: str = Field(..., pattern="^(document|subject|class|chapter)$")
+    matched_text: str
+    page_number: int | None = Field(None, ge=1)
+
+
+class SyllabusSearchResponse(BaseModel):
+    query: str
+    result_count: int = Field(..., ge=0)
+    results: list[SyllabusSearchResult] = Field(default_factory=list)
+
+
+SyllabusTocNode.model_rebuild()
+SyllabusSubjectDetail.model_rebuild()
+SyllabusClassDetail.model_rebuild()

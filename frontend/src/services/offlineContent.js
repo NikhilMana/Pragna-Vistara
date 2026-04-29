@@ -1,5 +1,6 @@
 import { OFFLINE_QUESTION_BANK, getOfflineQuestionById, getOfflineQuestionByTopicId } from '@/data/offlineQuestionBank'
 import { saveQuestions, getQuestionsByTopic, getQuestionById } from '@/utils/indexedDB'
+import { buildQuestionFromTopicContext } from '@/utils/syllabusPractice'
 
 let seedPromise = null
 
@@ -14,7 +15,7 @@ export async function ensureOfflineQuestionBank() {
   return seedPromise
 }
 
-export async function getQuestionForTopic(topicId) {
+export async function getQuestionForTopic(topicId, topicContext = null) {
   await ensureOfflineQuestionBank()
 
   const storedQuestions = await getQuestionsByTopic(topicId)
@@ -22,7 +23,21 @@ export async function getQuestionForTopic(topicId) {
     return storedQuestions[0]
   }
 
-  return getOfflineQuestionByTopicId(topicId)
+  const staticQuestion = getOfflineQuestionByTopicId(topicId)
+  if (staticQuestion) {
+    return staticQuestion
+  }
+
+  if (!topicContext) {
+    return null
+  }
+
+  const generatedQuestion = buildQuestionFromTopicContext({
+    ...topicContext,
+    topicId,
+  })
+  await saveQuestions([generatedQuestion])
+  return generatedQuestion
 }
 
 export async function getQuestionForId(questionId) {

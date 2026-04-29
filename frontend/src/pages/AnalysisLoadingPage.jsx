@@ -30,13 +30,18 @@ function getProgressWriteKey(responseId, answer, topicId) {
 
 export default function AnalysisLoadingPage() {
   const { state } = useLocation()
-  const topicId = state?.topicId
-  const topicLabel = state?.topicLabel ?? 'selected topic'
-  const subjectLabel = state?.subjectLabel
   const responseId = state?.responseId
   const answer = state?.answer
+  const topicContext = state?.topicContext ?? null
+  const topicId = state?.topicId
+  const topicLabel = state?.topicLabel ?? topicContext?.topicLabel ?? answer?.topicLabel ?? 'selected topic'
+  const subjectLabel = state?.subjectLabel ?? topicContext?.subjectLabel ?? answer?.subjectLabel
+  const subjectId = topicContext?.subjectId ?? answer?.subjectId
   const answerPreview = answer?.answerText ?? ''
   const explanationCacheId = buildExplanationCacheId(responseId, answer?.questionId, topicId)
+  const syllabusLink = topicContext?.classSlug && topicContext?.subjectId && topicContext?.documentId
+    ? `/classes/${topicContext.classSlug}/subjects/${topicContext.subjectId}/documents/${topicContext.documentId}`
+    : '/selection'
 
   const [analysis, setAnalysis] = useState(null)
   const [explanation, setExplanation] = useState(null)
@@ -74,9 +79,12 @@ export default function AnalysisLoadingPage() {
         const analysisResult = await analyzeResponse({
           question: answer.questionText,
           student_answer: answer.answerText,
-          subject: subjectSlug(subjectLabel),
+          subject: subjectId ?? subjectSlug(subjectLabel),
           topic_id: topicId,
           question_id: answer.questionId,
+          class_label: topicContext?.classLabel ?? answer?.classLabel,
+          document_title: topicContext?.documentTitle ?? answer?.documentTitle,
+          chapter_label: topicContext?.chapterLabel ?? answer?.chapterLabel,
         })
 
         const explanationResult = await generateExplanation({
@@ -87,6 +95,9 @@ export default function AnalysisLoadingPage() {
           question_id: answer.questionId,
           question_text: answer.questionText,
           student_answer: answer.answerText,
+          class_label: topicContext?.classLabel ?? answer?.classLabel,
+          document_title: topicContext?.documentTitle ?? answer?.documentTitle,
+          chapter_label: topicContext?.chapterLabel ?? answer?.chapterLabel,
           include_visual: true,
         })
 
@@ -129,7 +140,13 @@ export default function AnalysisLoadingPage() {
                 responseId,
                 questionId: answer.questionId,
                 questionText: answer.questionText,
+                subjectId,
                 subjectLabel,
+                classLabel: topicContext?.classLabel ?? answer?.classLabel,
+                documentId: topicContext?.documentId ?? answer?.documentId,
+                documentTitle: topicContext?.documentTitle ?? answer?.documentTitle,
+                chapterId: topicContext?.chapterId ?? answer?.chapterId,
+                chapterLabel: topicContext?.chapterLabel ?? answer?.chapterLabel,
                 topicId,
                 topicLabel,
                 misconceptionType: analysisResult.misconception_type,
@@ -203,22 +220,22 @@ export default function AnalysisLoadingPage() {
     return () => {
       cancelled = true
     }
-  }, [answer, explanationCacheId, responseId, subjectLabel, topicId, topicLabel])
+  }, [answer, explanationCacheId, responseId, subjectId, subjectLabel, topicContext, topicId, topicLabel])
 
   if (status === 'loading') {
     return (
       <div className="container-page max-w-3xl animate-fade-in">
         <section className="card overflow-hidden text-center">
-          <div className="mx-auto mb-8 flex h-28 w-28 items-center justify-center rounded-full border border-primary-500/30 bg-primary-500/10">
+          <div className="mx-auto mb-8 flex h-28 w-28 items-center justify-center rounded-full border border-primary-500 bg-surface-card">
             <div className="flex h-20 w-20 items-center justify-center rounded-full border border-accent-teal/30 bg-accent-teal/10 animate-pulse-slow">
               <SparklesIcon className="h-9 w-9 text-accent-teal" />
             </div>
           </div>
 
-          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-primary-300">
+          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-primary-500">
             AI analyzing...
           </p>
-          <h1 className="text-3xl font-display font-bold text-white">
+          <h1 className="text-3xl font-display font-bold text-surface-text">
             Building your explanation
           </h1>
           <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-surface-muted">
@@ -240,6 +257,7 @@ export default function AnalysisLoadingPage() {
       <section className="card overflow-hidden">
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
           <div>
+            {topicContext?.chapterLabel && <span className="badge-amber mr-2">{topicContext.chapterLabel}</span>}
             <span className="badge-teal">{topicLabel}</span>
             {analysis?.confidence_level && (
               <span className="badge-primary ml-2">{analysis.confidence_level}</span>
@@ -254,7 +272,7 @@ export default function AnalysisLoadingPage() {
           <span className="text-xs text-surface-muted">{explanation?.type ?? 'hybrid'} explanation</span>
         </div>
 
-        <h1 className="mb-6 text-3xl font-display font-bold text-white">
+        <h1 className="mb-6 text-3xl font-display font-bold text-surface-text">
           {analysis?.misconception_type ?? 'Explanation'}
         </h1>
 
@@ -267,10 +285,10 @@ export default function AnalysisLoadingPage() {
         )}
 
         <div className="grid gap-4 lg:grid-cols-2">
-          <article className="rounded-2xl border border-primary-500/20 bg-primary-500/5 p-5">
-            <div className="mb-3 flex items-center gap-2 text-primary-300">
+          <article className="rounded-2xl border border-primary-500 bg-surface-card p-5">
+            <div className="mb-3 flex items-center gap-2 text-primary-500">
               <SparklesIcon className="h-4 w-4" />
-              <h2 className="font-semibold text-white">Simple idea</h2>
+              <h2 className="font-semibold text-surface-text">Simple idea</h2>
             </div>
             <p className="text-sm leading-relaxed text-surface-muted">
               {explanation?.content}
@@ -278,7 +296,7 @@ export default function AnalysisLoadingPage() {
           </article>
 
           <article className="rounded-2xl border border-accent-amber/20 bg-accent-amber/5 p-5">
-            <h2 className="mb-3 font-semibold text-white">Story analogy</h2>
+            <h2 className="mb-3 font-semibold text-surface-text">Story analogy</h2>
             <p className="text-sm leading-relaxed text-surface-muted">
               {explanation?.story}
             </p>
@@ -288,7 +306,7 @@ export default function AnalysisLoadingPage() {
         {answerPreview && (
           <div className="mt-6 rounded-2xl border border-surface-border bg-surface/40 p-4">
             <div className="mb-2 flex items-center justify-between gap-3">
-              <span className="text-sm font-semibold text-white">Your answer</span>
+              <span className="text-sm font-semibold text-surface-text">Your answer</span>
               <span className="text-xs text-surface-muted">Saved locally</span>
             </div>
             <p className="line-clamp-3 text-sm leading-relaxed text-surface-muted">
@@ -312,9 +330,9 @@ export default function AnalysisLoadingPage() {
 
       <div className="mt-6 flex justify-center">
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Link to="/" className="btn-secondary">
+          <Link to={syllabusLink} className="btn-secondary">
             <ArrowLeftIcon className="h-4 w-4" />
-            Subjects
+            Back to syllabus
           </Link>
           <Link to="/progress" className="btn-primary">
             <SparklesIcon className="h-4 w-4" />

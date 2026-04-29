@@ -79,7 +79,7 @@ export default function PhysicsLearningPage() {
     return (
       <div className="container-page animate-fade-in">
         <div className="rounded-2xl border border-surface-border bg-surface-card/70 p-8 text-center">
-          <h1 className="text-2xl font-display font-bold text-white">Topic not found</h1>
+          <h1 className="text-2xl font-display font-bold text-surface-text">Topic not found</h1>
           <p className="mt-3 text-surface-muted">The requested chapter or topic does not exist in the catalog.</p>
           <button type="button" onClick={() => navigate('/physics/class-12')} className="btn-primary mt-6">
             Back to Chapters
@@ -103,7 +103,7 @@ export default function PhysicsLearningPage() {
           <span className="badge-amber">Ch {chapter.number}</span>
           <span className="badge-teal">{topic.duration}</span>
         </div>
-        <h1 className="text-3xl font-display font-bold text-white">{topic.title}</h1>
+        <h1 className="text-3xl font-display font-bold text-surface-text">{topic.title}</h1>
         <p className="mt-2 text-sm text-surface-muted">
           Chapter {chapter.number}: {chapter.title}
         </p>
@@ -118,8 +118,8 @@ export default function PhysicsLearningPage() {
             onClick={() => setLearningStage(i)}
             className={`flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium transition-all ${
               learningStage === i
-                ? 'border-primary-500/40 bg-primary-500/10 text-primary-200'
-                : 'border-surface-border bg-surface/40 text-surface-muted hover:text-white'
+                ? 'border-primary-500 bg-primary-500 text-white'
+                : 'border-surface-border bg-surface-card text-surface-muted hover:text-surface-text'
             }`}
           >
             {i === 0 && <Eye size={16} />}
@@ -158,10 +158,10 @@ export default function PhysicsLearningPage() {
                 onClick={() => setCurrentQ(i)}
                 className={`flex h-9 w-9 items-center justify-center rounded-lg border text-sm font-semibold transition-all ${
                   currentQ === i
-                    ? 'border-primary-500 bg-primary-500/20 text-primary-200'
+                    ? 'border-primary-500 bg-primary-500 text-white'
                     : answers[q.id]
                     ? 'border-accent-emerald/40 bg-accent-emerald/10 text-accent-emerald'
-                    : 'border-surface-border bg-surface/40 text-surface-muted hover:text-white'
+                    : 'border-surface-border bg-surface-card text-surface-muted hover:text-surface-text'
                 }`}
               >
                 {i + 1}
@@ -177,7 +177,7 @@ export default function PhysicsLearningPage() {
                 <span className="text-xs text-surface-muted">{questions[currentQ].estimatedTime}</span>
               </div>
 
-              <h2 className="mb-6 text-xl font-display font-bold leading-relaxed text-white">
+              <h2 className="mb-6 text-xl font-display font-bold leading-relaxed text-surface-text">
                 {questions[currentQ].text}
               </h2>
 
@@ -268,9 +268,9 @@ export default function PhysicsLearningPage() {
         <div className="space-y-6">
           <div className="rounded-2xl border border-surface-border bg-surface-card/70 p-6">
             <div className="mb-6 flex items-center gap-3">
-              <BrainCircuit size={24} className="text-primary-300" />
+              <BrainCircuit size={24} className="text-primary-500" />
               <div>
-                <h2 className="text-xl font-display font-bold text-white">Misconception Check</h2>
+                <h2 className="text-xl font-display font-bold text-surface-text">Misconception Check</h2>
                 <p className="text-sm text-surface-muted">These probes test for common misunderstandings. Choose carefully!</p>
               </div>
             </div>
@@ -283,14 +283,14 @@ export default function PhysicsLearningPage() {
 
                 return (
                   <div key={m.id} className="rounded-xl border border-surface-border bg-surface/50 p-5">
-                    <p className="mb-4 text-sm font-semibold text-white">
+                    <p className="mb-4 text-sm font-semibold text-surface-text">
                       {i + 1}. {m.probe}
                     </p>
                     <div className="space-y-2">
                       {m.options.map((opt, oi) => {
-                        let optClass = 'border-surface-border bg-surface/60 text-surface-muted hover:border-primary-500/30 hover:text-white'
+                        let optClass = 'border-surface-border bg-surface-card text-surface-muted hover:border-primary-500 hover:text-surface-text'
                         if (selected === oi && !submitted) {
-                          optClass = 'border-primary-500/50 bg-primary-500/10 text-primary-200'
+                          optClass = 'border-primary-500 bg-primary-500 text-white'
                         }
                         if (submitted && oi === m.correctIndex) {
                           optClass = 'border-accent-emerald/50 bg-accent-emerald/10 text-accent-emerald'
@@ -341,7 +341,7 @@ export default function PhysicsLearningPage() {
               <div className="mt-6">
                 {/* Summary */}
                 <div className="rounded-xl border border-surface-border bg-surface/50 p-4 mb-4">
-                  <p className="text-sm font-semibold text-white mb-2">Results Summary</p>
+                  <p className="text-sm font-semibold text-surface-text mb-2">Results Summary</p>
                   {(() => {
                     const correct = misconceptions.filter(m => misconceptionAnswers[m.id] === m.correctIndex).length
                     const total = misconceptions.length

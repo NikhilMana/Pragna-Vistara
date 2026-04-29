@@ -4,6 +4,22 @@
 
 /* ─── Base ─────────────────────────────────────────── */
 @layer base {
+  :root {
+    --color-surface: 255 255 255;
+    --color-surface-card: 235 235 235;
+    --color-surface-border: 0 0 0;
+    --color-surface-muted: 0 0 0;
+    --color-text: 0 0 0;
+  }
+
+  .dark {
+    --color-surface: 0 0 0;
+    --color-surface-card: 0 0 0;
+    --color-surface-border: 255 255 255;
+    --color-surface-muted: 255 255 255;
+    --color-text: 255 255 255;
+  }
+
   *, *::before, *::after {
     @apply box-border;
   }
@@ -13,9 +29,9 @@
   }
 
   body {
-    @apply bg-surface text-white font-sans min-h-screen;
-    background-image: radial-gradient(ellipse at 20% 50%, rgba(108, 99, 255, 0.06) 0%, transparent 50%),
-                      radial-gradient(ellipse at 80% 20%, rgba(45, 212, 191, 0.04) 0%, transparent 50%);
+    @apply bg-surface font-sans min-h-screen transition-colors duration-300;
+    color: var(--color-text);
+    background-image: none;
   }
 
   h1, h2, h3, h4 {
@@ -50,7 +66,7 @@
   }
 
   .card-hover {
-    @apply card hover:border-primary-500/40 hover:shadow-card-hover hover:-translate-y-1
+    @apply card hover:border-primary-500 hover:shadow-card-hover hover:-translate-y-1
            cursor-pointer;
   }
 
@@ -69,14 +85,15 @@
   }
 
   .btn-secondary {
-    @apply btn bg-surface-card border border-surface-border text-white
-           hover:border-primary-500/60 hover:bg-primary-500/10
-           focus:ring-primary-500 active:scale-95;
+    @apply btn bg-surface-text text-surface border border-surface-text
+           hover:border-primary-500 hover:text-primary-500
+           focus:ring-primary-500 active:scale-95 rounded-full;
   }
 
   .btn-ghost {
-    @apply btn text-surface-muted hover:text-white hover:bg-surface-card
-           active:scale-95;
+    @apply btn bg-surface-text text-surface border border-surface-text
+           hover:border-primary-500 hover:text-primary-500
+           active:scale-95 rounded-full;
   }
 
   .btn-danger {
@@ -87,9 +104,10 @@
   /* Form inputs */
   .input {
     @apply w-full bg-surface-card border border-surface-border rounded-xl px-4 py-3
-           text-white placeholder:text-surface-muted
+           placeholder:text-surface-muted
            focus:outline-none focus:ring-2 focus:ring-primary-500/60 focus:border-primary-500
            transition-all duration-200;
+    color: var(--color-text);
   }
 
   /* Badges */
@@ -97,10 +115,10 @@
     @apply inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold;
   }
 
-  .badge-primary  { @apply badge bg-primary-500/20 text-primary-300 border border-primary-500/30; }
-  .badge-teal     { @apply badge bg-accent-teal/20 text-accent-teal border border-accent-teal/30; }
-  .badge-amber    { @apply badge bg-accent-amber/20 text-accent-amber border border-accent-amber/30; }
-  .badge-rose     { @apply badge bg-accent-rose/20 text-accent-rose border border-accent-rose/30; }
+  .badge-primary  { @apply badge bg-primary-500 text-white border border-primary-500; }
+  .badge-teal     { @apply badge bg-surface-text text-surface border border-surface-text; }
+  .badge-amber    { @apply badge bg-surface-text text-surface border border-surface-text; }
+  .badge-rose     { @apply badge bg-surface-text text-surface border border-surface-text; }
 
   /* Section container */
   .container-page {
@@ -109,7 +127,7 @@
 
   /* Glassmorphism panel */
   .glass {
-    @apply bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl;
+    @apply bg-surface/5 border border-surface-border/50 backdrop-blur-md rounded-2xl;
   }
 
   /* Progress bar */
@@ -118,14 +136,14 @@
   }
 
   .progress-fill {
-    @apply h-full bg-gradient-to-r from-primary-500 to-accent-teal rounded-full
+    @apply h-full bg-primary-500 rounded-full
            transition-all duration-500 ease-out;
   }
 
   /* Skeleton loader */
   .skeleton {
     @apply bg-surface-border rounded-lg animate-shimmer;
-    background: linear-gradient(90deg, #1E293B 25%, #334155 50%, #1E293B 75%);
+    background-image: linear-gradient(90deg, var(--color-surface-card) 25%, var(--color-surface-border) 50%, var(--color-surface-card) 75%);
     background-size: 200% 100%;
   }
 
@@ -146,6 +164,6 @@
   }
 
   .glow-border {
-    box-shadow: 0 0 0 1px rgba(108, 99, 255, 0.5), 0 0 20px rgba(108, 99, 255, 0.15);
+    box-shadow: 0 0 0 1px rgba(161, 77, 160, 0.5), 0 0 20px rgba(161, 77, 160, 0.15);
   }
 }

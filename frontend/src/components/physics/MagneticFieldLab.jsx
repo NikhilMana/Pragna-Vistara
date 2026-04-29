@@ -138,7 +138,7 @@ export default function MagneticFieldLab({ className = '' }) {
           <div className="mb-2 inline-flex rounded-full border border-accent-amber/30 bg-accent-amber/10 px-3 py-1 text-xs font-semibold text-accent-amber">
             Interactive physics lab
           </div>
-          <h2 className="text-2xl font-semibold text-white">Magnetic behaviour with iron dust</h2>
+          <h2 className="text-2xl font-semibold text-surface-text">Magnetic behaviour with iron dust</h2>
           <p className="mt-1 max-w-3xl text-sm leading-relaxed text-surface-muted">
             Watch iron dust move under a bar magnet. The simulation uses stronger attraction near the poles and slower movement farther away.
           </p>
@@ -181,7 +181,7 @@ export default function MagneticFieldLab({ className = '' }) {
         </div>
 
         <aside className="border-t border-surface-border bg-surface/70 p-4 xl:border-l xl:border-t-0">
-          <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-white">
+          <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-surface-text">
             <SlidersHorizontal size={18} className="text-accent-teal" />
             Controls
           </h3>
@@ -230,7 +230,7 @@ export default function MagneticFieldLab({ className = '' }) {
           </div>
 
           <div className="mt-5 rounded-xl border border-surface-border bg-surface-card/70 p-3">
-            <p className="text-sm font-semibold text-white">What to notice</p>
+            <p className="text-sm font-semibold text-surface-text">What to notice</p>
             <p className="mt-2 text-xs leading-relaxed text-surface-muted">
               Dust near the poles moves first because the magnetic field is strongest there. In the field-line view, grains align into curved paths from north to south.
             </p>
@@ -249,7 +249,7 @@ function SegmentButton({ active, onClick, children }) {
       className={`rounded-xl border px-3 py-2 text-xs font-semibold transition-colors ${
         active
           ? 'border-accent-teal/50 bg-accent-teal/15 text-accent-teal'
-          : 'border-surface-border bg-surface-card text-surface-muted hover:text-white'
+          : 'border-surface-border bg-surface-card text-surface-muted hover:text-surface-text'
       }`}
     >
       {children}
