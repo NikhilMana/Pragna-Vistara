@@ -8,17 +8,50 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'app-icon.svg', 'masked-icon.svg'],
+      includeAssets: [
+        'favicon.svg',
+        'app-icon.svg',
+        'masked-icon.svg',
+        'pwa-192x192.png',
+        'pwa-512x512.png',
+        'maskable-512x512.png',
+        'apple-touch-icon.png',
+      ],
       devOptions: {
-        enabled: false,
+        enabled: true,
+        type: 'module',
       },
       manifest: {
-        name: 'Edu-Sakhi',
-        short_name: 'EduSakhi',
-        description: 'Offline-first educational platform with local questions, explanations, and progress sync',
+        id: '/',
+        name: 'Pragna Vistara',
+        short_name: 'Pragna',
+        description: 'Installable offline-first learning app with local questions, explanations, and progress sync.',
+        lang: 'en',
+        dir: 'ltr',
+        start_url: '/',
+        scope: '/',
         theme_color: '#6C63FF',
         background_color: '#0F172A',
         display: 'standalone',
+        display_override: ['window-controls-overlay', 'standalone', 'minimal-ui'],
+        orientation: 'portrait-primary',
+        categories: ['education', 'productivity'],
+        screenshots: [
+          {
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            form_factor: 'narrow',
+            label: 'Pragna Vistara learning app',
+          },
+          {
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            form_factor: 'wide',
+            label: 'Pragna Vistara desktop app',
+          },
+        ],
         icons: [
           {
             src: 'app-icon.svg',
@@ -36,11 +69,31 @@ export default defineConfig({
             type: 'image/svg+xml',
             purpose: 'maskable',
           },
+          {
+            src: 'pwa-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
+            purpose: 'any',
+          },
+          {
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any',
+          },
+          {
+            src: 'maskable-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable',
+          },
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,woff2,webmanifest}'],
+        globPatterns: ['**/*.{js,css,html,svg,png,woff2,webmanifest}'],
         cleanupOutdatedCaches: true,
+        navigateFallback: '/index.html',
+        navigateFallbackDenylist: [/^\/api\//],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
