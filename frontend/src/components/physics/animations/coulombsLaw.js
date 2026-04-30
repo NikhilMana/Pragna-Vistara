@@ -13,9 +13,10 @@ export const coulombsLaw = {
   ],
 
   init(w, h) {
+    const scale = w / 800
     return {
-      q1: { x: w * 0.3, y: h * 0.45, charge: 2, radius: 22 },
-      q2: { x: w * 0.7, y: h * 0.45, charge: -3, radius: 22 },
+      q1: { x: w * 0.3, y: h * 0.45, charge: 2, radius: 22 * scale },
+      q2: { x: w * 0.7, y: h * 0.45, charge: -3, radius: 22 * scale },
       distFactor: 1, phase: 0,
     }
   },
@@ -50,7 +51,8 @@ export const coulombsLaw = {
     const uy = (q2.y - q1.y) / dist
 
     // Force magnitude (visual scaling)
-    const forceMag = Math.min(120, 8000 / (dist * dist) * Math.abs(q1.charge * q2.charge))
+    const baseForce = 8000 * (w / 800)
+    const forceMag = Math.min(120 * (w / 800), baseForce / (dist * dist) * Math.abs(q1.charge * q2.charge))
     const attractive = (q1.charge * q2.charge) < 0
 
     // Force arrows

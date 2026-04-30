@@ -155,10 +155,10 @@ export default function MagneticFieldLab({ className = '' }) {
       </div>
 
       <div className="grid gap-0 xl:grid-cols-[1fr_290px]">
-        <div className="relative min-h-[300px] md:min-h-[430px] w-full bg-[#f8faf7] flex items-stretch">
+        <div className="relative aspect-video w-full bg-[#f8faf7] md:aspect-[21/9] md:min-h-[430px]">
           <canvas
             ref={canvasRef}
-            className="w-full h-auto min-h-[300px] md:min-h-[430px] touch-none object-cover"
+            className="h-full w-full touch-none object-contain"
             aria-label={`${experimentLabel} magnetic particle animation`}
           />
 
@@ -276,7 +276,7 @@ function createAttractionParticles(width, height) {
     y: randomBetween(height * 0.24, height - 45),
     vx: 0,
     vy: 0,
-    radius: randomBetween(1.15, 2.2),
+    radius: (randomBetween(1.15, 2.2) * width) / 800,
     shade: randomBetween(35, 95),
     stuck: false,
     jitter: Math.random() * TWO_PI,
@@ -284,6 +284,7 @@ function createAttractionParticles(width, height) {
 }
 
 function createFieldParticles(width, height, targets) {
+  const scale = width / 800;
   return Array.from({ length: FIELD_PARTICLE_COUNT }, (_, index) => {
     const target = targets[index % targets.length]
     return {
@@ -292,7 +293,7 @@ function createFieldParticles(width, height, targets) {
       y: randomBetween(54, height - 54),
       vx: 0,
       vy: 0,
-      radius: randomBetween(1.1, 1.9),
+      radius: (randomBetween(1.1, 1.9) * scale),
       shade: randomBetween(25, 85),
       target,
       jitter: Math.random() * TWO_PI,
@@ -498,7 +499,9 @@ function drawMagnet(context, magnet, hidden) {
   context.fill()
 
   context.fillStyle = hidden ? 'rgba(15, 23, 42, 0.45)' : '#ffffff'
-  context.font = '700 18px sans-serif'
+  context.fillStyle = hidden ? 'rgba(15, 23, 42, 0.45)' : '#ffffff'
+  const fontSize = Math.max(12, Math.floor(18 * (magnet.width / 270)))
+  context.font = `700 ${fontSize}px sans-serif`
   context.textAlign = 'center'
   context.textBaseline = 'middle'
   context.fillText('N', -magnet.width * 0.25, 0)
@@ -511,11 +514,13 @@ function drawHiddenMagnet(context, width, height, viewMode) {
   if (viewMode === 'perspective') {
     context.globalAlpha = 0.8
   }
+  const magWidth = Math.min(width * 0.38, 300)
+  const magHeight = magWidth * 0.22
   drawMagnet(context, {
     x: width * 0.5,
-    y: height * 0.5 + (viewMode === 'perspective' ? 42 : 0),
-    width: Math.min(width * 0.38, 300),
-    height: 58,
+    y: height * 0.5 + (viewMode === 'perspective' ? magHeight * 0.7 : 0),
+    width: magWidth,
+    height: magHeight,
     angle: 0,
   }, true)
   context.restore()
@@ -564,11 +569,13 @@ function drawAttractionFieldHints(context, magnet, progress) {
 }
 
 function getAttractionMagnet(width, height, progress) {
+  const magWidth = Math.min(width * 0.36, 270)
+  const magHeight = magWidth * 0.22
   return {
     x: width * 0.5,
-    y: -72 + progress * (height * 0.5 + 80),
-    width: Math.min(width * 0.36, 270),
-    height: 58,
+    y: -magHeight + progress * (height * 0.5 + magHeight + 22),
+    width: magWidth,
+    height: magHeight,
     angle: 0,
   }
 }
