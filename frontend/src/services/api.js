@@ -1417,56 +1417,58 @@ const FALLBACK_CATALOG = {
 }
 
 export async function getSyllabusCatalog() {
-  return getCachedSyllabusRequest('catalog', async () => {
-    try {
-      const { data } = await client.get('/v1/syllabus')
-      return data
-    } catch {
-      return FALLBACK_CATALOG
-    }
-  })
+  return FALLBACK_CATALOG
 }
 
 export async function getSyllabusClass(classSlug) {
-  return getCachedSyllabusRequest(`class:${classSlug}`, async () => {
-    try {
-      const { data } = await client.get(`/v1/syllabus/classes/${classSlug}`)
-      return data
-    } catch {
-      const foundClass = FALLBACK_CATALOG.classes.find(c => c.class_slug === classSlug)
-      if (!foundClass) throw new Error('Class not found offline')
-      return foundClass
-    }
-  })
+  const foundClass = FALLBACK_CATALOG.classes.find(c => c.class_slug === classSlug)
+  if (!foundClass) throw new Error(`Class "${classSlug}" not found`)
+  return foundClass
 }
 
 export async function getSyllabusSubject(classSlug, subjectSlug) {
-  return getCachedSyllabusRequest(`subject:${classSlug}:${subjectSlug}`, async () => {
-    try {
-      const { data } = await client.get(`/v1/syllabus/classes/${classSlug}/subjects/${subjectSlug}`)
-      return data
-    } catch {
-      const foundClass = FALLBACK_CATALOG.classes.find(c => c.class_slug === classSlug)
-      if (!foundClass) throw new Error('Class not found offline')
-      const foundSubject = foundClass.subjects.find(s => s.subject_slug === subjectSlug)
-      if (!foundSubject) throw new Error('Subject not found offline')
-      return foundSubject
-    }
-  })
+  const foundClass = FALLBACK_CATALOG.classes.find(c => c.class_slug === classSlug)
+  if (!foundClass) throw new Error(`Class "${classSlug}" not found`)
+  const foundSubject = foundClass.subjects.find(s => s.subject_slug === subjectSlug)
+  if (!foundSubject) throw new Error(`Subject "${subjectSlug}" not found in ${classSlug}`)
+  return foundSubject
 }
 
 export async function getSyllabusDocument(documentId) {
-  return getCachedSyllabusRequest(`document:${documentId}`, async () => {
-    const { data } = await client.get(`/v1/syllabus/documents/${documentId}`)
-    return data
-  })
+  // Documents are embedded in subjects; scan all classes/subjects for a match
+  for (const cls of FALLBACK_CATALOG.classes) {
+    for (const subj of cls.subjects) {
+      const doc = subj.documents?.find(d => d.document_id === documentId)
+      if (doc) return doc
+    }
+  }
+  throw new Error(`Document "${documentId}" not found`)
 }
 
 export async function searchSyllabus(query, limit = 20) {
-  const { data } = await client.get('/v1/syllabus/search', {
-    params: { q: query, limit },
-  })
-  return data
+  const q = (query ?? '').toLowerCase().trim()
+  if (!q) return { results: [] }
+
+  const results = []
+  for (const cls of FALLBACK_CATALOG.classes) {
+    if (results.length >= limit) break
+    for (const subj of cls.subjects) {
+      if (results.length >= limit) break
+      if (
+        subj.subject_label.toLowerCase().includes(q) ||
+        subj.subject_slug.includes(q) ||
+        cls.class_label.toLowerCase().includes(q)
+      ) {
+        results.push({
+          class_slug: cls.class_slug,
+          class_label: cls.class_label,
+          subject_slug: subj.subject_slug,
+          subject_label: subj.subject_label,
+        })
+      }
+    }
+  }
+  return { results }
 }
 
 export default client
