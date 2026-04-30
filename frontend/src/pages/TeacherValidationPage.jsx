@@ -289,7 +289,7 @@ export default function TeacherValidationPage() {
 
             {editing.diagram?.trim().startsWith('<svg') && (
               <div
-                className="mt-4 overflow-hidden rounded-2xl border border-surface-border bg-surface/40"
+                className="mt-4 overflow-hidden rounded-2xl border border-surface-border bg-surface/40 [&>svg]:h-auto [&>svg]:w-full [&>svg]:max-w-full"
                 dangerouslySetInnerHTML={{ __html: editing.diagram }}
                 aria-label="Diagram preview"
               />

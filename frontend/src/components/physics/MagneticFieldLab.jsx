@@ -155,14 +155,14 @@ export default function MagneticFieldLab({ className = '' }) {
       </div>
 
       <div className="grid gap-0 xl:grid-cols-[1fr_290px]">
-        <div className="relative min-h-[430px] bg-[#f8faf7]">
+        <div className="relative min-h-[300px] md:min-h-[430px] w-full bg-[#f8faf7] flex items-stretch">
           <canvas
             ref={canvasRef}
-            className="h-[430px] w-full touch-none"
+            className="w-full h-auto min-h-[300px] md:min-h-[430px] touch-none object-cover"
             aria-label={`${experimentLabel} magnetic particle animation`}
           />
 
-          <div className="pointer-events-none absolute left-4 top-4 rounded-xl border border-slate-300/80 bg-white/90 px-3 py-2 text-xs font-semibold text-slate-700 shadow-sm">
+          <div className="pointer-events-none absolute left-4 top-4 rounded-xl border border-slate-300/80 bg-white/90 px-3 py-2 text-xs font-semibold text-slate-700 shadow-sm z-10">
             {viewMode === 'top' ? '2D top-down view' : '3D perspective view'}
           </div>
 

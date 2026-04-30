@@ -149,7 +149,7 @@ export default function PhysicsAnimationEngine({ animation, title, className = '
       {/* Canvas */}
       <canvas
         ref={canvasRef}
-        className="block w-full cursor-pointer"
+        className="block w-full cursor-pointer object-contain"
         style={{ height: dims.h }}
         onClick={() => setPlaying((p) => !p)}
       />
