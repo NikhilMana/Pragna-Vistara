@@ -4,7 +4,7 @@ import { openDB } from 'idb'
 
 const DB_NAME    = 'pragna-vistara-db'
 
-const DB_VERSION = 6
+const DB_VERSION = 7
 
 
 /**
@@ -20,6 +20,8 @@ export const STORES = {
   EXPLANATION_DRAFTS: 'explanationDrafts',
   APPROVED_CONTENT: 'approvedContent',
   PROGRESS_EVENTS: 'progressEvents',
+  STUDENTS: 'students',
+  STUDENT_PROGRESS: 'studentProgress',
 }
 
 const CURRENT_SELECTION_ID = 'current-learning-selection'
@@ -56,6 +58,7 @@ async function getDB() {
         rs.createIndex('by-question', 'questionId', { unique: false })
         rs.createIndex('by-topic',    'topicId',    { unique: false })
         rs.createIndex('by-time',     'timestamp',  { unique: false })
+        rs.createIndex('by-student',  'student_id', { unique: false })
       }
 
       // ── explanations store ─────────────────────────
@@ -93,6 +96,18 @@ async function getDB() {
         progress.createIndex('by-subject', 'subjectId', { unique: false })
         progress.createIndex('by-time', 'createdAt', { unique: false })
         progress.createIndex('by-misconception', 'misconceptionType', { unique: false })
+      }
+
+      // ── students store ─────────────────────────────
+      if (!db.objectStoreNames.contains(STORES.STUDENTS)) {
+        const students = db.createObjectStore(STORES.STUDENTS, { keyPath: 'id' })
+        students.createIndex('by-created', 'createdAt', { unique: false })
+      }
+
+      // ── studentProgress store ──────────────────────
+      if (!db.objectStoreNames.contains(STORES.STUDENT_PROGRESS)) {
+        const studentProgress = db.createObjectStore(STORES.STUDENT_PROGRESS, { keyPath: 'student_id' })
+        studentProgress.createIndex('by-updated', 'updatedAt', { unique: false })
       }
     },
   })
@@ -336,6 +351,221 @@ export async function saveProgressEvent(event) {
 export async function getAllProgressEvents() {
   const db = await getDB()
   return db.getAll(STORES.PROGRESS_EVENTS)
+}
+
+// ─── Students ─────────────────────────────────────────────────────────────────
+
+/**
+ * Creates a new student record with PIN-based authentication.
+ * @param {Object} student - { name, class, pin, language }
+ * @returns {Promise<string>} student ID
+ */
+export async function createStudent(student) {
+  const db = await getDB()
+  const studentId = `stu_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+  
+  const studentRecord = {
+    id: studentId,
+    name: student.name,
+    class: student.class,
+    pin: student.pin, // In production, hash this with bcrypt
+    language: student.language || 'en',
+    createdAt: Date.now(),
+    lastAccessedAt: Date.now(),
+  }
+  
+  await db.put(STORES.STUDENTS, studentRecord)
+  
+  // Initialize progress for this student
+  await db.put(STORES.STUDENT_PROGRESS, {
+    student_id: studentId,
+    topics_completed: [],
+    weak_areas: [],
+    accuracy: 0,
+    total_attempts: 0,
+    correct_answers: 0,
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+  })
+  
+  return studentId
+}
+
+/**
+ * Retrieves all students on this device.
+ * @returns {Promise<Object[]>}
+ */
+export async function getAllStudents() {
+  const db = await getDB()
+  return db.getAll(STORES.STUDENTS)
+}
+
+/**
+ * Retrieves a single student by ID.
+ * @param {string} studentId
+ * @returns {Promise<Object|undefined>}
+ */
+export async function getStudentById(studentId) {
+  const db = await getDB()
+  return db.get(STORES.STUDENTS, studentId)
+}
+
+/**
+ * Authenticates a student with PIN.
+ * @param {string} studentId
+ * @param {string} pin
+ * @returns {Promise<boolean>}
+ */
+export async function authenticateStudent(studentId, pin) {
+  const student = await getStudentById(studentId)
+  if (!student) return false
+  // In production, use bcrypt.compare(pin, student.pin)
+  return student.pin === pin
+}
+
+/**
+ * Deletes a student and all associated data.
+ * @param {string} studentId
+ */
+export async function deleteStudent(studentId) {
+  const db = await getDB()
+  const tx = db.transaction(
+    [STORES.STUDENTS, STORES.STUDENT_PROGRESS, STORES.RESPONSES, STORES.EXPLANATIONS],
+    'readwrite'
+  )
+  
+  // Delete student record
+  await tx.objectStore(STORES.STUDENTS).delete(studentId)
+  
+  // Delete student progress
+  await tx.objectStore(STORES.STUDENT_PROGRESS).delete(studentId)
+  
+  // Delete all responses for this student
+  const responsesIndex = tx.objectStore(STORES.RESPONSES).index('by-student')
+  const responseKeys = await responsesIndex.getAllKeys(studentId)
+  for (const key of responseKeys) {
+    await tx.objectStore(STORES.RESPONSES).delete(key)
+  }
+  
+  await tx.done
+}
+
+/**
+ * Updates a student record (name, class, language).
+ * @param {string} studentId
+ * @param {Object} updates
+ */
+export async function updateStudent(studentId, updates) {
+  const db = await getDB()
+  const student = await db.get(STORES.STUDENTS, studentId)
+  
+  if (!student) {
+    throw new Error('Student not found')
+  }
+  
+  return db.put(STORES.STUDENTS, {
+    ...student,
+    ...updates,
+    lastAccessedAt: Date.now(),
+  })
+}
+
+/**
+ * Gets current active session (which student is logged in).
+ * @returns {Promise<string|null>} student_id or null
+ */
+export async function getCurrentStudentId() {
+  const db = await getDB()
+  const session = await db.get(STORES.SESSIONS, 'current-student')
+  return session?.student_id || null
+}
+
+/**
+ * Sets the current active student.
+ * @param {string} studentId
+ */
+export async function setCurrentStudent(studentId) {
+  const db = await getDB()
+  return db.put(STORES.SESSIONS, {
+    id: 'current-student',
+    student_id: studentId,
+    switchedAt: Date.now(),
+  })
+}
+
+/**
+ * Clears the current session (logout).
+ */
+export async function clearCurrentStudent() {
+  const db = await getDB()
+  return db.delete(STORES.SESSIONS, 'current-student')
+}
+
+/**
+ * Gets progress data for a student.
+ * @param {string} studentId
+ * @returns {Promise<Object>}
+ */
+export async function getStudentProgress(studentId) {
+  const db = await getDB()
+  return db.get(STORES.STUDENT_PROGRESS, studentId)
+}
+
+/**
+ * Updates student progress.
+ * @param {string} studentId
+ * @param {Object} updates
+ */
+export async function updateStudentProgress(studentId, updates) {
+  const db = await getDB()
+  const current = await db.get(STORES.STUDENT_PROGRESS, studentId)
+  
+  if (!current) {
+    throw new Error('Student progress not found')
+  }
+  
+  return db.put(STORES.STUDENT_PROGRESS, {
+    ...current,
+    ...updates,
+    updatedAt: Date.now(),
+  })
+}
+
+// ─── Responses with Student Tracking ───────────────────────────────────────────
+
+/**
+ * Saves a response with student_id tracking.
+ * @param {Object} response - { student_id, questionId, topicId, ... }
+ * @returns {Promise<number>} auto-generated ID
+ */
+export async function saveResponseWithStudent(response) {
+  const db = await getDB()
+  return db.add(STORES.RESPONSES, {
+    ...response,
+    timestamp: Date.now(),
+  })
+}
+
+/**
+ * Gets all responses for a specific student.
+ * @param {string} studentId
+ * @returns {Promise<Object[]>}
+ */
+export async function getResponsesByStudent(studentId) {
+  const db = await getDB()
+  const index = db.transaction(STORES.RESPONSES).store.index('by-student')
+  return index.getAll(studentId)
+}
+
+/**
+ * Gets responses by student and topic.
+ * @param {string} studentId
+ * @param {string} topicId
+ * @returns {Promise<Object[]>}
+ */
+export async function getStudentResponsesByTopic(studentId, topicId) {
+  const allResponses = await getResponsesByStudent(studentId)
+  return allResponses.filter(r => r.topicId === topicId)
 }
 
 // ─── Utility ──────────────────────────────────────────────────────────────────

@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useOfflineSync } from '@/context/OfflineSyncContext'
+import { useStudent } from '@/context/StudentContext'
 import useOnlineStatus from '@/hooks/useOnlineStatus'
 import {
   ArrowPathIcon,
@@ -11,6 +12,7 @@ import {
 import { Sun, Moon } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import LanguageSwitcher from '@/components/language/LanguageSwitcher'
+import StudentSwitcher from '@/components/student/StudentSwitcher'
 import logoImage from '@/assets/logo.png'
 
 /**
@@ -20,6 +22,7 @@ export default function Navbar() {
   const location = useLocation()
   const isOnline = useOnlineStatus()
   const { isSyncing, pendingSyncCount } = useOfflineSync()
+  const { currentStudent } = useStudent()
 
   const [isDarkMode, setIsDarkMode] = useState(true)
 
@@ -69,6 +72,17 @@ export default function Navbar() {
       : pendingSyncCount > 0
         ? 'bg-accent-amber/10 border-accent-amber/30 text-accent-amber'
         : 'bg-accent-teal/10 border-accent-teal/30 text-accent-teal'
+
+  // Get initials for student avatar
+  const getInitials = (name) => {
+    if (!name) return '?'
+    return name
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2)
+  }
 
   return (
     <header className="sticky top-0 z-50 border-b border-surface-border bg-surface/90 backdrop-blur-md">
@@ -130,20 +144,23 @@ export default function Navbar() {
             {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
           </button>
 
-          {/* User Profile & Logout */}
+          {/* Student Switcher / Profile */}
           <div className="flex items-center gap-3 pl-4 border-l border-surface-border">
-            <div className="flex items-center gap-2 cursor-pointer group">
-              <div className="w-8 h-8 rounded-full bg-surface-card border border-primary-500 flex items-center justify-center text-primary-500 group-hover:bg-primary-500 group-hover:text-surface-text transition-colors">
-                <span className="text-sm font-semibold">JD</span>
-              </div>
-            </div>
-            <button 
-              onClick={() => window.location.href = '/login'}
-              className="text-sm font-medium text-surface-muted hover:text-accent-rose transition-colors"
-              title="Logout"
-            >
-              Logout
-            </button>
+            {currentStudent ? (
+              <>
+                <div className="w-8 h-8 rounded-full bg-primary-500/20 border border-primary-500 flex items-center justify-center text-primary-500 text-sm font-semibold">
+                  {getInitials(currentStudent.name)}
+                </div>
+                <StudentSwitcher />
+              </>
+            ) : (
+              <button
+                onClick={() => (window.location.href = '/login')}
+                className="text-sm font-medium text-surface-muted hover:text-primary-500 transition-colors"
+              >
+                Login
+              </button>
+            )}
           </div>
         </div>
       </nav>

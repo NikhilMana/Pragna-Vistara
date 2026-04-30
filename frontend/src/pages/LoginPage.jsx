@@ -1,142 +1,498 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Shield, User, Lock, ArrowRight } from 'lucide-react';
-import LanguageSwitcher from '@/components/language/LanguageSwitcher';
-import logoImage from '@/assets/logo.png';
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Shield, User, Lock, Plus, ArrowRight, LogOut } from 'lucide-react'
+import LanguageSwitcher from '@/components/language/LanguageSwitcher'
+import PINAuthComponent from '@/components/auth/PINAuthComponent'
+import { listStudents, loginStudent, registerStudent } from '@/services/studentManagement'
+import logoImage from '@/assets/logo.png'
 
 export default function LoginPage() {
-  const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('user'); // 'user' or 'validator'
-  const [formData, setFormData] = useState({ username: '', password: '' });
-  const [error, setError] = useState('');
+  const navigate = useNavigate()
+  const [view, setView] = useState('mode') // 'mode' | 'student-select' | 'student-register' | 'validator'
+  const [students, setStudents] = useState([])
+  const [selectedStudent, setSelectedStudent] = useState(null)
+  const [showPINAuth, setShowPINAuth] = useState(false)
+  const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    setError('');
-  };
+  // Registration form
+  const [registerForm, setRegisterForm] = useState({
+    name: '',
+    class: '',
+    pin: '',
+    language: 'en',
+  })
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!formData.username || !formData.password) {
-      setError('Please fill in all fields.');
-      return;
+  // Validator form
+  const [validatorForm, setValidatorForm] = useState({
+    username: '',
+    password: '',
+  })
+
+  // Load students on mount
+  useEffect(() => {
+    loadStudents()
+  }, [])
+
+  const loadStudents = async () => {
+    try {
+      const studentList = await listStudents()
+      setStudents(studentList)
+    } catch (err) {
+      console.error('Failed to load students:', err)
     }
-    // Mock authentication
-    if (activeTab === 'user') {
-      navigate('/selection');
-    } else {
-      navigate('/teacher-validation'); // Fallback to existing or new view
+  }
+
+  const handleSelectStudent = (student) => {
+    setSelectedStudent(student)
+    setShowPINAuth(true)
+  }
+
+  const handlePINSuccess = async (pin) => {
+    setIsLoading(true)
+    try {
+      await loginStudent(selectedStudent.id, pin)
+      navigate('/selection')
+    } catch (err) {
+      setError('Invalid PIN')
+      setIsLoading(false)
     }
-  };
+  }
 
-  return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
-      <div className="absolute right-4 top-4 z-20">
-        <LanguageSwitcher />
-      </div>
+  const handleRegisterStudent = async (e) => {
+    e.preventDefault()
+    setIsLoading(true)
+    setError('')
 
-      {/* Background decoration */}
-      <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-surface-card rounded-full blur-[100px]" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-secondary-400/20 rounded-full blur-[100px]" />
+    try {
+      if (!registerForm.name || !registerForm.class || !registerForm.pin) {
+        throw new Error('All fields are required')
+      }
 
-      <div className="w-full max-w-md z-10 animate-slide-up">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-white border border-surface-border p-1 mb-4 shadow-glow-primary overflow-hidden">
-            <img src={logoImage} alt="Pragna Vistara Logo" className="w-full h-full object-contain" />
-          </div>
-          <h1 className="text-3xl font-display font-bold text-surface-text mb-2">Pragna Vistara</h1>
-          <p className="text-surface-muted">Sign in to your learning platform</p>
+      if (registerForm.pin.length < 4) {
+        throw new Error('PIN must be at least 4 digits')
+      }
+
+      await registerStudent(registerForm)
+      await loadStudents()
+      setRegisterForm({ name: '', class: '', pin: '', language: 'en' })
+      setView('student-select')
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleValidatorSubmit = (e) => {
+    e.preventDefault()
+    if (!validatorForm.username || !validatorForm.password) {
+      setError('Please fill in all fields')
+      return
+    }
+    // Mock validation
+    navigate('/teacher-validation')
+  }
+
+  // ─── VIEWS ────────────────────────────────────────────────────────────────
+
+  if (view === 'mode') {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+        <div className="absolute right-4 top-4 z-20">
+          <LanguageSwitcher />
         </div>
 
-        <div className="glass p-8 relative">
-          {/* Tabs */}
-          <div className="flex bg-surface-card rounded-lg p-1 mb-6 border border-surface-border">
-            <button
-              onClick={() => setActiveTab('user')}
-              className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-md text-sm font-medium transition-all ${
-                activeTab === 'user'
-                  ? 'bg-primary-500 text-white shadow'
-                  : 'text-surface-muted hover:text-surface-text'
-              }`}
-            >
-              <User size={16} /> Student
-            </button>
-            <button
-              onClick={() => setActiveTab('validator')}
-              className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-md text-sm font-medium transition-all ${
-                activeTab === 'validator'
-                  ? 'bg-secondary-400 text-surface-text shadow'
-                  : 'text-surface-muted hover:text-surface-text'
-              }`}
-            >
-              <Shield size={16} /> Validator
-            </button>
+        <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-surface-card rounded-full blur-[100px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-secondary-400/20 rounded-full blur-[100px]" />
+
+        <div className="w-full max-w-md z-10 animate-slide-up">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-white border border-surface-border p-1 mb-4 shadow-glow-primary overflow-hidden">
+              <img src={logoImage} alt="Logo" className="w-full h-full object-contain" />
+            </div>
+            <h1 className="text-3xl font-display font-bold text-surface-text mb-2">
+              Pragna Vistara
+            </h1>
+            <p className="text-surface-muted">Learning platform for all</p>
           </div>
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-surface-muted mb-1 ml-1">
-                Username or Email
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-surface-muted">
-                  <User size={18} />
-                </div>
+          <div className="glass p-8 rounded-2xl border border-surface-border space-y-4">
+            {/* Student Mode */}
+            <button
+              onClick={() => {
+                loadStudents()
+                setView('student-select')
+              }}
+              className="w-full flex items-center gap-4 p-6 bg-gradient-to-br from-primary-500/10 to-primary-600/5 hover:from-primary-500/20 hover:to-primary-600/10 border border-primary-500/30 rounded-lg transition-all group"
+            >
+              <div className="p-3 bg-primary-500/20 rounded-lg group-hover:bg-primary-500/30 transition-colors">
+                <User size={24} className="text-primary-500" />
+              </div>
+              <div className="text-left flex-1">
+                <p className="text-sm font-medium text-surface-muted">Student</p>
+                <p className="text-base font-semibold text-surface-text">
+                  {students.length > 0
+                    ? `${students.length} student${students.length !== 1 ? 's' : ''} available`
+                    : 'Create your account'}
+                </p>
+              </div>
+              <ArrowRight size={20} className="text-primary-500 group-hover:translate-x-1 transition-transform" />
+            </button>
+
+            {/* Validator Mode */}
+            <button
+              onClick={() => setView('validator')}
+              className="w-full flex items-center gap-4 p-6 bg-gradient-to-br from-secondary-400/10 to-secondary-500/5 hover:from-secondary-400/20 hover:to-secondary-500/10 border border-secondary-400/30 rounded-lg transition-all group"
+            >
+              <div className="p-3 bg-secondary-400/20 rounded-lg group-hover:bg-secondary-400/30 transition-colors">
+                <Shield size={24} className="text-secondary-400" />
+              </div>
+              <div className="text-left flex-1">
+                <p className="text-sm font-medium text-surface-muted">Educator</p>
+                <p className="text-base font-semibold text-surface-text">
+                  Review & validate explanations
+                </p>
+              </div>
+              <ArrowRight size={20} className="text-secondary-400 group-hover:translate-x-1 transition-transform" />
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (view === 'student-select') {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+        <div className="absolute right-4 top-4 z-20">
+          <LanguageSwitcher />
+        </div>
+
+        <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-surface-card rounded-full blur-[100px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-secondary-400/20 rounded-full blur-[100px]" />
+
+        <div className="w-full max-w-md z-10 animate-slide-up">
+          <div className="text-center mb-8">
+            <button
+              onClick={() => setView('mode')}
+              className="mb-4 text-primary-500 hover:text-primary-600 font-medium text-sm"
+            >
+              ← Back
+            </button>
+            <h1 className="text-3xl font-display font-bold text-surface-text mb-2">
+              Select Student
+            </h1>
+            <p className="text-surface-muted">
+              {students.length} student{students.length !== 1 ? 's' : ''} on this device
+            </p>
+          </div>
+
+          <div className="glass p-8 rounded-2xl border border-surface-border space-y-3">
+            {/* Existing Students */}
+            {students.map(student => (
+              <button
+                key={student.id}
+                onClick={() => handleSelectStudent(student)}
+                className="w-full p-4 text-left bg-surface-card hover:bg-surface-border border border-surface-border rounded-lg transition-all group"
+              >
+                <p className="font-semibold text-surface-text group-hover:text-primary-500 transition-colors">
+                  {student.name}
+                </p>
+                <p className="text-sm text-surface-muted">Class {student.class}</p>
+              </button>
+            ))}
+
+            {/* Divider */}
+            {students.length > 0 && <div className="my-4 border-t border-surface-border" />}
+
+            {/* Register New Student */}
+            <button
+              onClick={() => setView('student-register')}
+              className="w-full flex items-center justify-center gap-2 p-4 bg-primary-500/10 hover:bg-primary-500/20 border border-primary-500/30 rounded-lg transition-all text-primary-500 font-medium"
+            >
+              <Plus size={18} />
+              Add New Student
+            </button>
+
+            {/* Back to Mode */}
+            <button
+              onClick={() => setView('mode')}
+              className="w-full px-4 py-3 bg-surface-card border border-surface-border text-surface-text rounded-lg hover:bg-surface-border transition-all font-medium"
+            >
+              Back to Mode Selection
+            </button>
+          </div>
+        </div>
+
+        {/* PIN Auth Modal Overlay */}
+        {showPINAuth && selectedStudent && (
+          <PINAuthComponent
+            studentId={selectedStudent.id}
+            studentName={selectedStudent.name}
+            purpose="login"
+            onSuccess={handlePINSuccess}
+            onCancel={() => {
+              setShowPINAuth(false)
+              setSelectedStudent(null)
+              setError('')
+            }}
+          />
+        )}
+
+        {/* Error toast */}
+        {error && (
+          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-6 py-3 bg-red-500/90 text-white rounded-xl shadow-lg animate-slide-up text-sm font-medium">
+            {error}
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  if (view === 'student-register') {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+        <div className="absolute right-4 top-4 z-20">
+          <LanguageSwitcher />
+        </div>
+
+        <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-surface-card rounded-full blur-[100px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-secondary-400/20 rounded-full blur-[100px]" />
+
+        <div className="w-full max-w-md z-10 animate-slide-up">
+          <div className="text-center mb-8">
+            <button
+              onClick={() => setView('student-select')}
+              className="mb-4 text-primary-500 hover:text-primary-600 font-medium text-sm"
+            >
+              ← Back
+            </button>
+            <h1 className="text-3xl font-display font-bold text-surface-text mb-2">
+              Create Student Account
+            </h1>
+            <p className="text-surface-muted">Register on this device</p>
+          </div>
+
+          <div className="glass p-8 rounded-2xl border border-surface-border">
+            <form onSubmit={handleRegisterStudent} className="space-y-4">
+              {/* Name */}
+              <div>
+                <label className="block text-sm font-medium text-surface-text mb-2">
+                  Student Name *
+                </label>
                 <input
                   type="text"
-                  name="username"
-                  className="input pl-10"
-                  placeholder={activeTab === 'user' ? "student@example.com" : "validator@example.com"}
-                  value={formData.username}
-                  onChange={handleInputChange}
+                  value={registerForm.name}
+                  onChange={(e) =>
+                    setRegisterForm({ ...registerForm, name: e.target.value })
+                  }
+                  placeholder="e.g., Ravi Kumar"
+                  className="w-full px-4 py-3 bg-surface-card border border-surface-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all"
+                  disabled={isLoading}
+                  required
                 />
               </div>
-            </div>
 
-            <div>
-              <div className="flex items-center justify-between mb-1 ml-1">
-                <label className="block text-sm font-medium text-surface-muted">
-                  Password
+              {/* Class */}
+              <div>
+                <label className="block text-sm font-medium text-surface-text mb-2">
+                  Class *
                 </label>
-                <a href="#" className="text-xs text-primary-500 hover:text-primary-500 transition-colors">
-                  Forgot password?
-                </a>
+                <select
+                  value={registerForm.class}
+                  onChange={(e) =>
+                    setRegisterForm({ ...registerForm, class: e.target.value })
+                  }
+                  className="w-full px-4 py-3 bg-surface-card border border-surface-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all"
+                  disabled={isLoading}
+                  required
+                >
+                  <option value="">Select class</option>
+                  {['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'].map(
+                    cls => (
+                      <option key={cls} value={cls}>
+                        Class {cls}
+                      </option>
+                    )
+                  )}
+                </select>
               </div>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-surface-muted">
-                  <Lock size={18} />
-                </div>
+
+              {/* Language */}
+              <div>
+                <label className="block text-sm font-medium text-surface-text mb-2">
+                  Language
+                </label>
+                <select
+                  value={registerForm.language}
+                  onChange={(e) =>
+                    setRegisterForm({ ...registerForm, language: e.target.value })
+                  }
+                  className="w-full px-4 py-3 bg-surface-card border border-surface-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all"
+                  disabled={isLoading}
+                >
+                  <option value="en">English</option>
+                  <option value="hi">Hindi</option>
+                  <option value="kn">Kannada</option>
+                </select>
+              </div>
+
+              {/* PIN */}
+              <div>
+                <label className="block text-sm font-medium text-surface-text mb-2">
+                  Create PIN (4-6 digits) *
+                </label>
                 <input
                   type="password"
-                  name="password"
-                  className="input pl-10"
-                  placeholder="••••••••"
-                  value={formData.password}
-                  onChange={handleInputChange}
+                  inputMode="numeric"
+                  value={registerForm.pin}
+                  onChange={(e) =>
+                    setRegisterForm({
+                      ...registerForm,
+                      pin: e.target.value.replace(/\D/g, '').slice(0, 6),
+                    })
+                  }
+                  placeholder="••••"
+                  className="w-full px-4 py-3 bg-surface-card border border-surface-border rounded-lg text-center tracking-widest font-mono focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all"
+                  disabled={isLoading}
+                  required
                 />
+                <p className="text-xs text-surface-muted mt-1">
+                  {registerForm.pin.length} / 6 digits
+                </p>
               </div>
-            </div>
 
-            {error && (
-              <div className="text-accent-rose text-sm text-center bg-accent-rose/10 py-2 rounded-lg border border-accent-rose/20 animate-fade-in">
-                {error}
-              </div>
-            )}
+              {/* Error */}
+              {error && (
+                <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+                  <p className="text-sm text-red-500">{error}</p>
+                </div>
+              )}
 
-            <button type="submit" className="btn-primary w-full mt-6 group">
-              Login as {activeTab === 'user' ? 'Student' : 'Validator'}
-              <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-            </button>
-          </form>
-          
-          {activeTab === 'user' && (
-             <div className="mt-6 text-center text-sm text-surface-muted">
-              Don't have an account? <a href="#" className="text-primary-500 hover:text-primary-500 font-medium">Sign up</a>
-             </div>
-          )}
+              {/* Submit */}
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full px-4 py-3 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-all font-medium disabled:opacity-50 mt-6"
+              >
+                {isLoading ? 'Creating...' : 'Create Account'}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setView('student-select')}
+                disabled={isLoading}
+                className="w-full px-4 py-3 bg-surface-card border border-surface-border text-surface-text rounded-lg hover:bg-surface-border transition-all font-medium"
+              >
+                Back
+              </button>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    )
+  }
+
+  if (view === 'validator') {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+        <div className="absolute right-4 top-4 z-20">
+          <LanguageSwitcher />
+        </div>
+
+        <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-surface-card rounded-full blur-[100px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-secondary-400/20 rounded-full blur-[100px]" />
+
+        <div className="w-full max-w-md z-10 animate-slide-up">
+          <div className="text-center mb-8">
+            <button
+              onClick={() => setView('mode')}
+              className="mb-4 text-secondary-400 hover:text-secondary-500 font-medium text-sm"
+            >
+              ← Back
+            </button>
+            <h1 className="text-3xl font-display font-bold text-surface-text mb-2">
+              Educator Login
+            </h1>
+            <p className="text-surface-muted">Sign in to validate explanations</p>
+          </div>
+
+          <div className="glass p-8 rounded-2xl border border-surface-border">
+            <form onSubmit={handleValidatorSubmit} className="space-y-4">
+              {/* Username */}
+              <div>
+                <label className="block text-sm font-medium text-surface-text mb-2">
+                  Email or Username
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-surface-muted">
+                    <User size={18} />
+                  </div>
+                  <input
+                    type="text"
+                    value={validatorForm.username}
+                    onChange={(e) =>
+                      setValidatorForm({ ...validatorForm, username: e.target.value })
+                    }
+                    placeholder="educator@school.edu"
+                    className="w-full pl-10 px-4 py-3 bg-surface-card border border-surface-border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary-400 transition-all"
+                    disabled={isLoading}
+                  />
+                </div>
+              </div>
+
+              {/* Password */}
+              <div>
+                <label className="block text-sm font-medium text-surface-text mb-2">
+                  Password
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-surface-muted">
+                    <Lock size={18} />
+                  </div>
+                  <input
+                    type="password"
+                    value={validatorForm.password}
+                    onChange={(e) =>
+                      setValidatorForm({ ...validatorForm, password: e.target.value })
+                    }
+                    placeholder="••••••••"
+                    className="w-full pl-10 px-4 py-3 bg-surface-card border border-surface-border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary-400 transition-all"
+                    disabled={isLoading}
+                  />
+                </div>
+              </div>
+
+              {/* Error */}
+              {error && (
+                <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+                  <p className="text-sm text-red-500">{error}</p>
+                </div>
+              )}
+
+              {/* Submit */}
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full px-4 py-3 bg-secondary-400 text-surface-text rounded-lg hover:bg-secondary-500 transition-all font-medium disabled:opacity-50 mt-6"
+              >
+                {isLoading ? 'Signing in...' : 'Sign In'}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setView('mode')}
+                className="w-full px-4 py-3 bg-surface-card border border-surface-border text-surface-text rounded-lg hover:bg-surface-border transition-all font-medium"
+              >
+                Back
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    )
+  }
+  // Fallback (should not reach here)
+  return null
 }
