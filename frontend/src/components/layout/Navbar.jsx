@@ -147,6 +147,27 @@ export default function Navbar() {
           </div>
         </div>
       </nav>
+
+      {/* Mobile Bottom Navigation */}
+      <div className="sm:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-surface-border bg-surface/90 backdrop-blur-md pb-safe">
+        <div className="flex items-center justify-around h-16 px-2">
+          {links.map(({ to, label, Icon }) => {
+            const active = location.pathname === to
+            return (
+              <Link
+                key={`mobile-${to}`}
+                to={to}
+                className={`flex flex-col items-center justify-center w-full h-full gap-1 text-[10px] font-medium transition-colors
+                  ${active ? 'text-primary-500' : 'text-surface-muted hover:text-surface-text'}
+                `}
+              >
+                <Icon className={`w-5 h-5 ${active ? 'text-primary-500' : ''}`} />
+                {label}
+              </Link>
+            )
+          })}
+        </div>
+      </div>
     </header>
   )
 }

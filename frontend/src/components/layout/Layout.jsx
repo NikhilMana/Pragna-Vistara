@@ -11,7 +11,7 @@ export default function Layout() {
     <div className="min-h-screen flex flex-col">
       <OfflineBanner />
       <Navbar />
-      <main className="flex-1 animate-fade-in">
+      <main className="flex-1 animate-fade-in pb-16 sm:pb-0">
         <Outlet />
       </main>
     </div>
